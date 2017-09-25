@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/settings_category_preferences">
+
+    <CheckBoxPreference
+        android:key="autoSwitch"
+        android:title="Update Spotify Dogfood automatically"
+        android:summary="Checks for updates every day"
+        android:defaultValue="true" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
