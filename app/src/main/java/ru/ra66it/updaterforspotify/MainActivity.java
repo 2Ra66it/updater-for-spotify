@@ -104,9 +104,6 @@ public class MainActivity extends AppCompatActivity {
 
         fetchData();
 
-        SpotifyService.setServiceAlarm(this, true);
-
-
     }
 
     @Override
@@ -129,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        SpotifyService.setServiceAlarm(this, QueryPreferneces.getNotification(this));
         checkInstalledSpotifyVersion();
     }
 
@@ -186,9 +184,6 @@ public class MainActivity extends AppCompatActivity {
         if (UtilsNetwork.isNetworkAvailable(getApplicationContext())) {
             errorLayout(false);
 
-            hasError = false;
-
-            UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
             latestVersionNumber = "0.0.0.0";
             toolbarSubtitle.setText("");
             toolbarSubtitle.setVisibility(GONE);
@@ -206,9 +201,7 @@ public class MainActivity extends AppCompatActivity {
                         latestVersionName = response.body().getName();
                     } catch (NullPointerException e) {
                         e.printStackTrace();
-                        hasError = true;
                         errorLayout(true);
-                        UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
                         Snackbar.make(swipeToRefresh, "Error, something went wrong :(", Snackbar.LENGTH_SHORT).show();
                     }
 
@@ -234,16 +227,13 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<Spotify> call, Throwable t) {
-                    hasError = true;
                     errorLayout(true);
                     Snackbar.make(swipeToRefresh, "Error, something went wrong :(", Snackbar.LENGTH_SHORT).show();
                     UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
                 }
             });
         } else {
-            hasError = true;
             errorLayout(true);
-            UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
             toolbarSubtitle.setText("No internet Connection");
             Snackbar.make(swipeToRefresh, "No internet connection :(", Snackbar.LENGTH_SHORT).show();
         }
@@ -256,9 +246,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void errorLayout(boolean bool) {
         if (bool) {
+            hasError = true;
             layoutCards.setVisibility(View.GONE);
+            UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
         } else {
+            hasError = false;
             layoutCards.setVisibility(View.VISIBLE);
+            UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
         }
 
     }

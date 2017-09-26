@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 public class QueryPreferneces {
 
     private static final String PREF_LAST_VERSION = "latest_version";
+    private static final String PREF_NOTIFICATION = "notification";
 
     public static String getLatestVersion(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
@@ -21,5 +22,17 @@ public class QueryPreferneces {
                 .edit()
                 .putString(PREF_LAST_VERSION, latestVersion)
                 .apply();
+    }
+
+    public static void setNotification(Context context, boolean setNotif) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(PREF_NOTIFICATION, setNotif)
+                .apply();
+    }
+
+    public static boolean getNotification(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(PREF_NOTIFICATION, true);
     }
 }

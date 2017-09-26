@@ -5,7 +5,10 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+
+import ru.ra66it.updaterforspotify.model.Spotify;
 
 /**
  * Created by 2Rabbit on 25.09.2017.
@@ -14,26 +17,41 @@ import android.support.annotation.Nullable;
 public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     CheckBoxPreference prefEnableNotifications;
-
+    SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getPreferenceManager().setSharedPreferencesName("Updater");
         addPreferencesFromResource(R.xml.settings);
-        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         prefEnableNotifications = (CheckBoxPreference) findPreference("autoSwitch");
+        prefEnableNotifications.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                QueryPreferneces.setNotification(getApplicationContext(), prefEnableNotifications.isChecked());
+                return false;
+            }
+        });
 
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        if(getSharedPreferences("Updater",MODE_PRIVATE).getBoolean("autoSwitch",true)) {
-            SpotifyService.setServiceAlarm(getApplicationContext(), true);
-        } else {
-            SpotifyService.setServiceAlarm(getApplicationContext(), false);
-        }
+
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        prefs.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        prefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 }

@@ -5,7 +5,7 @@
 
     <CheckBoxPreference
         android:key="autoSwitch"
-        android:title="Update Spotify Dogfood automatically"
+        android:title="Check for Updates"
         android:summary="Checks for updates every day"
         android:defaultValue="true" />
 

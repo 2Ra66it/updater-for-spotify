@@ -29,7 +29,7 @@ public class SpotifyService extends IntentService {
 
     private static final String TAG = "SpotifyService";
 
-    private static final long POLL_INTERVAL = TimeUnit.HOURS.toMillis(24);
+    private static final long POLL_INTERVAL = TimeUnit.DAYS.toMillis(1);
 
     public static Intent newIntent(Context context) {
         return new Intent(context, SpotifyService.class);
