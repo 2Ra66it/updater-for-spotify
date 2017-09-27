@@ -10,7 +10,6 @@ import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,13 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.Objects;
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,6 +33,8 @@ import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
 import static android.view.View.GONE;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     private static final int REQUEST_CODE = 1;
     private static final String LATEST_VERSION_STATE = "latest_version";
@@ -104,6 +100,8 @@ public class MainActivity extends AppCompatActivity {
 
         fetchData();
 
+        SpotifyService.setServiceAlarm(this, QueryPreferneces.getNotification(this));
+
     }
 
     @Override
@@ -126,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        SpotifyService.setServiceAlarm(this, QueryPreferneces.getNotification(this));
         checkInstalledSpotifyVersion();
     }
 
@@ -137,26 +134,11 @@ public class MainActivity extends AppCompatActivity {
             installVersion = UtilsSpotify.getInstalledSpotifyVersion(this);
             lblInstallVersion.setText(installVersion);
             fabDownloadButton.setImageResource(R.drawable.ic_autorenew_black_24dp);
-            if (!latestVersionNumber.equals("0.0.0.0")) {
-                lblLatestVersion.setText(latestVersionNumber);
-                if (UtilsSpotify.isSpotifyInstalled(getApplicationContext()) && UtilsSpotify.isUpdateAvailable(installVersion, latestVersionNumber)) {
-                    UtilsFAB.hideOrShowFAB(fabDownloadButton, false);
-                    toolbarSubtitle.setText("Install new version: " + latestVersionName);
-                } else if (!UtilsSpotify.isSpotifyInstalled(getApplicationContext())) {
-                    UtilsFAB.hideOrShowFAB(fabDownloadButton, false);
-                    toolbarSubtitle.setText("Install: " + latestVersionName + " now!");
-                } else {
-                    UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
-                    toolbarSubtitle.setText("You have the latest version available");
-                }
-
-                QueryPreferneces.setLatestVersion(getApplicationContext(), latestVersionNumber);
-            }
+            fillData();
         } else {
             UtilsFAB.hideOrShowFAB(fabDownloadButton, false);
-            lblInstallVersion.setText("Spotify Not Installed");
+            lblInstallVersion.setText(getString(R.string.spotify_not_installed));
             fabDownloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
-
             if (hasError) {
                 UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
             }
@@ -164,10 +146,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void fillData() {
+        if (!latestVersionNumber.equals("0.0.0.0")) {
+            lblLatestVersion.setText(latestVersionNumber);
+            if (UtilsSpotify.isSpotifyInstalled(getApplicationContext()) && UtilsSpotify.isUpdateAvailable(installVersion, latestVersionNumber)) {
+                UtilsFAB.hideOrShowFAB(fabDownloadButton, false);
+                toolbarSubtitle.setText(getString(R.string.install_new) + latestVersionName);
+            } else if (!UtilsSpotify.isSpotifyInstalled(getApplicationContext())) {
+                UtilsFAB.hideOrShowFAB(fabDownloadButton, false);
+                toolbarSubtitle.setText("Install: " + latestVersionName + " now!");
+            } else {
+                UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
+                toolbarSubtitle.setText(getString(R.string.have_last_version));
+            }
+
+            QueryPreferneces.setLatestVersion(getApplicationContext(), latestVersionNumber);
+        }
+    }
+
     private void downloadNewVersion(String url) {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        request.setTitle("Downloading SpotifyDogfood");
-        request.setDescription("Downloaded in /Download/");
+        request.setTitle(getString(R.string.downloading_spotify));
+        request.setDescription(getString(R.string.downloading_in));
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, latestVersionName + ".apk");
 
@@ -199,25 +199,15 @@ public class MainActivity extends AppCompatActivity {
                         latestLink = response.body().getBody();
                         latestVersionNumber = response.body().getTagName();
                         latestVersionName = response.body().getName();
+                        fillData();
+
                     } catch (NullPointerException e) {
                         e.printStackTrace();
                         errorLayout(true);
-                        Snackbar.make(swipeToRefresh, "Error, something went wrong :(", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(swipeToRefresh, getString(R.string.error), Snackbar.LENGTH_SHORT).show();
                     }
 
-                    if (!latestVersionNumber.equals("0.0.0.0")) {
-                        lblLatestVersion.setText(latestVersionNumber);
-                        if (UtilsSpotify.isSpotifyInstalled(getApplicationContext()) && UtilsSpotify.isUpdateAvailable(installVersion, latestVersionNumber)) {
-                            UtilsFAB.hideOrShowFAB(fabDownloadButton, false);
-                            toolbarSubtitle.setText("Install new version: " + latestVersionName);
-                        } else if (!UtilsSpotify.isSpotifyInstalled(getApplicationContext())) {
-                            UtilsFAB.hideOrShowFAB(fabDownloadButton, false);
-                            toolbarSubtitle.setText("Install: " + latestVersionName + " now!");
-                        } else {
-                            UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
-                            toolbarSubtitle.setText("You have the latest version available");
-                        }
-                    }
+
 
                     progressBar.setVisibility(View.GONE);
                     toolbarSubtitle.setVisibility(View.VISIBLE);
@@ -228,21 +218,19 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<Spotify> call, Throwable t) {
                     errorLayout(true);
-                    Snackbar.make(swipeToRefresh, "Error, something went wrong :(", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(swipeToRefresh, getString(R.string.error), Snackbar.LENGTH_SHORT).show();
                     UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
                 }
             });
         } else {
             errorLayout(true);
-            toolbarSubtitle.setText("No internet Connection");
-            Snackbar.make(swipeToRefresh, "No internet connection :(", Snackbar.LENGTH_SHORT).show();
+            toolbarSubtitle.setText(getString(R.string.no_internet_connection));
+            Snackbar.make(swipeToRefresh, getString(R.string.no_internet_connection), Snackbar.LENGTH_SHORT).show();
         }
 
 
 
     }
-
-
 
     private void errorLayout(boolean bool) {
         if (bool) {
@@ -269,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                                            int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Log.v("MainActivity", "Permission: " + permissions[0] + "was " + grantResults[0]);
+            Log.v(TAG, "Permission: " + permissions[0] + "was " + grantResults[0]);
             //resume tasks needing this permission
         }
     }

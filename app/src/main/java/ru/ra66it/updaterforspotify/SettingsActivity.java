@@ -7,6 +7,11 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import ru.ra66it.updaterforspotify.model.Spotify;
 
@@ -24,6 +29,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.settings);
+
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         prefEnableNotifications = (CheckBoxPreference) findPreference("autoSwitch");

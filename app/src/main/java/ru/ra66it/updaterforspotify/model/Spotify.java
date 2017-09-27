@@ -39,9 +39,6 @@ public class Spotify implements Serializable{
     @SerializedName("draft")
     @Expose
     private boolean draft;
-    @SerializedName("author")
-    @Expose
-    private Author author;
     @SerializedName("prerelease")
     @Expose
     private boolean prerelease;
@@ -136,13 +133,6 @@ public class Spotify implements Serializable{
         this.draft = draft;
     }
 
-    public Author getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
-    }
 
     public boolean isPrerelease() {
         return prerelease;

@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.os.SystemClock;
@@ -89,13 +90,14 @@ public class SpotifyService extends IntentService {
         Intent i = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
 
+
         if (UtilsSpotify.isUpdateAvailable(UtilsSpotify.getInstalledSpotifyVersion(this),
                 QueryPreferneces.getLatestVersion(this))) {
 
             Notification notification = new NotificationCompat.Builder(this)
-                    .setTicker("Updater for Spotify")
+                    .setTicker(resources.getString(R.string.app_name))
                     .setSmallIcon(R.mipmap.ic_notification)
-                    .setContentText("New version " + QueryPreferneces.getLatestVersion(this) + " available!")
+                    .setContentText("New version Spotify Dogfood " + QueryPreferneces.getLatestVersion(this) + " available!")
                     .setContentIntent(pi)
                     .setAutoCancel(true)
                     .setDefaults(Notification.DEFAULT_ALL)

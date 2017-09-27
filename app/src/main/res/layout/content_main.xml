@@ -59,7 +59,7 @@
                             android:fontFamily="sans-serif-light"
                             android:gravity="center"
                             android:singleLine="true"
-                            android:text="Install Version"
+                            android:text="@string/install_version"
                             android:textColor="@android:color/black" />
 
                         <TextView
@@ -99,7 +99,7 @@
                             android:fontFamily="sans-serif-light"
                             android:gravity="center"
                             android:singleLine="true"
-                            android:text="Latest Version Dogfood"
+                            android:text="@string/latest_version_dogfood"
                             android:textColor="@android:color/black" />
 
                         <TextView
