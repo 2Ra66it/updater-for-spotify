@@ -60,9 +60,7 @@ public class SpotifyService extends IntentService {
             pi.cancel();
         }
 
-        /*TODO
-        FIX THIS SHIT
-        */
+
         QueryPreferneces.setAlarmOn(context, isOn);
     }
 
