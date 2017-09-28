@@ -4,3 +4,5 @@
 
 <a target="_blank" href="https://www.paypal.me/2Ra66it" title="Donate using PayPal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" /></a>
 
+Updater For Spotify allows you to download the latest version of Spotify Dogfood
+
