@@ -1,5 +1,6 @@
 package ru.ra66it.updaterforspotify;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.Notification;
@@ -32,6 +33,15 @@ public class SpotifyService extends IntentService {
 
     private static final long POLL_INTERVAL = TimeUnit.DAYS.toMillis(1);
 
+    public static final String ACTION_SHOW_NOTIFICATION =
+            "ru.ra66it.android.updaterforspotify.SHOW_NOTIFICATION";
+
+    public static final String PERM_PRIVATE =
+            "ru.ra66it.android.updaterforspotify.PRIVATE";
+
+    public static final String REQUEST_CODE = "REQUEST_CODE";
+    public static final String NOTIFICATION = "NOTIFICATION";
+
     public static Intent newIntent(Context context) {
         return new Intent(context, SpotifyService.class);
     }
@@ -45,10 +55,15 @@ public class SpotifyService extends IntentService {
         if (isOn) {
             alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),
                     POLL_INTERVAL, pi);
-        }else {
+        } else {
             alarmManager.cancel(pi);
             pi.cancel();
         }
+
+        /*TODO
+        FIX THIS SHIT
+        */
+        QueryPreferneces.setAlarmOn(context, isOn);
     }
 
     public static boolean isServiceAlarmOn(Context context) {
@@ -91,25 +106,27 @@ public class SpotifyService extends IntentService {
         PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
 
 
-        if (UtilsSpotify.isUpdateAvailable(UtilsSpotify.getInstalledSpotifyVersion(this),
-                QueryPreferneces.getLatestVersion(this))) {
-
-            Notification notification = new NotificationCompat.Builder(this)
-                    .setTicker(resources.getString(R.string.app_name))
-                    .setSmallIcon(R.mipmap.ic_notification)
-                    .setContentText("New version Spotify Dogfood " + QueryPreferneces.getLatestVersion(this) + " available!")
-                    .setContentIntent(pi)
-                    .setAutoCancel(true)
-                    .setDefaults(Notification.DEFAULT_ALL)
-                    .setPriority(Notification.PRIORITY_HIGH)
-                    .build();
-
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-            notificationManager.notify(0, notification);
-
-        }
+        Notification notification = new NotificationCompat.Builder(this)
+                .setTicker(resources.getString(R.string.app_name))
+                .setSmallIcon(R.mipmap.ic_notification)
+                .setContentText("New version Spotify Dogfood " + QueryPreferneces.getLatestVersion(this) + " available!")
+                .setContentIntent(pi)
+                .setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .build();
 
 
+        showBackgroundNotification(0, notification);
+
+
+    }
+
+    private void showBackgroundNotification(int requestCode, Notification notification) {
+        Intent i = new Intent(ACTION_SHOW_NOTIFICATION);
+        i.putExtra(REQUEST_CODE, requestCode);
+        i.putExtra(NOTIFICATION, notification);
+        sendOrderedBroadcast(i, PERM_PRIVATE, null, null, Activity.RESULT_OK, null, null);
     }
 
     private boolean isNetworkAvailableAndConnected() {
@@ -117,5 +134,5 @@ public class SpotifyService extends IntentService {
         boolean isNetworkAvailable = cm.getActiveNetworkInfo() != null;
         boolean isNetworkConnected = isNetworkAvailable && cm.getActiveNetworkInfo().isConnected();
         return isNetworkConnected;
-     }
+    }
 }

@@ -6,20 +6,13 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.LinearLayout;
-
-import ru.ra66it.updaterforspotify.model.Spotify;
 
 /**
  * Created by 2Rabbit on 25.09.2017.
  */
 
-public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsActivity extends PreferenceActivity implements
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     CheckBoxPreference prefEnableNotifications;
     SharedPreferences prefs;
@@ -36,7 +29,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         prefEnableNotifications.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                QueryPreferneces.setNotification(getApplicationContext(), prefEnableNotifications.isChecked());
+                QueryPreferneces.setNotification(getApplicationContext(),
+                        prefEnableNotifications.isChecked());
                 return false;
             }
         });
