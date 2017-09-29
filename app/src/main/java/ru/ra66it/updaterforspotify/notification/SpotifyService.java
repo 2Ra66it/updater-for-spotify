@@ -1,4 +1,4 @@
-package ru.ra66it.updaterforspotify;
+package ru.ra66it.updaterforspotify.notification;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -8,20 +8,18 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import ru.ra66it.updaterforspotify.MainActivity;
+import ru.ra66it.updaterforspotify.QueryPreferneces;
+import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.api.SpotifyDogfoodApi;
-import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
 
 /**
  * Created by 2Rabbit on 25.09.2017.

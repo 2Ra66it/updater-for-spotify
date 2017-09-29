@@ -10,7 +10,6 @@ import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -30,9 +29,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import ru.ra66it.updaterforspotify.api.SpotifyDogfoodApi;
 import ru.ra66it.updaterforspotify.model.Spotify;
+import ru.ra66it.updaterforspotify.notification.SpotifyService;
 import ru.ra66it.updaterforspotify.utils.UtilsFAB;
 import ru.ra66it.updaterforspotify.utils.UtilsNetwork;
 import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
+import ru.ra66it.updaterforspotify.notification.VisibleFragment;
 
 import static android.view.View.GONE;
 

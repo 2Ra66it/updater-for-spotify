@@ -1,57 +1,38 @@
 package ru.ra66it.updaterforspotify;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 /**
  * Created by 2Rabbit on 25.09.2017.
  */
 
-public class SettingsActivity extends PreferenceActivity implements
-        SharedPreferences.OnSharedPreferenceChangeListener {
-
-    CheckBoxPreference prefEnableNotifications;
-    SharedPreferences prefs;
+public class SettingsActivity extends AppCompatActivity  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        addPreferencesFromResource(R.xml.settings);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
 
-        prefEnableNotifications = (CheckBoxPreference) findPreference("autoSwitch");
-        prefEnableNotifications.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                QueryPreferneces.setNotification(getApplicationContext(),
-                        prefEnableNotifications.isChecked());
-                return false;
-            }
-        });
-
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        SettingsFragment settingsFragment = new SettingsFragment();
+        ft.add(android.R.id.content, settingsFragment, "SettingsFragment");
+        ft.commit();
 
     }
 
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        prefs.registerOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        prefs.unregisterOnSharedPreferenceChangeListener(this);
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

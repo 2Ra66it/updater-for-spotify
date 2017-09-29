@@ -1,4 +1,4 @@
-package ru.ra66it.updaterforspotify;
+package ru.ra66it.updaterforspotify.notification;
 
 import android.app.Activity;
 import android.app.Notification;
@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import ru.ra66it.updaterforspotify.QueryPreferneces;
 import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
 
 /**

@@ -17,31 +17,34 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="ru.ra66it.updaterforspotify.MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/MainTheme"
+            android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/action_settings"
+            android:theme="@style/PreferencesTheme"/>
 
-        <activity android:name=".SettingsActivity" />
-
-        <service android:name=".SpotifyService" />
-
-        <receiver android:name=".StartupReceiver" >
+        <service android:name=".notification.SpotifyService" />
+        <receiver android:name=".notification.StartupReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
-        <receiver android:name=".NotificationReceiver"
-            android:exported="false" >
+        <receiver
+            android:name=".notification.NotificationReceiver"
+            android:exported="false">
             <intent-filter android:priority="-999">
                 <action android:name="ru.ra66it.android.updaterforspotify.SHOW_NOTIFICATION" />
             </intent-filter>
         </receiver>
-
-     </application>
+    </application>
 
 </manifest>
