@@ -20,6 +20,6 @@ public class StartupReceiver extends BroadcastReceiver {
         Log.i(TAG, "Received broadcast intent: " + intent.getAction());
 
         boolean isOn = QueryPreferneces.isAlarmOn(context);
-        SpotifyService.setServiceAlarm(context, isOn);
+        PollService.setServiceAlarm(context, isOn);
     }
 }

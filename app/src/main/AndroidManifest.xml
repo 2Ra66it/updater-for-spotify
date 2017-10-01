@@ -32,7 +32,7 @@
             android:label="@string/action_settings"
             android:theme="@style/PreferencesTheme"/>
 
-        <service android:name=".notification.SpotifyService" />
+        <service android:name=".notification.PollService" />
         <receiver android:name=".notification.StartupReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -45,6 +45,11 @@
                 <action android:name="ru.ra66it.android.updaterforspotify.SHOW_NOTIFICATION" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".notification.NotificationDownloadService"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

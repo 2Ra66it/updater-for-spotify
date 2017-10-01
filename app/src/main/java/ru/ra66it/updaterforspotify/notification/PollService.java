@@ -25,9 +25,9 @@ import ru.ra66it.updaterforspotify.api.SpotifyDogfoodApi;
  * Created by 2Rabbit on 25.09.2017.
  */
 
-public class SpotifyService extends IntentService {
+public class PollService extends IntentService {
 
-    private static final String TAG = "SpotifyService";
+    private static final String TAG = "PollService";
 
     private static final long POLL_INTERVAL = TimeUnit.DAYS.toMillis(1);
 
@@ -40,12 +40,13 @@ public class SpotifyService extends IntentService {
     public static final String REQUEST_CODE = "REQUEST_CODE";
     public static final String NOTIFICATION = "NOTIFICATION";
 
+
     public static Intent newIntent(Context context) {
-        return new Intent(context, SpotifyService.class);
+        return new Intent(context, PollService.class);
     }
 
     public static void setServiceAlarm(Context context, boolean isOn) {
-        Intent i = SpotifyService.newIntent(context);
+        Intent i = PollService.newIntent(context);
         PendingIntent pi = PendingIntent.getService(context, 0, i, 0);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
@@ -63,13 +64,13 @@ public class SpotifyService extends IntentService {
     }
 
     public static boolean isServiceAlarmOn(Context context) {
-        Intent i = SpotifyService.newIntent(context);
+        Intent i = PollService.newIntent(context);
         PendingIntent pi = PendingIntent.getService(context, 0, i, PendingIntent.FLAG_NO_CREATE);
         return pi != null;
     }
 
 
-    public SpotifyService() {
+    public PollService() {
         super(TAG);
     }
 
@@ -80,13 +81,20 @@ public class SpotifyService extends IntentService {
         if (!isNetworkAvailableAndConnected()) {
             return;
         }
-        String latestVersion = null;
+        String latestVersion;
+        String latestVersionName;
+        String latestLink;
 
         try {
 
             if (SpotifyDogfoodApi.Factory.getInstance().getLatest().execute().body().getTagName() != null) {
                 latestVersion = SpotifyDogfoodApi.Factory.getInstance().getLatest().execute().body().getTagName();
+                latestVersionName = SpotifyDogfoodApi.Factory.getInstance().getLatest().execute().body().getName();
+                latestLink = SpotifyDogfoodApi.Factory.getInstance().getLatest().execute().body().getBody();
+
                 QueryPreferneces.setLatestVersion(this, latestVersion);
+                QueryPreferneces.setLatestVersionName(this, latestVersionName);
+                QueryPreferneces.setLatestLink(this, latestLink);
             } else {
                 return;
             }
@@ -101,20 +109,25 @@ public class SpotifyService extends IntentService {
         Intent i = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
 
+        Intent intentDownload = new Intent(this, NotificationDownloadService.class);
+        intentDownload.setAction(NotificationDownloadService.ACTION_DOWNLOAD);
+        PendingIntent piDownload = PendingIntent.getService(this, 0, intentDownload, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification notification = new NotificationCompat.Builder(this)
                 .setTicker(resources.getString(R.string.app_name))
                 .setSmallIcon(R.mipmap.ic_notification)
+                .setContentTitle(getString(R.string.update_available))
                 .setContentText("New version Spotify Dogfood " + QueryPreferneces.getLatestVersion(this) + " available!")
                 .setContentIntent(pi)
                 .setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setPriority(Notification.PRIORITY_HIGH)
+                .setColor(getResources().getColor(R.color.colorAccent))
+                .addAction(R.drawable.ic_file_download_black_24dp, "INSTALL NOW", piDownload)
                 .build();
 
 
         showBackgroundNotification(0, notification);
-
 
     }
 

@@ -10,123 +10,122 @@
     tools:showIn="@layout/fragment_main">
 
 
-
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <RelativeLayout
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
-            <LinearLayout
-                android:id="@+id/layout_cards"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="20dp"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
-                <android.support.v7.widget.CardView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+
+                <LinearLayout
+                    android:id="@+id/layout_cards"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="20dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
-                    app:cardBackgroundColor="@android:color/white"
-                    app:cardUseCompatPadding="true">
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="20dp"
-                        android:layout_marginTop="20dp"
-                        android:orientation="vertical">
+                    <android.support.v7.widget.CardView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        app:cardBackgroundColor="@android:color/white"
+                        app:cardUseCompatPadding="true">
 
-                        <TextView
-                            style="@style/TextAppearance.AppCompat.Title"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-light"
-                            android:gravity="center"
-                            android:singleLine="true"
-                            android:text="@string/install_version"
-                            android:textColor="@android:color/black" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginTop="20dp"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/lbl_install_version"
-                            style="@style/TextAppearance.AppCompat.Title"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:gravity="center"
-                            android:singleLine="true"
-                            android:textColor="@android:color/black" />
+                            <TextView
+                                style="@style/TextAppearance.AppCompat.Title"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-light"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="@string/install_version"
+                                android:textColor="@android:color/black" />
 
-                    </LinearLayout>
+                            <TextView
+                                android:id="@+id/lbl_install_version"
+                                style="@style/TextAppearance.AppCompat.Title"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:textColor="@android:color/black" />
 
-                </android.support.v7.widget.CardView>
+                        </LinearLayout>
 
-                <android.support.v7.widget.CardView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    app:cardBackgroundColor="@android:color/white"
-                    app:cardUseCompatPadding="true">
+                    </android.support.v7.widget.CardView>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="20dp"
-                        android:layout_marginTop="20dp"
-                        android:orientation="vertical">
+                    <android.support.v7.widget.CardView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        app:cardBackgroundColor="@android:color/white"
+                        app:cardUseCompatPadding="true">
 
-                        <TextView
-                            style="@style/TextAppearance.AppCompat.Title"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-light"
-                            android:gravity="center"
-                            android:singleLine="true"
-                            android:text="@string/latest_version_dogfood"
-                            android:textColor="@android:color/black" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginTop="20dp"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/lbl_latest_version"
-                            style="@style/TextAppearance.AppCompat.Title"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:gravity="center"
-                            android:textColor="@android:color/black" />
+                            <TextView
+                                style="@style/TextAppearance.AppCompat.Title"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-light"
+                                android:gravity="center"
+                                android:singleLine="true"
+                                android:text="@string/latest_version_dogfood"
+                                android:textColor="@android:color/black" />
 
-                        <ProgressBar
-                            android:id="@+id/latest_progress_bar"
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            android:layout_gravity="center" />
+                            <TextView
+                                android:id="@+id/lbl_latest_version"
+                                style="@style/TextAppearance.AppCompat.Title"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:gravity="center"
+                                android:textColor="@android:color/black" />
 
-                    </LinearLayout>
+                            <ProgressBar
+                                android:id="@+id/latest_progress_bar"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:layout_gravity="center" />
 
-                </android.support.v7.widget.CardView>
+                        </LinearLayout>
+
+                    </android.support.v7.widget.CardView>
 
 
-            </LinearLayout>
+                </LinearLayout>
 
-        </RelativeLayout>
+            </RelativeLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+        </android.support.v4.widget.NestedScrollView>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

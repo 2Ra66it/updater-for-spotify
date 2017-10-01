@@ -8,8 +8,6 @@ import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import ru.ra66it.updaterforspotify.notification.SpotifyService;
-
 /**
  * Created by 2Rabbit on 28.09.2017.
  */
@@ -20,9 +18,9 @@ public abstract class VisibleFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        IntentFilter filter = new IntentFilter(SpotifyService.ACTION_SHOW_NOTIFICATION);
+        IntentFilter filter = new IntentFilter(PollService.ACTION_SHOW_NOTIFICATION);
         getActivity().registerReceiver(mOnShowNotification, filter,
-                SpotifyService.PERM_PRIVATE, null);
+                PollService.PERM_PRIVATE, null);
     }
 
     @Override

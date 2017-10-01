@@ -26,9 +26,9 @@ public class NotificationReceiver extends BroadcastReceiver {
             return;
         }
 
-        int requestCode = intent.getIntExtra(SpotifyService.REQUEST_CODE, 0);
+        int requestCode = intent.getIntExtra(PollService.REQUEST_CODE, 0);
         Notification notification = (Notification)
-                intent.getParcelableExtra(SpotifyService.NOTIFICATION);
+                intent.getParcelableExtra(PollService.NOTIFICATION);
 
         //if update available - show notification
         if (UtilsSpotify.isUpdateAvailable(UtilsSpotify.getInstalledSpotifyVersion(context),

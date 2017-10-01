@@ -1,12 +1,8 @@
 package ru.ra66it.updaterforspotify;
 
-import android.app.DownloadManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -29,7 +25,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import ru.ra66it.updaterforspotify.api.SpotifyDogfoodApi;
 import ru.ra66it.updaterforspotify.model.Spotify;
-import ru.ra66it.updaterforspotify.notification.SpotifyService;
+import ru.ra66it.updaterforspotify.notification.PollService;
+import ru.ra66it.updaterforspotify.utils.UtilsDownloadSpotify;
 import ru.ra66it.updaterforspotify.utils.UtilsFAB;
 import ru.ra66it.updaterforspotify.utils.UtilsNetwork;
 import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
@@ -62,7 +59,6 @@ public class MainFragment extends VisibleFragment {
     private String latestVersionName = "";
     private String latestVersionNumber = "";
     private String installVersion;
-    private String fullUrl;
 
     private boolean hasError = false;
 
@@ -78,33 +74,28 @@ public class MainFragment extends VisibleFragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
+        //Permission
         ActivityCompat.requestPermissions(getActivity(),
                 new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
 
     }
 
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View v = inflater.inflate(R.layout.fragment_main, container, false);
 
         Toolbar toolbar = (Toolbar) v.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
         swipeToRefresh = (SwipeRefreshLayout) v.findViewById(R.id.swipeContainer);
-
         layoutCards = (LinearLayout) v.findViewById(R.id.layout_cards);
         lblLatestVersion = (TextView) v.findViewById(R.id.lbl_latest_version);
         lblInstallVersion = (TextView) v.findViewById(R.id.lbl_install_version);
         toolbarSubtitle = (TextView) v.findViewById(R.id.toolbar_subtitle);
         progressBar = (ProgressBar) v.findViewById(R.id.latest_progress_bar);
         fabDownloadButton = (FloatingActionButton) v.findViewById(R.id.fab);
-
 
         swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -117,24 +108,20 @@ public class MainFragment extends VisibleFragment {
         fabDownloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                makeUrl();
-                downloadNewVersion(fullUrl);
+                UtilsDownloadSpotify.downloadSpotify(getContext(), latestLink);
             }
         });
 
         fetchData();
 
-
-
         return v;
     }
-
 
     @Override
     public void onResume() {
         super.onResume();
         checkInstalledSpotifyVersion();
-        SpotifyService.setServiceAlarm(getActivity(),
+        PollService.setServiceAlarm(getActivity(),
                 QueryPreferneces.getNotification(getActivity()));
     }
 
@@ -154,7 +141,6 @@ public class MainFragment extends VisibleFragment {
 
         return super.onOptionsItemSelected(item);
     }
-
 
     private void checkInstalledSpotifyVersion() {
         if (UtilsSpotify.isSpotifyInstalled(getActivity())) {
@@ -191,29 +177,13 @@ public class MainFragment extends VisibleFragment {
             }
 
             QueryPreferneces.setLatestVersion(getActivity(), latestVersionNumber);
+            QueryPreferneces.setLatestLink(getActivity(), latestLink);
+            QueryPreferneces.setLatestVersionName(getActivity(), latestVersionName);
         }
     }
 
-    private void downloadNewVersion(String url) {
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        request.setTitle(getString(R.string.downloading_spotify));
-        request.setDescription(getString(R.string.downloading_in));
-        request.setNotificationVisibility(DownloadManager.Request
-                .VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
-                latestVersionName + ".apk");
-
-        DownloadManager manager = (DownloadManager) getActivity()
-                .getSystemService(Context.DOWNLOAD_SERVICE);
-        manager.enqueue(request);
-    }
-
-    private void makeUrl() {
-        fullUrl = latestLink.split(": ")[1];
-    }
 
     private void fetchData() {
-
         if (UtilsNetwork.isNetworkAvailable(getActivity())) {
             errorLayout(false);
 
@@ -222,7 +192,6 @@ public class MainFragment extends VisibleFragment {
             toolbarSubtitle.setVisibility(GONE);
             lblLatestVersion.setVisibility(GONE);
             progressBar.setVisibility(View.VISIBLE);
-
 
             SpotifyDogfoodApi.Factory.getInstance().getLatest().enqueue(new Callback<Spotify>() {
                 @Override
@@ -242,11 +211,9 @@ public class MainFragment extends VisibleFragment {
                     }
 
 
-
                     progressBar.setVisibility(View.GONE);
                     toolbarSubtitle.setVisibility(View.VISIBLE);
                     lblLatestVersion.setVisibility(View.VISIBLE);
-
                 }
 
                 @Override
@@ -257,14 +224,13 @@ public class MainFragment extends VisibleFragment {
                     UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
                 }
             });
+
         } else {
             errorLayout(true);
             toolbarSubtitle.setText(getString(R.string.no_internet_connection));
             Snackbar.make(swipeToRefresh, getString(R.string.no_internet_connection),
                     Snackbar.LENGTH_SHORT).show();
         }
-
-
 
     }
 
@@ -280,7 +246,6 @@ public class MainFragment extends VisibleFragment {
         }
 
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,

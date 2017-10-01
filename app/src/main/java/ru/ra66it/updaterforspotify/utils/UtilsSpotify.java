@@ -37,7 +37,6 @@ public class UtilsSpotify {
     }
 
 
-
     public static Boolean isUpdateAvailable(String installedVersion, String latestVersion) {
         int installVers;
 
@@ -52,7 +51,7 @@ public class UtilsSpotify {
         if (installVers == latestVers) {
             return false;
         } else {
-            return  true;
+            return true;
         }
 
     }

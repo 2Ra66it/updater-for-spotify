@@ -17,7 +17,7 @@ public class UtilsFAB {
         if (hide) {
             fab.setVisibility(GONE);
         } else {
-           fab.setVisibility(View.VISIBLE);
+            fab.setVisibility(View.VISIBLE);
         }
 
     }

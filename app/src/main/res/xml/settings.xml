@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory android:title="General">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="autoSwitch"
+            android:summary="@string/xml_notification_text"
+            android:title="@string/xml_enable_notification" />
 
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="autoSwitch"
-        android:summary="Checks for updates every day"
-        android:title="Check for Updates" />
+    </PreferenceCategory>
 
 
     <PreferenceCategory android:title="About">
-
-
         <Preference
             android:key="donatePref"
-            android:summary="Donate on PayPal"
-            android:title="Donate">
+            android:summary="@string/xml_donate_paypal"
+            android:title="@string/donate">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="https://www.paypal.me/2Ra66it" />
@@ -25,8 +25,8 @@
         <Preference
             android:icon="@mipmap/ic_github"
             android:key="githubPref"
-            android:summary="See project on GitHub"
-            android:title="GitHub" />
+            android:summary="@string/xml_see_on_github"
+            android:title="@string/github" />
 
     </PreferenceCategory>
 

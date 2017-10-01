@@ -12,5 +12,4 @@ public class MainActivity extends SingleFragmentActivity {
     }
 
 
-
 }
