@@ -41,6 +41,13 @@ public class PollService extends IntentService {
     public static final String NOTIFICATION = "NOTIFICATION";
 
 
+    public static final String LATEST_LINK = "latest_link";
+
+    private String latestVersion;
+    private String latestVersionName;
+    private String latestLink;
+
+
     public static Intent newIntent(Context context) {
         return new Intent(context, PollService.class);
     }
@@ -81,9 +88,7 @@ public class PollService extends IntentService {
         if (!isNetworkAvailableAndConnected()) {
             return;
         }
-        String latestVersion;
-        String latestVersionName;
-        String latestLink;
+
 
         try {
 
@@ -92,9 +97,6 @@ public class PollService extends IntentService {
                 latestVersionName = SpotifyDogfoodApi.Factory.getInstance().getLatest().execute().body().getName();
                 latestLink = SpotifyDogfoodApi.Factory.getInstance().getLatest().execute().body().getBody();
 
-                QueryPreferneces.setLatestVersion(this, latestVersion);
-                QueryPreferneces.setLatestVersionName(this, latestVersionName);
-                QueryPreferneces.setLatestLink(this, latestLink);
             } else {
                 return;
             }
@@ -119,7 +121,7 @@ public class PollService extends IntentService {
                 .setTicker(resources.getString(R.string.app_name))
                 .setSmallIcon(R.mipmap.ic_notification)
                 .setContentTitle(getString(R.string.update_available))
-                .setContentText("New version Spotify Dogfood " + QueryPreferneces.getLatestVersion(this) + " available!")
+                .setContentText("New version Spotify Dogfood " + latestVersion + " available!")
                 .setContentIntent(pi)
                 .setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_ALL)
@@ -137,6 +139,7 @@ public class PollService extends IntentService {
         Intent i = new Intent(ACTION_SHOW_NOTIFICATION);
         i.putExtra(REQUEST_CODE, requestCode);
         i.putExtra(NOTIFICATION, notification);
+        i.putExtra(LATEST_LINK, latestLink);
         sendOrderedBroadcast(i, PERM_PRIVATE, null, null, Activity.RESULT_OK, null, null);
     }
 
