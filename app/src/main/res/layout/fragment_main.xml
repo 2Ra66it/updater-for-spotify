@@ -29,22 +29,11 @@
             app:layout_scrollFlags="exitUntilCollapsed">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="48dp"
-                android:layout_marginRight="48dp"
-                android:text="@string/app_name"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/abc_text_size_display_1_material"
-                app:layout_collapseMode="parallax" />
-
-            <TextView
                 android:id="@+id/toolbar_subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginBottom="35dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="48dp"
                 android:layout_marginLeft="48dp"
                 android:layout_marginRight="48dp"
                 android:textColor="@android:color/white"
@@ -57,6 +46,18 @@
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="48dp"
+                android:layout_marginRight="48dp"
+                android:text="@string/app_name"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/abc_text_size_display_1_material"
+                app:layout_collapseMode="parallax" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
