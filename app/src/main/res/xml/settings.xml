@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="General">
+    <PreferenceCategory android:title="@string/general">
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="autoSwitch"
@@ -11,14 +11,14 @@
     </PreferenceCategory>
 
 
-    <PreferenceCategory android:title="About">
+    <PreferenceCategory android:title="@string/about">
         <Preference
             android:key="donatePref"
             android:summary="@string/xml_donate_paypal"
             android:title="@string/donate">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="https://www.paypal.me/2Ra66it" />
+                android:data="@string/xml_paypal_link" />
         </Preference>
 
 
@@ -26,7 +26,12 @@
             android:icon="@mipmap/ic_github"
             android:key="githubPref"
             android:summary="@string/xml_see_on_github"
-            android:title="@string/github" />
+            android:title="@string/github">
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/xml_github_link"/>
+        </Preference>
 
     </PreferenceCategory>
 

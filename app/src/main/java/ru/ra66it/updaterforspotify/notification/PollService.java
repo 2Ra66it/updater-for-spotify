@@ -105,10 +105,12 @@ public class PollService extends IntentService {
         }
 
 
+        //Launch app
         Resources resources = getResources();
         Intent i = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
 
+        //Download spotify
         Intent intentDownload = new Intent(this, NotificationDownloadService.class);
         intentDownload.setAction(NotificationDownloadService.ACTION_DOWNLOAD);
         PendingIntent piDownload = PendingIntent.getService(this, 0, intentDownload, PendingIntent.FLAG_UPDATE_CURRENT);
