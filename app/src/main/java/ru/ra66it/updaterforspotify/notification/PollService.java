@@ -40,7 +40,6 @@ public class PollService extends IntentService {
     public static final String REQUEST_CODE = "REQUEST_CODE";
     public static final String NOTIFICATION = "NOTIFICATION";
 
-
     public static final String LATEST_LINK = "latest_link";
     public static final String LATEST_VERSION = "latest_version";
     public static final String LATEST_VERSION_NAME = "latest_version_name";
@@ -69,7 +68,6 @@ public class PollService extends IntentService {
             pi.cancel();
         }
 
-
         QueryPreferneces.setAlarmOn(context, isOn);
     }
 
@@ -92,7 +90,6 @@ public class PollService extends IntentService {
             return;
         }
 
-
         try {
             if (SpotifyDogfoodApi.Factory.getInstance().getLatest().execute().body().getTagName() != null) {
                 latestVersion = SpotifyDogfoodApi.Factory.getInstance().getLatest().execute().body().getTagName();
@@ -108,6 +105,7 @@ public class PollService extends IntentService {
                 Intent intentDownload = new Intent(this, NotificationDownloadService.class);
                 intentDownload.setAction(NotificationDownloadService.ACTION_DOWNLOAD);
                 intentDownload.putExtra(LATEST_LINK, latestLink);
+                intentDownload.putExtra(LATEST_VERSION_NAME, latestVersionName);
                 PendingIntent piDownload = PendingIntent.getService(this, 0, intentDownload, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
@@ -124,7 +122,6 @@ public class PollService extends IntentService {
                         .addAction(R.drawable.ic_file_download_black_24dp, "INSTALL NOW", piDownload)
                         .build();
 
-
                 showBackgroundNotification(0, notification, latestVersion);
             } else {
                 return;
@@ -134,10 +131,6 @@ public class PollService extends IntentService {
             e.printStackTrace();
             return;
         }
-
-
-
-
 
     }
 

@@ -14,7 +14,7 @@ import ru.ra66it.updaterforspotify.R;
 
 public class UtilsDownloadSpotify {
 
-    public static void downloadSpotify(Context context, String url) {
+    public static void downloadSpotify(Context context, String url, String name) {
         //Remove unnecessary characters in the link
         String fullUrl = url.split(": ")[1];
 
@@ -24,7 +24,7 @@ public class UtilsDownloadSpotify {
         request.setNotificationVisibility(DownloadManager.Request
                 .VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
-                QueryPreferneces.getLatestVersionName(context) + ".apk");
+                name + ".apk");
 
         DownloadManager manager = (DownloadManager) context
                 .getSystemService(Context.DOWNLOAD_SERVICE);

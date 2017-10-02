@@ -108,7 +108,7 @@ public class MainFragment extends VisibleFragment {
         fabDownloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UtilsDownloadSpotify.downloadSpotify(getContext(), latestLink);
+                UtilsDownloadSpotify.downloadSpotify(getContext(), latestLink, latestVersionName);
             }
         });
 
@@ -176,9 +176,6 @@ public class MainFragment extends VisibleFragment {
                 toolbarSubtitle.setText(getString(R.string.have_last_version));
             }
 
-            QueryPreferneces.setLatestVersion(getActivity(), latestVersionNumber);
-            QueryPreferneces.setLatestLink(getActivity(), latestLink);
-            QueryPreferneces.setLatestVersionName(getActivity(), latestVersionName);
         }
     }
 
