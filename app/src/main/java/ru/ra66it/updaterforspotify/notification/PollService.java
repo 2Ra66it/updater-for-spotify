@@ -42,6 +42,9 @@ public class PollService extends IntentService {
 
 
     public static final String LATEST_LINK = "latest_link";
+    public static final String LATEST_VERSION = "latest_version";
+    public static final String LATEST_VERSION_NAME = "latest_version_name";
+
 
     private String latestVersion;
     private String latestVersionName;
@@ -91,12 +94,38 @@ public class PollService extends IntentService {
 
 
         try {
-
             if (SpotifyDogfoodApi.Factory.getInstance().getLatest().execute().body().getTagName() != null) {
                 latestVersion = SpotifyDogfoodApi.Factory.getInstance().getLatest().execute().body().getTagName();
                 latestVersionName = SpotifyDogfoodApi.Factory.getInstance().getLatest().execute().body().getName();
                 latestLink = SpotifyDogfoodApi.Factory.getInstance().getLatest().execute().body().getBody();
 
+                //Launch app
+                Resources resources = getResources();
+                Intent i = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
+
+                //Download spotify
+                Intent intentDownload = new Intent(this, NotificationDownloadService.class);
+                intentDownload.setAction(NotificationDownloadService.ACTION_DOWNLOAD);
+                intentDownload.putExtra(LATEST_LINK, latestLink);
+                PendingIntent piDownload = PendingIntent.getService(this, 0, intentDownload, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+                Notification notification = new NotificationCompat.Builder(this)
+                        .setTicker(resources.getString(R.string.app_name))
+                        .setSmallIcon(R.mipmap.ic_notification)
+                        .setContentTitle(getString(R.string.update_available))
+                        .setContentText("New version Spotify Dogfood " + latestVersion + " available!")
+                        .setContentIntent(pi)
+                        .setAutoCancel(true)
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setPriority(Notification.PRIORITY_HIGH)
+                        .setColor(getResources().getColor(R.color.colorAccent))
+                        .addAction(R.drawable.ic_file_download_black_24dp, "INSTALL NOW", piDownload)
+                        .build();
+
+
+                showBackgroundNotification(0, notification, latestVersion);
             } else {
                 return;
             }
@@ -107,39 +136,16 @@ public class PollService extends IntentService {
         }
 
 
-        //Launch app
-        Resources resources = getResources();
-        Intent i = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
-
-        //Download spotify
-        Intent intentDownload = new Intent(this, NotificationDownloadService.class);
-        intentDownload.setAction(NotificationDownloadService.ACTION_DOWNLOAD);
-        PendingIntent piDownload = PendingIntent.getService(this, 0, intentDownload, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Notification notification = new NotificationCompat.Builder(this)
-                .setTicker(resources.getString(R.string.app_name))
-                .setSmallIcon(R.mipmap.ic_notification)
-                .setContentTitle(getString(R.string.update_available))
-                .setContentText("New version Spotify Dogfood " + latestVersion + " available!")
-                .setContentIntent(pi)
-                .setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setColor(getResources().getColor(R.color.colorAccent))
-                .addAction(R.drawable.ic_file_download_black_24dp, "INSTALL NOW", piDownload)
-                .build();
 
 
-        showBackgroundNotification(0, notification);
 
     }
 
-    private void showBackgroundNotification(int requestCode, Notification notification) {
+    private void showBackgroundNotification(int requestCode, Notification notification, String latestVersion) {
         Intent i = new Intent(ACTION_SHOW_NOTIFICATION);
         i.putExtra(REQUEST_CODE, requestCode);
         i.putExtra(NOTIFICATION, notification);
-        i.putExtra(LATEST_LINK, latestLink);
+        i.putExtra(LATEST_VERSION, latestVersion);
         sendOrderedBroadcast(i, PERM_PRIVATE, null, null, Activity.RESULT_OK, null, null);
     }
 

@@ -27,12 +27,14 @@ public class NotificationReceiver extends BroadcastReceiver {
         }
 
         int requestCode = intent.getIntExtra(PollService.REQUEST_CODE, 0);
+        String latestVersion = intent.getStringExtra(PollService.LATEST_VERSION);
+
         Notification notification = (Notification)
                 intent.getParcelableExtra(PollService.NOTIFICATION);
 
         //if update available - show notification
         if (UtilsSpotify.isUpdateAvailable(UtilsSpotify.getInstalledSpotifyVersion(context),
-                QueryPreferneces.getLatestVersion(context))) {
+                latestVersion)) {
 
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
             notificationManagerCompat.notify(requestCode, notification);

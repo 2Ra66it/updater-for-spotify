@@ -17,6 +17,7 @@ public class NotificationDownloadService extends IntentService {
     private static final String TAG = "NotificationDownloadService";
 
     public static final String ACTION_DOWNLOAD = "ACTION_DOWNLOAD";
+    public static final String LATEST_LINK = "latest_link";
 
     public NotificationDownloadService() {
         super(TAG);
@@ -25,12 +26,11 @@ public class NotificationDownloadService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         final String action = intent.getAction();
-        String link = intent.getStringExtra(PollService.LATEST_LINK);
+        final String link = intent.getStringExtra(LATEST_LINK);
         if (ACTION_DOWNLOAD.equals(action)) {
             //Hide Notification
             NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
             manager.cancel(0);
-
             UtilsDownloadSpotify.downloadSpotify(this, link);
         }
 
