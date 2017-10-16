@@ -12,6 +12,8 @@
     <string name="no_internet_connection">Connection error, try again later</string>
     <string name="now">now!</string>
     <string name="toast_choose_version">Please select the version you require</string>
+    <string name="to_download_spotify_df_remove">To download Spotify Dogfood, you need to remove Spotify (origin)</string>
+    <string name="to_download_spotify_remove">To download Spotify, you need to remove Spotify Dogfood</string>
 
     <string name="spotify_dogfood">Spotify Dogfood</string>
     <string name="spotify">Spotify</string>

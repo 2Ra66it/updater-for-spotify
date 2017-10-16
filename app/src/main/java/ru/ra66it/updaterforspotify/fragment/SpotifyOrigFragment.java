@@ -95,7 +95,7 @@ public class SpotifyOrigFragment extends VisibleFragment {
             public void onClick(View view) {
                 if (UtilsSpotify.isdDogFoodInstalled(getContext())) {
                     new AlertDialog.Builder(getActivity())
-                            .setMessage("To download Spotify, you need to remove Spotify Dogfood")
+                            .setMessage(R.string.to_download_spotify_remove)
                             .setPositiveButton(android.R.string.ok, null)
                             .create()
                             .show();
