@@ -29,10 +29,12 @@ public class NotificationDownloadService extends IntentService {
         final String action = intent.getAction();
         final String link = intent.getStringExtra(LATEST_LINK);
         final String name = intent.getStringExtra(LATEST_VERSION_NAME);
+        int  id = intent.getIntExtra("notification_id", 0);
         if (ACTION_DOWNLOAD.equals(action)) {
             //Hide Notification
-            NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-            manager.cancel(0);
+            NotificationManager manager = (NotificationManager)
+                    this.getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.cancel(id);
             UtilsDownloadSpotify.downloadSpotify(this, link, name);
         }
     }

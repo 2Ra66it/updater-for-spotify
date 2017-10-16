@@ -2,11 +2,20 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="@string/general">
+
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="autoSwitch"
-            android:summary="@string/xml_notification_text"
+            android:key="autoOrigin"
+            android:summary="@string/xml_notification_text_origin"
             android:title="@string/xml_enable_notification" />
+
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="autoDf"
+            android:summary="@string/xml_notification_text_dogfood"
+            android:title="@string/xml_enable_notification_dogfood" />
+
 
     </PreferenceCategory>
 

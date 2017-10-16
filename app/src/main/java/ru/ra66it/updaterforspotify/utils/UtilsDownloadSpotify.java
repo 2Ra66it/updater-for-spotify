@@ -19,7 +19,7 @@ public class UtilsDownloadSpotify {
         String fullUrl = url.split(": ")[1];
 
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(fullUrl));
-        request.setTitle(context.getString(R.string.downloading_spotify));
+        request.setTitle(context.getString(R.string.downloading) + " " + name);
         request.setDescription(context.getString(R.string.downloading_in));
         request.setNotificationVisibility(DownloadManager.Request
                 .VISIBILITY_VISIBLE_NOTIFY_COMPLETED);

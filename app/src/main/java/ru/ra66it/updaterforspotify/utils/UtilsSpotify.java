@@ -11,18 +11,6 @@ import ru.ra66it.updaterforspotify.BuildConfig;
 
 public class UtilsSpotify {
 
-    public static String getInstalledSpotifyVersion(Context context) {
-        String version = "";
-
-        try {
-            version = context.getPackageManager().getPackageInfo("com.spotify.music", 0).versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return version;
-    }
-
     public static Boolean isSpotifyInstalled(Context context) {
         Boolean res;
 
@@ -36,23 +24,80 @@ public class UtilsSpotify {
         return res;
     }
 
+    public static String getInstalledSpotifyVersion(Context context) {
+        String version = "";
 
-    public static Boolean isUpdateAvailable(String installedVersion, String latestVersion) {
+        try {
+            version = context.getPackageManager().getPackageInfo("com.spotify.music", 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return version;
+    }
+
+
+    public static boolean isdDogFoodInstalled(Context context) {
+
+        String version = "";
+
+        try {
+            version = context.getPackageManager().getPackageInfo("com.spotify.music", 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        String dfv = version.replaceAll("[0-9]", "").replaceAll("[.]", "").replaceAll("[-]", "");
+
+        if (dfv.equals("dogfood")) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+
+    public static Boolean isSpotifyUpdateAvailable(String installedVersion, String latestVersion) {
         int installVers;
+        String dfv;
 
         if (!installedVersion.equals("")) {
+            dfv = installedVersion.replaceAll("[0-9]", "").replaceAll("[.]", "").replaceAll("[-]", "");
+        } else {
+            return true;
+        }
+
+        if (!dfv.equals("dogfood")) {
             installVers = Integer.parseInt(installedVersion.replaceAll("[a-z]", "").replaceAll("[.]", "").replaceAll("[-]", ""));
+            int latestVers = Integer.parseInt(latestVersion.replaceAll("[.]", ""));
+
+            return installVers < latestVers;
         } else {
             return true;
         }
 
-        int latestVers = Integer.parseInt(latestVersion.replaceAll("[.]", ""));
+    }
 
-        if (installVers == latestVers) {
-            return false;
+    public static Boolean isDogfoodUpdateAvailable(String installedVersion, String latestVersion) {
+        int installVers;
+        String dfv;
+
+        if (!installedVersion.equals("")) {
+            dfv = installedVersion.replaceAll("[0-9]", "").replaceAll("[.]", "").replaceAll("[-]", "");
         } else {
             return true;
         }
+
+        if (dfv.equals("dogfood")) {
+            installVers = Integer.parseInt(installedVersion.replaceAll("[a-z]", "").replaceAll("[.]", "").replaceAll("[-]", ""));
+            int latestVers = Integer.parseInt(latestVersion.replaceAll("[.]", ""));
+
+            return installVers < latestVers;
+        } else {
+            return true;
+        }
+
 
     }
 }

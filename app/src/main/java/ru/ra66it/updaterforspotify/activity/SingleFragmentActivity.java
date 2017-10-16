@@ -1,10 +1,12 @@
-package ru.ra66it.updaterforspotify;
+package ru.ra66it.updaterforspotify.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+
+import ru.ra66it.updaterforspotify.R;
 
 /**
  * Created by 2Rabbit on 24.08.2017.

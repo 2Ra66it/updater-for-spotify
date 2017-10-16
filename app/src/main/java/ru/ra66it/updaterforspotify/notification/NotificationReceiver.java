@@ -32,13 +32,24 @@ public class NotificationReceiver extends BroadcastReceiver {
         Notification notification = (Notification)
                 intent.getParcelableExtra(PollService.NOTIFICATION);
 
-        //if update available - show notification
-        if (UtilsSpotify.isUpdateAvailable(UtilsSpotify.getInstalledSpotifyVersion(context),
-                latestVersion)) {
 
-            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+        if(requestCode == 0 && UtilsSpotify.isDogfoodUpdateAvailable(
+                UtilsSpotify.getInstalledSpotifyVersion(context), latestVersion)) {
+
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat
+                    .from(context);
             notificationManagerCompat.notify(requestCode, notification);
         }
+
+
+        if(requestCode == 1 && UtilsSpotify.isSpotifyUpdateAvailable(
+                UtilsSpotify.getInstalledSpotifyVersion(context), latestVersion)) {
+
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat
+                    .from(context);
+            notificationManagerCompat.notify(requestCode, notification);
+        }
+
 
     }
 }

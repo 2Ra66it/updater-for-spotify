@@ -4,6 +4,8 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 import ru.ra66it.updaterforspotify.model.Spotify;
 
 /**
@@ -13,11 +15,15 @@ import ru.ra66it.updaterforspotify.model.Spotify;
 public interface SpotifyDogfoodApi {
 
     String BASE_URL = "https://api.github.com/";
-    String API_KEY = "repos/sergiocastell/spotify-dogfood/releases/latest";
+    String API_DOGFOOD = "repos/sergiocastell/spotify-dogfood/releases/latest";
+    String API_ORIGIN = "repos/spotify-dogfood/spotify-bin/releases/latest";
 
 
-    @GET(API_KEY)
-    Call<Spotify> getLatest();
+    @GET(API_DOGFOOD)
+    Call<Spotify> getLatestDogFood();
+
+    @GET(API_ORIGIN)
+    Call<Spotify> getLatestOrigin();
 
 
     class Factory {

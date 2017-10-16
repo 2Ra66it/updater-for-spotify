@@ -5,21 +5,52 @@
     <string name="install_version">Install Version</string>
     <string name="latest_version_dogfood">Latest Version Dogfood</string>
     <string name="install_new">Install new version:</string>
+    <string name="install">Install</string>
     <string name="have_last_version">You have the latest version available</string>
     <string name="spotify_not_installed">Spotify Not Installed</string>
-    <string name="downloading_spotify">Downloading Spotify Dogfood</string>
-    <string name="downloading_in">Downloaded in /Download/</string>
     <string name="error">Error, something went wrong :(</string>
-    <string name="no_internet_connection">No Internet Connection</string>
+    <string name="no_internet_connection">Connection error, try again later</string>
+    <string name="now">now!</string>
+    <string name="toast_choose_version">Please select the version you require</string>
+
+    <string name="spotify_dogfood">Spotify Dogfood</string>
+    <string name="spotify">Spotify</string>
+    <string name="accept">Accept</string>
+
+    <!--                Notification                  -->
+    <string name="update_available">Update Available</string>
+    <string name="new_version_spotify_dogfood">New version Spotify Dogfood</string>
+    <string name="new_version_spotify">New version Spotify</string>
+    <string name="available">available!</string>
+    <string name="install_now">Install Now</string>
+    <string name="downloading_in">in /Download/</string>
+    <string name="downloading">Downloading</string>
+
+    <!--                Settings                  -->
+    <string name="general">General</string>
+    <string name="about">About</string>
     <string name="github">GitHub</string>
     <string name="donate">Donate</string>
-    <string name="update_available">Update Available</string>
-    <string name="xml_enable_notification">Enable Notifications</string>
-    <string name="xml_notification_text">Checks and notifies the availability of a new version every day</string>
     <string name="xml_see_on_github">See project on GitHub</string>
     <string name="xml_donate_paypal">Donate on PayPal</string>
     <string name="xml_paypal_link">https://www.paypal.me/2Ra66it</string>
     <string name="xml_github_link">https://github.com/spotify-dogfood</string>
-    <string name="general">General</string>
-    <string name="about">About</string>
+    <string name="latest_version_original">Latest Version Spotify</string>
+    <string name="xml_enable_notification_dogfood">Enable Notifications Spotify DogFood</string>
+    <string name="xml_enable_notification">Enable Notifications Spotify</string>
+    <string name="xml_notification_text_dogfood">You will receive a notification of a new version Spotify DogFood</string>
+    <string name="xml_notification_text_origin">You will receive a notification of a new version Spotify</string>
+
+
+    <string name="dogfood_info">
+        <item>*What does Spotify Dogfood give?\n</item>
+        <item>-Unlocking Spotify Connect\n</item>
+        <item>-Adds some convenient buttons from the Tablet version\n</item>
+        <item>-Blocks visual and audio advertising\n</item>
+        <item>-Adds the ability to rewind a track\n</item>
+        <item>-Unlimited skips of tracks\n</item>
+        <item>-Play any track from the playlist\n</item>
+    </string>
+
+
 </resources>

@@ -1,11 +1,11 @@
-package ru.ra66it.updaterforspotify;
+package ru.ra66it.updaterforspotify.activity;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import ru.ra66it.updaterforspotify.fragment.SettingsFragment;
 
 /**
  * Created by 2Rabbit on 25.09.2017.

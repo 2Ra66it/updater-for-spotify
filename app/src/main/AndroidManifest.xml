@@ -18,8 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
-            android:theme="@style/MainTheme"
+            android:name=".activity.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,17 +26,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activity.SettingsActivity"
             android:label="@string/action_settings"
             android:theme="@style/PreferencesTheme"/>
 
         <service android:name=".notification.PollService" />
+
         <receiver android:name=".notification.StartupReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
         <receiver
             android:name=".notification.NotificationReceiver"
             android:exported="false">
@@ -49,6 +51,17 @@
         <service
             android:name=".notification.NotificationDownloadService"
             android:exported="false"/>
+
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data
+                android:host="openupdater"
+                android:scheme="spotifydogfood" />
+        </intent-filter>
 
     </application>
 
