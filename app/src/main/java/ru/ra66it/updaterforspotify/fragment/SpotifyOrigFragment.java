@@ -37,7 +37,6 @@ public class SpotifyOrigFragment extends VisibleFragment {
 
     private static final String TAG = SpotifyOrigFragment.class.getSimpleName();
 
-
     private TextView lblLatestVersion;
     private TextView lblInstallVersion;
     private TextView lblInfo;
