@@ -10,4 +10,4 @@ Updater For Spotify allows you to download the latest version of Spotify Dogfood
 * [Download](https://github.com/spotify-dogfood/updater-for-spotify/raw/master/app/app-release.apk)
 
 
-<img src="https://github.com/spotify-dogfood/updater-for-spotify/blob/master/screenshots/Screenshot_1506939786.png" width="270"> <img src="https://github.com/spotify-dogfood/updater-for-spotify/blob/master/screenshots/Screenshot_1506939797.png" width="270"> <img src="https://github.com/spotify-dogfood/updater-for-spotify/blob/master/screenshots/Screenshot_1506939807.png" width="270">
+<img src="https://github.com/spotify-dogfood/updater-for-spotify/blob/master/screenshots/Screenshot_1506939786.png" width="270"> <img src="https://github.com/spotify-dogfood/updater-for-spotify/blob/master/screenshots/Screenshot_1506939797.png" width="270"> <img src="https://github.com/spotify-dogfood/updater-for-spotify/blob/master/screenshots/Screenshot_1508176076.png" width="270">
