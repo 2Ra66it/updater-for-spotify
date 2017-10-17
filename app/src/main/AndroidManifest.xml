@@ -25,6 +25,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="openupdater"
+                    android:scheme="spotifydogfood" />
+            </intent-filter>
         </activity>
 
         <activity
@@ -52,16 +62,6 @@
             android:name=".notification.NotificationDownloadService"
             android:exported="false"/>
 
-        <intent-filter>
-            <action android:name="android.intent.action.VIEW" />
-
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
-
-            <data
-                android:host="openupdater"
-                android:scheme="spotifydogfood" />
-        </intent-filter>
 
     </application>
 
