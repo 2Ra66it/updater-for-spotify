@@ -62,7 +62,6 @@
             android:name=".notification.NotificationDownloadService"
             android:exported="false"/>
 
-
     </application>
 
 </manifest>
