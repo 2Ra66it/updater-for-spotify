@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,9 +38,9 @@ public class SpotifyOrigFragment extends VisibleFragment {
 
     private static final String TAG = SpotifyOrigFragment.class.getSimpleName();
 
+    private CardView cvLatestOrig;
     private TextView lblLatestVersion;
     private TextView lblInstallVersion;
-    private TextView lblInfo;
     private ProgressBar progressBar;
     private SwipeRefreshLayout swipeToRefresh;
     private FloatingActionButton fabDownloadButton;
@@ -75,9 +76,9 @@ public class SpotifyOrigFragment extends VisibleFragment {
 
         swipeToRefresh = (SwipeRefreshLayout) v.findViewById(R.id.swipeContainer_orig);
         layoutCards = (LinearLayout) v.findViewById(R.id.layout_cards_orig);
+        cvLatestOrig = (CardView) v.findViewById(R.id.cv_latest_orig);
         lblLatestVersion = (TextView) v.findViewById(R.id.lbl_latest_version_orig);
         lblInstallVersion = (TextView) v.findViewById(R.id.lbl_install_version_orig);
-        lblInfo = (TextView) v.findViewById(R.id.lbl_info_orig);
         progressBar = (ProgressBar) v.findViewById(R.id.latest_progress_bar_orig);
         fabDownloadButton = (FloatingActionButton) v.findViewById(R.id.fab_orig);
 
@@ -144,20 +145,22 @@ public class SpotifyOrigFragment extends VisibleFragment {
                     UtilsSpotify.isSpotifyUpdateAvailable(installVersion, latestVersionNumber)) {
                 UtilsFAB.hideOrShowFAB(fabDownloadButton, false);
                 //Install new version
-                lblInfo.setText(getString(R.string.install_new)+ " " + latestVersionName);
+                cvLatestOrig.setVisibility(View.VISIBLE);
 
             } else if (!UtilsSpotify.isSpotifyInstalled(getActivity())) {
                 UtilsFAB.hideOrShowFAB(fabDownloadButton, false);
                 //Install spotify now
-                lblInfo.setText(getString(R.string.install)+ " " + latestVersionName + " " + getString(R.string.now));
+                cvLatestOrig.setVisibility(View.VISIBLE);
 
             } else if (UtilsSpotify.isdDogFoodInstalled(getActivity())){
                 UtilsFAB.hideOrShowFAB(fabDownloadButton, false);
+                cvLatestOrig.setVisibility(View.VISIBLE);
 
             } else {
                 //have latest version
                 UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
-                lblInfo.setText(getString(R.string.have_last_version));
+                cvLatestOrig.setVisibility(View.GONE);
+                lblInstallVersion.setText(getString(R.string.up_to_date));
 
             }
 

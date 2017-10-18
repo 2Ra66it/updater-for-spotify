@@ -2,18 +2,20 @@
     <string name="app_name">Updater for Spotify</string>
     <string name="action_settings">Settings</string>
     <string name="settings_category_preferences">Preferences</string>
-    <string name="install_version">Install Version</string>
-    <string name="latest_version_dogfood">Latest Version Dogfood</string>
+    <string name="installed_version">Installed Version</string>
+    <string name="latest_version_dogfood">Latest Version of Dogfood</string>
     <string name="install_new">Install new version:</string>
     <string name="install">Install</string>
     <string name="have_last_version">You have the latest version available</string>
-    <string name="spotify_not_installed">Spotify Not Installed</string>
+    <string name="spotify_not_installed">Spotify is not Installed</string>
+    <string name="dogfood_not_installed">Doogfood is not Installed</string>
     <string name="error">Error, something went wrong :(</string>
     <string name="no_internet_connection">Connection error, try again later</string>
     <string name="now">now!</string>
     <string name="toast_choose_version">Please select the version you require</string>
     <string name="to_download_spotify_df_remove">To download Spotify Dogfood, you need to remove Spotify (origin)</string>
     <string name="to_download_spotify_remove">To download Spotify, you need to remove Spotify Dogfood</string>
+    <string name="up_to_date">Latest version is installed</string>
 
     <string name="spotify_dogfood">Spotify Dogfood</string>
     <string name="spotify">Spotify</string>
@@ -21,8 +23,8 @@
 
     <!--                Notification                  -->
     <string name="update_available">Update Available</string>
-    <string name="new_version_spotify_dogfood">New version Spotify Dogfood</string>
-    <string name="new_version_spotify">New version Spotify</string>
+    <string name="new_version_spotify_dogfood">New version of Spotify Dogfood</string>
+    <string name="new_version_spotify">New version of Spotify</string>
     <string name="available">available!</string>
     <string name="install_now">Install Now</string>
     <string name="downloading_in">in /Download/</string>
@@ -37,11 +39,11 @@
     <string name="xml_donate_paypal">Donate on PayPal</string>
     <string name="xml_paypal_link">https://www.paypal.me/2Ra66it</string>
     <string name="xml_github_link">https://github.com/spotify-dogfood</string>
-    <string name="latest_version_original">Latest Version Spotify</string>
-    <string name="xml_enable_notification_dogfood">Enable Notifications Spotify DogFood</string>
-    <string name="xml_enable_notification">Enable Notifications Spotify</string>
-    <string name="xml_notification_text_dogfood">You will receive a notification of a new version Spotify DogFood</string>
-    <string name="xml_notification_text_origin">You will receive a notification of a new version Spotify</string>
+    <string name="latest_version_original">Latest Version of Spotify</string>
+    <string name="xml_enable_notification_dogfood">Enable Notifications for Spotify DogFood</string>
+    <string name="xml_enable_notification">Enable Notifications for Spotify</string>
+    <string name="xml_notification_text_dogfood">You will receive a notification for every new version of Spotify DogFood</string>
+    <string name="xml_notification_text_origin">You will receive a notification for every new version of Spotify</string>
 
 
     <string name="dogfood_info">
