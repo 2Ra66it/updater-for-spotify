@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.view.ContextThemeWrapper;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,9 +39,9 @@ public class SpotifyDfFragment extends VisibleFragment {
 
     private static final String TAG = SpotifyDfFragment.class.getSimpleName();
 
+    private CardView cvLatestDf;
     private TextView lblLatestVersion;
     private TextView lblInstallVersion;
-    private TextView lblInfo;
     private ProgressBar progressBar;
     private SwipeRefreshLayout swipeToRefresh;
     private FloatingActionButton fabDownloadButton;
@@ -76,9 +77,9 @@ public class SpotifyDfFragment extends VisibleFragment {
 
         swipeToRefresh = (SwipeRefreshLayout) v.findViewById(R.id.swipeContainer);
         layoutCards = (LinearLayout) v.findViewById(R.id.layout_cards);
+        cvLatestDf = (CardView) v.findViewById(R.id.cv_latest_df);
         lblLatestVersion = (TextView) v.findViewById(R.id.lbl_latest_version);
         lblInstallVersion = (TextView) v.findViewById(R.id.lbl_install_version);
-        lblInfo = (TextView) v.findViewById(R.id.lbl_df_info);
         progressBar = (ProgressBar) v.findViewById(R.id.latest_progress_bar);
         fabDownloadButton = (FloatingActionButton) v.findViewById(R.id.fab);
 
@@ -130,7 +131,7 @@ public class SpotifyDfFragment extends VisibleFragment {
         } else {
             UtilsFAB.hideOrShowFAB(fabDownloadButton, false);
             fabDownloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
-            lblInstallVersion.setText(getString(R.string.spotify_not_installed));
+            lblInstallVersion.setText(getString(R.string.dogfood_not_installed));
             if (hasError) {
                 UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
             }
@@ -145,20 +146,22 @@ public class SpotifyDfFragment extends VisibleFragment {
                     UtilsSpotify.isDogfoodUpdateAvailable(installVersion, latestVersionNumber)) {
                 UtilsFAB.hideOrShowFAB(fabDownloadButton, false);
                // Install new version
-                lblInfo.setText(getString(R.string.install_new)+ " " + latestVersionName);
+                cvLatestDf.setVisibility(View.VISIBLE);
 
             } else if (!UtilsSpotify.isSpotifyInstalled(getActivity())) {
                 UtilsFAB.hideOrShowFAB(fabDownloadButton, false);
               // Install spotify now
-                lblInfo.setText(getString(R.string.install)+ " " + latestVersionName + " " + getString(R.string.now));
+                cvLatestDf.setVisibility(View.VISIBLE);
 
             } else if (!UtilsSpotify.isdDogFoodInstalled(getActivity())){
                 UtilsFAB.hideOrShowFAB(fabDownloadButton, false);
+                cvLatestDf.setVisibility(View.VISIBLE);
 
             } else {
                 //have latest version
                 UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
-                lblInfo.setText(getString(R.string.have_last_version));
+                cvLatestDf.setVisibility(View.GONE);
+                lblInstallVersion.setText(getString(R.string.up_to_date));
             }
 
         }
