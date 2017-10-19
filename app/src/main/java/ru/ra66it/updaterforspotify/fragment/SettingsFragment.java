@@ -6,6 +6,8 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
+import android.support.v7.app.AlertDialog;
 
 import ru.ra66it.updaterforspotify.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
@@ -18,6 +20,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     CheckBoxPreference prefEnableNotificationsDF;
     CheckBoxPreference prefEnableNotificationsOrigin;
+    SwitchPreference prefDownloadBeta;
     SharedPreferences prefs;
 
 
@@ -54,6 +57,29 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             }
         });
 
+        prefDownloadBeta = (SwitchPreference) findPreference("downloadBeta");
+        prefDownloadBeta.setChecked(QueryPreferneces.isSpotifyBeta(getActivity()));
+        prefDownloadBeta.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                if (prefDownloadBeta.isChecked()) {
+                    new AlertDialog.Builder(getActivity(), R.style.AlertTheme)
+                            .setMessage(R.string.if_have_not_beta)
+                            .setPositiveButton(android.R.string.ok, null)
+                            .create()
+                            .show();
+                } else {
+                    new AlertDialog.Builder(getActivity(), R.style.AlertTheme)
+                            .setMessage(R.string.if_have_beta)
+                            .setPositiveButton(android.R.string.ok, null)
+                            .create()
+                            .show();
+                }
+                return false;
+            }
+        });
+
+
 
 
     }
@@ -65,6 +91,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         QueryPreferneces.setNotificationOrigin(getActivity(),
                 prefEnableNotificationsOrigin.isChecked());
+
+        QueryPreferneces.setSpotifyBeta(getActivity(),
+                prefDownloadBeta.isChecked());
     }
 
 

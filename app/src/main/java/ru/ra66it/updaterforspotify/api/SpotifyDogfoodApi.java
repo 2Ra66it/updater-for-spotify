@@ -17,6 +17,7 @@ public interface SpotifyDogfoodApi {
     String BASE_URL = "https://api.github.com/";
     String API_DOGFOOD = "repos/sergiocastell/spotify-dogfood/releases/latest";
     String API_ORIGIN = "repos/spotify-dogfood/spotify-bin/releases/latest";
+    String API_ORIGIN_BETA = "repos/spotify-dogfood/spotify-beta-bin/releases/latest";
 
 
     @GET(API_DOGFOOD)
@@ -24,6 +25,9 @@ public interface SpotifyDogfoodApi {
 
     @GET(API_ORIGIN)
     Call<Spotify> getLatestOrigin();
+
+    @GET(API_ORIGIN_BETA)
+    Call<Spotify> getLatestOriginBeta();
 
 
     class Factory {

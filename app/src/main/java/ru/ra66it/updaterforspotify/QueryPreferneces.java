@@ -12,6 +12,7 @@ public class QueryPreferneces {
     private static final String PREF_NOTIFICATION_DF = "notification_df";
     private static final String PREF_NOTIFICATION_ORIGIN = "notification_origin";
     private static final String PREF_IS_ALARM_ON = "isAlarmOn";
+    private static final String PREF_IS_BETA = "isBeta";
     private static final String PREF_IS_FIRST_LAUNCH = "isFirstLaunch";
 
 
@@ -62,6 +63,18 @@ public class QueryPreferneces {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putBoolean(PREF_IS_FIRST_LAUNCH, isOn)
+                .apply();
+    }
+
+    public static boolean isSpotifyBeta(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(PREF_IS_BETA, true);
+    }
+
+    public static void setSpotifyBeta(Context context, boolean isOn) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(PREF_IS_BETA, isOn)
                 .apply();
     }
 

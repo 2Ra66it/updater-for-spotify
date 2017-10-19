@@ -86,6 +86,8 @@ public class ChooseNotificationDialog extends DialogFragment {
                     return;
                 }
 
+                QueryPreferneces.setFirstLaunch(getActivity(), false);
+
             }
         });
 

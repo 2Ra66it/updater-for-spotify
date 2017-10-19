@@ -44,17 +44,10 @@
     <string name="xml_enable_notification">Enable Notifications for Spotify</string>
     <string name="xml_notification_text_dogfood">You will receive a notification for every new version of Spotify DogFood</string>
     <string name="xml_notification_text_origin">You will receive a notification for every new version of Spotify</string>
-
-
-    <string name="dogfood_info">
-        <item>*What does Spotify Dogfood give?\n</item>
-        <item>-Unlocking Spotify Connect\n</item>
-        <item>-Adds some convenient buttons from the Tablet version\n</item>
-        <item>-Blocks visual and audio advertising\n</item>
-        <item>-Adds the ability to rewind a track\n</item>
-        <item>-Unlimited skips of tracks\n</item>
-        <item>-Play any track from the playlist\n</item>
-    </string>
+    <string name="xml_download_beta_title">Download Spotify Beta</string>
+    <string name="xml_download_beta_text">Download the latest version of Spotify Beta</string>
+    <string name="if_have_not_beta">If you have installed Spotify is not beta, please delete it!</string>
+    <string name="if_have_beta">If you have installed Spotify Beta, please delete it!</string>
 
 
 </resources>

@@ -176,35 +176,71 @@ public class SpotifyOrigFragment extends VisibleFragment {
             lblLatestVersion.setVisibility(GONE);
             progressBar.setVisibility(View.VISIBLE);
 
-            SpotifyDogfoodApi.Factory.getInstance().getLatestOrigin().enqueue(new Callback<Spotify>() {
-                @Override
-                public void onResponse(Call<Spotify> call, Response<Spotify> response) {
+            if (QueryPreferneces.isSpotifyBeta(getActivity())) {
+                //Spotify Beta
+                SpotifyDogfoodApi.Factory.getInstance().getLatestOriginBeta().enqueue(new Callback<Spotify>() {
+                    @Override
+                    public void onResponse(Call<Spotify> call, Response<Spotify> response) {
 
-                    try {
-                        latestLink = response.body().getBody();
-                        latestVersionNumber = response.body().getTagName();
-                        latestVersionName = response.body().getName();
-                        fillData();
+                        try {
+                            latestLink = response.body().getBody();
+                            latestVersionNumber = response.body().getTagName();
+                            latestVersionName = response.body().getName();
+                            fillData();
 
-                    } catch (NullPointerException e) {
+                        } catch (NullPointerException e) {
+                            errorLayout(true);
+                            Snackbar.make(swipeToRefresh, getString(R.string.error),
+                                    Snackbar.LENGTH_SHORT).show();
+                        }
+
+
+                        progressBar.setVisibility(View.GONE);
+                        lblLatestVersion.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onFailure(Call<Spotify> call, Throwable t) {
                         errorLayout(true);
                         Snackbar.make(swipeToRefresh, getString(R.string.error),
                                 Snackbar.LENGTH_SHORT).show();
+                        UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
+                    }
+                });
+            } else {
+                //Spotify Stable
+                SpotifyDogfoodApi.Factory.getInstance().getLatestOrigin().enqueue(new Callback<Spotify>() {
+                    @Override
+                    public void onResponse(Call<Spotify> call, Response<Spotify> response) {
+
+                        try {
+                            latestLink = response.body().getBody();
+                            latestVersionNumber = response.body().getTagName();
+                            latestVersionName = response.body().getName();
+                            fillData();
+
+                        } catch (NullPointerException e) {
+                            errorLayout(true);
+                            Snackbar.make(swipeToRefresh, getString(R.string.error),
+                                    Snackbar.LENGTH_SHORT).show();
+                        }
+
+
+                        progressBar.setVisibility(View.GONE);
+                        lblLatestVersion.setVisibility(View.VISIBLE);
                     }
 
+                    @Override
+                    public void onFailure(Call<Spotify> call, Throwable t) {
+                        errorLayout(true);
+                        Snackbar.make(swipeToRefresh, getString(R.string.error),
+                                Snackbar.LENGTH_SHORT).show();
+                        UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
+                    }
+                });
+            }
 
-                    progressBar.setVisibility(View.GONE);
-                    lblLatestVersion.setVisibility(View.VISIBLE);
-                }
 
-                @Override
-                public void onFailure(Call<Spotify> call, Throwable t) {
-                    errorLayout(true);
-                    Snackbar.make(swipeToRefresh, getString(R.string.error),
-                            Snackbar.LENGTH_SHORT).show();
-                    UtilsFAB.hideOrShowFAB(fabDownloadButton, true);
-                }
-            });
 
         } else {
             errorLayout(true);

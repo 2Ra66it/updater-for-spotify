@@ -100,7 +100,12 @@ public class PollService extends IntentService {
         }
 
         if (QueryPreferneces.getNotificationOrigin(this)) {
-            notificationsSpotifyOrig();
+            if (QueryPreferneces.isSpotifyBeta(this)) {
+                notificationsSpotifyOrigBeta();
+            } else {
+                notificationsSpotifyOrig();
+            }
+
         }
 
     }
@@ -212,6 +217,58 @@ public class PollService extends IntentService {
         }
     }
 
+    private void notificationsSpotifyOrigBeta() {
+        try {
+            if (SpotifyDogfoodApi.Factory.getInstance().getLatestOriginBeta()
+                    .execute().body().getTagName() != null) {
+                latestVersion = SpotifyDogfoodApi.Factory.getInstance().getLatestOriginBeta()
+                        .execute().body().getTagName();
+                latestVersionName = SpotifyDogfoodApi.Factory.getInstance().getLatestOriginBeta()
+                        .execute().body().getName();
+                latestLink = SpotifyDogfoodApi.Factory.getInstance().getLatestOriginBeta()
+                        .execute().body().getBody();
+
+                //Launch app
+                Resources resources = getResources();
+                Intent i = new Intent(this, MainActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
+
+                //Download spotify
+                Intent intentDownload = new Intent(this, NotificationDownloadService.class);
+                intentDownload.setAction(NotificationDownloadService.ACTION_DOWNLOAD);
+                intentDownload.putExtra(LATEST_LINK, latestLink);
+                intentDownload.putExtra(LATEST_VERSION_NAME, latestVersionName);
+                intentDownload.putExtra("notification_id", 1);
+                PendingIntent piDownload = PendingIntent.getService(this, 1, intentDownload,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+                //Notification
+                Notification notification = new NotificationCompat.Builder(this)
+                        .setTicker(resources.getString(R.string.app_name))
+                        .setSmallIcon(R.mipmap.ic_notification)
+                        .setContentTitle(getString(R.string.update_available))
+                        .setContentText(getString(R.string.new_version_spotify) + " "
+                                + latestVersion + " " + getString(R.string.available))
+                        .setContentIntent(pi)
+                        .setAutoCancel(true)
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setPriority(Notification.PRIORITY_HIGH)
+                        .setColor(getResources().getColor(R.color.colorAccent))
+                        .addAction(R.drawable.ic_file_download_black_24dp,
+                                getString(R.string.install_now), piDownload)
+                        .build();
+
+                showBackgroundNotification(1, notification, latestVersion);
+
+            } else {
+                return;
+            }
+
+        } catch (Exception e) {
+            return;
+        }
+    }
 
 
     private void showBackgroundNotification(int requestCode, Notification notification,

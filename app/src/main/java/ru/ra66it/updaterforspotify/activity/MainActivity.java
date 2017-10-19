@@ -47,14 +47,6 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(viewPager);
 
-        if (QueryPreferneces.isFirstLaunch(this)) {
-            FragmentManager manager = getSupportFragmentManager();
-            ChooseNotificationDialog dialog = new ChooseNotificationDialog();
-            dialog.setCancelable(false);
-            dialog.show(manager, "choose");
-
-            QueryPreferneces.setFirstLaunch(this, false);
-        }
 
     }
 
