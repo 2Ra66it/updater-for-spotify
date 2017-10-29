@@ -6,7 +6,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,7 +21,6 @@ import ru.ra66it.updaterforspotify.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.api.SpotifyDogfoodApi;
 import ru.ra66it.updaterforspotify.model.Spotify;
-import ru.ra66it.updaterforspotify.notification.PollService;
 import ru.ra66it.updaterforspotify.utils.UtilsDownloadSpotify;
 import ru.ra66it.updaterforspotify.utils.UtilsFAB;
 import ru.ra66it.updaterforspotify.utils.UtilsNetwork;
@@ -95,7 +92,7 @@ public class SpotifyDfFragment extends VisibleFragment {
         fabDownloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (UtilsSpotify.isSpotifyInstalled(getActivity())) {
+                if (!UtilsSpotify.isDogFoodInstalled(getActivity())) {
                     new AlertDialog.Builder(getActivity())
                             .setMessage(R.string.to_download_spotify_df_remove)
                             .setPositiveButton(android.R.string.ok, null)
@@ -106,7 +103,6 @@ public class SpotifyDfFragment extends VisibleFragment {
                 }
             }
         });
-
         fetchData();
 
         if (QueryPreferneces.isFirstLaunch(getActivity())) {
@@ -133,7 +129,7 @@ public class SpotifyDfFragment extends VisibleFragment {
         if (UtilsSpotify.isSpotifyInstalled(getActivity())) {
             installVersion = UtilsSpotify.getInstalledSpotifyVersion(getActivity());
             lblInstallVersion.setText(installVersion);
-            if (UtilsSpotify.isdDogFoodInstalled(getActivity())) {
+            if (UtilsSpotify.isDogFoodInstalled(getActivity())) {
                 fabDownloadButton.setImageResource(R.drawable.ic_autorenew_black_24dp);
             }
             fillData();
@@ -162,7 +158,7 @@ public class SpotifyDfFragment extends VisibleFragment {
               // Install spotify now
                 cvLatestDf.setVisibility(View.VISIBLE);
 
-            } else if (!UtilsSpotify.isdDogFoodInstalled(getActivity())){
+            } else if (!UtilsSpotify.isDogFoodInstalled(getActivity())){
                 UtilsFAB.hideOrShowFAB(fabDownloadButton, false);
                 cvLatestDf.setVisibility(View.VISIBLE);
 

@@ -37,7 +37,7 @@ public class UtilsSpotify {
     }
 
 
-    public static boolean isdDogFoodInstalled(Context context) {
+    public static boolean isDogFoodInstalled(Context context) {
 
         String version = "";
 
