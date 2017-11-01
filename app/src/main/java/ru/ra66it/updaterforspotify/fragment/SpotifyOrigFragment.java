@@ -1,5 +1,6 @@
 package ru.ra66it.updaterforspotify.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -91,15 +92,7 @@ public class SpotifyOrigFragment extends VisibleFragment {
         fabDownloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (UtilsSpotify.isDogFoodInstalled(getContext())) {
-                    new AlertDialog.Builder(getActivity())
-                            .setMessage(R.string.to_download_spotify_remove)
-                            .setPositiveButton(android.R.string.ok, null)
-                            .create()
-                            .show();
-                } else {
-                    UtilsDownloadSpotify.downloadSpotify(getContext(), latestLink, latestVersionName);
-                }
+                UtilsDownloadSpotify.downloadSpotify(getContext(), latestLink, latestVersionName);
             }
         });
 

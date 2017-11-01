@@ -4,6 +4,7 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
+import android.widget.Toast;
 
 import ru.ra66it.updaterforspotify.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
@@ -29,5 +30,7 @@ public class UtilsDownloadSpotify {
         DownloadManager manager = (DownloadManager) context
                 .getSystemService(Context.DOWNLOAD_SERVICE);
         manager.enqueue(request);
+
+        Toast.makeText(context, name + " is downloading", Toast.LENGTH_SHORT).show();
     }
 }
