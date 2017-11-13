@@ -7,6 +7,7 @@ import android.util.Log;
 
 import ru.ra66it.updaterforspotify.QueryPreferneces;
 
+
 /**
  * Created by 2Rabbit on 28.09.2017.
  */

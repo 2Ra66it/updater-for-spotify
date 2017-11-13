@@ -6,8 +6,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.widget.Toast;
 
-import ru.ra66it.updaterforspotify.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
+
 
 /**
  * Created by 2Rabbit on 01.10.2017.

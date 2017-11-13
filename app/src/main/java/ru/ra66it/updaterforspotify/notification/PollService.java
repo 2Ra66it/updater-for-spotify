@@ -12,19 +12,15 @@ import android.net.ConnectivityManager;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import java.util.concurrent.TimeUnit;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import ru.ra66it.updaterforspotify.activity.MainActivity;
 import ru.ra66it.updaterforspotify.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
-import ru.ra66it.updaterforspotify.api.SpotifyDogfoodApi;
-import ru.ra66it.updaterforspotify.model.Spotify;
+import ru.ra66it.updaterforspotify.rest.SpotifyApi;
+import ru.ra66it.updaterforspotify.ui.activity.MainActivity;
+
 
 /**
  * Created by 2Rabbit on 25.09.2017.
@@ -113,14 +109,14 @@ public class PollService extends IntentService {
 
     private void notificationsSpotifyDF() {
         try {
-            if (SpotifyDogfoodApi.Factory.getInstance().getLatestDogFood()
+            if (SpotifyApi.Factory.getInstance().getLatestDogFood()
                     .execute().body().getTagName() != null) {
 
-                latestVersion = SpotifyDogfoodApi.Factory.getInstance().getLatestDogFood()
+                latestVersion = SpotifyApi.Factory.getInstance().getLatestDogFood()
                         .execute().body().getTagName();
-                latestVersionName = SpotifyDogfoodApi.Factory.getInstance().getLatestDogFood()
+                latestVersionName = SpotifyApi.Factory.getInstance().getLatestDogFood()
                         .execute().body().getName();
-                latestLink = SpotifyDogfoodApi.Factory.getInstance().getLatestDogFood().execute()
+                latestLink = SpotifyApi.Factory.getInstance().getLatestDogFood().execute()
                         .body().getBody();
 
                 //Launch app
@@ -166,13 +162,13 @@ public class PollService extends IntentService {
 
     private void notificationsSpotifyOrig() {
         try {
-            if (SpotifyDogfoodApi.Factory.getInstance().getLatestOrigin()
+            if (SpotifyApi.Factory.getInstance().getLatestOrigin()
                     .execute().body().getTagName() != null) {
-                latestVersion = SpotifyDogfoodApi.Factory.getInstance().getLatestOrigin()
+                latestVersion = SpotifyApi.Factory.getInstance().getLatestOrigin()
                         .execute().body().getTagName();
-                latestVersionName = SpotifyDogfoodApi.Factory.getInstance().getLatestOrigin()
+                latestVersionName = SpotifyApi.Factory.getInstance().getLatestOrigin()
                         .execute().body().getName();
-                latestLink = SpotifyDogfoodApi.Factory.getInstance().getLatestOrigin()
+                latestLink = SpotifyApi.Factory.getInstance().getLatestOrigin()
                         .execute().body().getBody();
 
                 //Launch app
@@ -219,13 +215,13 @@ public class PollService extends IntentService {
 
     private void notificationsSpotifyOrigBeta() {
         try {
-            if (SpotifyDogfoodApi.Factory.getInstance().getLatestOriginBeta()
+            if (SpotifyApi.Factory.getInstance().getLatestOriginBeta()
                     .execute().body().getTagName() != null) {
-                latestVersion = SpotifyDogfoodApi.Factory.getInstance().getLatestOriginBeta()
+                latestVersion = SpotifyApi.Factory.getInstance().getLatestOriginBeta()
                         .execute().body().getTagName();
-                latestVersionName = SpotifyDogfoodApi.Factory.getInstance().getLatestOriginBeta()
+                latestVersionName = SpotifyApi.Factory.getInstance().getLatestOriginBeta()
                         .execute().body().getName();
-                latestLink = SpotifyDogfoodApi.Factory.getInstance().getLatestOriginBeta()
+                latestLink = SpotifyApi.Factory.getInstance().getLatestOriginBeta()
                         .execute().body().getBody();
 
                 //Launch app

@@ -1,4 +1,4 @@
-package ru.ra66it.updaterforspotify.fragment;
+package ru.ra66it.updaterforspotify.ui.fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import ru.ra66it.updaterforspotify.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
 
+
 /**
  * Created by 2Rabbit on 29.09.2017.
  */
@@ -22,6 +23,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     CheckBoxPreference prefEnableNotificationsOrigin;
     SwitchPreference prefDownloadBeta;
     SharedPreferences prefs;
+
 
 
     @Override
@@ -78,8 +80,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 return false;
             }
         });
-
-
 
 
     }

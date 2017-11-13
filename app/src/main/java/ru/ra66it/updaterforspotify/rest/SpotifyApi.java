@@ -1,45 +1,41 @@
-package ru.ra66it.updaterforspotify.api;
+package ru.ra66it.updaterforspotify.rest;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
 import ru.ra66it.updaterforspotify.model.Spotify;
+
 
 /**
  * Created by 2Rabbit on 22.09.2017.
  */
 
-public interface SpotifyDogfoodApi {
+public interface SpotifyApi {
 
     String BASE_URL = "https://api.github.com/";
-    String API_DOGFOOD = "repos/sergiocastell/spotify-dogfood/releases/latest";
-    String API_ORIGIN = "repos/spotify-dogfood/spotify-bin/releases/latest";
-    String API_ORIGIN_BETA = "repos/spotify-dogfood/spotify-beta-bin/releases/latest";
 
 
-    @GET(API_DOGFOOD)
+    @GET("repos/sergiocastell/spotify-dogfood/releases/latest")
     Call<Spotify> getLatestDogFood();
 
-    @GET(API_ORIGIN)
+    @GET("repos/spotify-dogfood/spotify-bin/releases/latest")
     Call<Spotify> getLatestOrigin();
 
-    @GET(API_ORIGIN_BETA)
+    @GET("repos/spotify-dogfood/spotify-beta-bin/releases/latest")
     Call<Spotify> getLatestOriginBeta();
 
 
     class Factory {
-        private static SpotifyDogfoodApi service;
+        private static SpotifyApi service;
 
-        public static SpotifyDogfoodApi getInstance() {
+        public static SpotifyApi getInstance() {
             if (service == null) {
                 Retrofit retrofit = new Retrofit.Builder()
                         .addConverterFactory(GsonConverterFactory.create())
                         .baseUrl(BASE_URL)
                         .build();
-                service = retrofit.create(SpotifyDogfoodApi.class);
+                service = retrofit.create(SpotifyApi.class);
                 return service;
             } else {
                 return service;

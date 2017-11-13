@@ -3,8 +3,6 @@ package ru.ra66it.updaterforspotify.utils;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
-import ru.ra66it.updaterforspotify.BuildConfig;
-
 /**
  * Created by 2Rabbit on 20.09.2017.
  */
