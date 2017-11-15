@@ -23,8 +23,7 @@
 
     <!--                Notification                  -->
     <string name="update_available">Aggiornamento disponibile</string>
-    <string name="new_version_spotify_dogfood">Nuova versione di Spotify Dogfood</string>
-    <string name="new_version_spotify">Nuova versione di Spotify</string>
+    <string name="new_version">Nuova versione di</string>
     <string name="available">disponibile!</string>
     <string name="install_now">Installa adesso</string>
     <string name="downloading_in">in /Download/</string>

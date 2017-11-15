@@ -13,14 +13,15 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.mvp.presenter.SpotifyDfPresenter;
 import ru.ra66it.updaterforspotify.mvp.view.BaseViewFragment;
+import ru.ra66it.updaterforspotify.notification.VisibleFragment;
 
 
 import static android.view.View.GONE;
@@ -29,7 +30,7 @@ import static android.view.View.GONE;
  * Created by 2Rabbit on 09.11.2017.
  */
 
-public class SpotifyDfFragment extends MvpAppCompatFragment implements BaseViewFragment {
+public class SpotifyDfFragment extends VisibleFragment implements BaseViewFragment {
 
     @InjectPresenter
     SpotifyDfPresenter mPresenter;

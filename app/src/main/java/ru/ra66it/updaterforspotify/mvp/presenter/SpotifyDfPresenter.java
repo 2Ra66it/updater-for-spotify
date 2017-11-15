@@ -2,13 +2,15 @@ package ru.ra66it.updaterforspotify.mvp.presenter;
 
 import android.content.Context;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.model.Spotify;
 import ru.ra66it.updaterforspotify.mvp.view.BaseViewFragment;
@@ -32,41 +34,45 @@ public class SpotifyDfPresenter extends MvpPresenter<BaseViewFragment> {
 
     private boolean hasError = false;
 
+
     public SpotifyDfPresenter() {
 
     }
 
+
     public void getLatestVersionDf(Context context) {
         if (UtilsNetwork.isNetworkAvailable(context)) {
 
-            errorLayout(false);
-            getViewState().showCardProgress();
-            latestVersionNumber = "0.0.0.0";
+            SpotifyApi.getInstance().getLatestDogFood()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Spotify>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            errorLayout(false);
+                            getViewState().showCardProgress();
+                            latestVersionNumber = "0.0.0.0";
+                        }
 
-            SpotifyApi.Factory.getInstance().getLatestDogFood().enqueue(new Callback<Spotify>() {
-                @Override
-                public void onResponse(Call<Spotify> call, Response<Spotify> response) {
-                    try {
-                        latestLink = response.body().getBody();
-                        latestVersionNumber = response.body().getTagName();
-                        latestVersionName = response.body().getName();
-                        fillDataDf(context);
+                        @Override
+                        public void onNext(Spotify spotify) {
+                            latestLink = spotify.getBody();
+                            latestVersionName = spotify.getName();
+                            latestVersionNumber = spotify.getTagName();
+                            fillDataDf(context);
+                        }
 
-                    } catch (NullPointerException e) {
-                        errorLayout(true);
-                        getViewState().showErrorSnackbar(R.string.error);
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                            errorLayout(true);
+                            getViewState().showErrorSnackbar(R.string.error);
+                        }
 
-
-                    getViewState().hideCardProgress();
-                }
-
-                @Override
-                public void onFailure(Call<Spotify> call, Throwable t) {
-                    errorLayout(true);
-                    getViewState().hideCardProgress();
-                }
-            });
+                        @Override
+                        public void onComplete() {
+                            getViewState().hideCardProgress();
+                        }
+                    });
 
         } else {
             errorLayout(true);

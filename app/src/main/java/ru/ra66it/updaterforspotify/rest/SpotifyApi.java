@@ -1,7 +1,9 @@
 package ru.ra66it.updaterforspotify.rest;
 
+import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import ru.ra66it.updaterforspotify.model.Spotify;
@@ -17,29 +19,28 @@ public interface SpotifyApi {
 
 
     @GET("repos/sergiocastell/spotify-dogfood/releases/latest")
-    Call<Spotify> getLatestDogFood();
+    Observable<Spotify> getLatestDogFood();
 
     @GET("repos/spotify-dogfood/spotify-bin/releases/latest")
-    Call<Spotify> getLatestOrigin();
+    Observable<Spotify> getLatestOrigin();
 
     @GET("repos/spotify-dogfood/spotify-beta-bin/releases/latest")
-    Call<Spotify> getLatestOriginBeta();
+    Observable<Spotify> getLatestOriginBeta();
 
 
-    class Factory {
-        private static SpotifyApi service;
+    public static SpotifyApi getInstance() {
+        SpotifyApi service;
+        Retrofit retrofit = new Retrofit.Builder()
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(BASE_URL)
+                .build();
+        service = retrofit.create(SpotifyApi.class);
 
-        public static SpotifyApi getInstance() {
-            if (service == null) {
-                Retrofit retrofit = new Retrofit.Builder()
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .baseUrl(BASE_URL)
-                        .build();
-                service = retrofit.create(SpotifyApi.class);
-                return service;
-            } else {
-                return service;
-            }
-        }
+        return service;
     }
+
+
+    @GET("repos/sergiocastell/spotify-dogfood/releases/latest")
+    Call<Spotify> getLatestDogFoodSync();
 }

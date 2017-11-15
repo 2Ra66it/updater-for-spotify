@@ -27,5 +27,4 @@ public class MainActivityPresenter extends MvpPresenter<MainBaseView> {
     }
 
 
-
 }

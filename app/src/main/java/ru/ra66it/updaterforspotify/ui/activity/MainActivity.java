@@ -89,6 +89,4 @@ public class MainActivity extends MvpAppCompatActivity implements MainBaseView {
     }
 
 
-
-
 }

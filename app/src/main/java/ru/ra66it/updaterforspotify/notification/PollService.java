@@ -16,8 +16,13 @@ import android.util.Log;
 
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import ru.ra66it.updaterforspotify.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
+import ru.ra66it.updaterforspotify.model.Spotify;
 import ru.ra66it.updaterforspotify.rest.SpotifyApi;
 import ru.ra66it.updaterforspotify.ui.activity.MainActivity;
 
@@ -108,167 +113,137 @@ public class PollService extends IntentService {
 
 
     private void notificationsSpotifyDF() {
-        try {
-            if (SpotifyApi.Factory.getInstance().getLatestDogFood()
-                    .execute().body().getTagName() != null) {
+        SpotifyApi.getInstance().getLatestDogFood()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Spotify>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        latestLink = null;
+                        latestVersionName = null;
+                        latestVersion = null;
+                    }
 
-                latestVersion = SpotifyApi.Factory.getInstance().getLatestDogFood()
-                        .execute().body().getTagName();
-                latestVersionName = SpotifyApi.Factory.getInstance().getLatestDogFood()
-                        .execute().body().getName();
-                latestLink = SpotifyApi.Factory.getInstance().getLatestDogFood().execute()
-                        .body().getBody();
+                    @Override
+                    public void onNext(Spotify spotify) {
+                        latestLink = spotify.getBody();
+                        latestVersionName = spotify.getName();
+                        latestVersion = spotify.getTagName();
 
-                //Launch app
-                Resources resources = getResources();
-                Intent i = new Intent(this, MainActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
+                    }
 
-                //Download spotify
-                Intent intentDownload = new Intent(this, NotificationDownloadService.class);
-                intentDownload.setAction(NotificationDownloadService.ACTION_DOWNLOAD);
-                intentDownload.putExtra(LATEST_LINK, latestLink);
-                intentDownload.putExtra(LATEST_VERSION_NAME, latestVersionName);
-                intentDownload.putExtra("notification_id", 0);
-                PendingIntent piDownload = PendingIntent.getService(this, 0, intentDownload,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
 
-                //Notification
-                Notification notification = new NotificationCompat.Builder(this)
-                        .setTicker(resources.getString(R.string.app_name))
-                        .setSmallIcon(R.mipmap.ic_notification)
-                        .setContentTitle(getString(R.string.update_available))
-                        .setContentText(getString(R.string.new_version_spotify_dogfood) + " "
-                                + latestVersion + " " + getString(R.string.available))
-                        .setContentIntent(pi)
-                        .setAutoCancel(true)
-                        .setDefaults(Notification.DEFAULT_ALL)
-                        .setPriority(Notification.PRIORITY_HIGH)
-                        .setColor(getResources().getColor(R.color.colorAccent))
-                        .addAction(R.drawable.ic_file_download_black_24dp,
-                                getString(R.string.install_now), piDownload)
-                        .build();
-
-                showBackgroundNotification(0, notification, latestVersion);
-            } else {
-                return;
-            }
-
-        } catch (Exception e) {
-            return;
-        }
+                    @Override
+                    public void onComplete() {
+                       makeNotification(0);
+                    }
+                });
     }
 
     private void notificationsSpotifyOrig() {
-        try {
-            if (SpotifyApi.Factory.getInstance().getLatestOrigin()
-                    .execute().body().getTagName() != null) {
-                latestVersion = SpotifyApi.Factory.getInstance().getLatestOrigin()
-                        .execute().body().getTagName();
-                latestVersionName = SpotifyApi.Factory.getInstance().getLatestOrigin()
-                        .execute().body().getName();
-                latestLink = SpotifyApi.Factory.getInstance().getLatestOrigin()
-                        .execute().body().getBody();
 
-                //Launch app
-                Resources resources = getResources();
-                Intent i = new Intent(this, MainActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
+        SpotifyApi.getInstance().getLatestOrigin()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Spotify>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        latestLink = null;
+                        latestVersionName = null;
+                        latestVersion = null;
+                    }
 
-                //Download spotify
-                Intent intentDownload = new Intent(this, NotificationDownloadService.class);
-                intentDownload.setAction(NotificationDownloadService.ACTION_DOWNLOAD);
-                intentDownload.putExtra(LATEST_LINK, latestLink);
-                intentDownload.putExtra(LATEST_VERSION_NAME, latestVersionName);
-                intentDownload.putExtra("notification_id", 1);
-                PendingIntent piDownload = PendingIntent.getService(this, 1, intentDownload,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
+                    @Override
+                    public void onNext(Spotify spotify) {
+                        latestLink = spotify.getBody();
+                        latestVersionName = spotify.getName();
+                        latestVersion = spotify.getTagName();
+                    }
 
-                //Notification
-                Notification notification = new NotificationCompat.Builder(this)
-                        .setTicker(resources.getString(R.string.app_name))
-                        .setSmallIcon(R.mipmap.ic_notification)
-                        .setContentTitle(getString(R.string.update_available))
-                        .setContentText(getString(R.string.new_version_spotify) + " "
-                                + latestVersion + " " + getString(R.string.available))
-                        .setContentIntent(pi)
-                        .setAutoCancel(true)
-                        .setDefaults(Notification.DEFAULT_ALL)
-                        .setPriority(Notification.PRIORITY_HIGH)
-                        .setColor(getResources().getColor(R.color.colorAccent))
-                        .addAction(R.drawable.ic_file_download_black_24dp,
-                                getString(R.string.install_now), piDownload)
-                        .build();
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
 
-                showBackgroundNotification(1, notification, latestVersion);
-
-            } else {
-                return;
-            }
-
-        } catch (Exception e) {
-            return;
-        }
+                    @Override
+                    public void onComplete() {
+                       makeNotification(1);
+                    }
+                });
     }
 
     private void notificationsSpotifyOrigBeta() {
-        try {
-            if (SpotifyApi.Factory.getInstance().getLatestOriginBeta()
-                    .execute().body().getTagName() != null) {
-                latestVersion = SpotifyApi.Factory.getInstance().getLatestOriginBeta()
-                        .execute().body().getTagName();
-                latestVersionName = SpotifyApi.Factory.getInstance().getLatestOriginBeta()
-                        .execute().body().getName();
-                latestLink = SpotifyApi.Factory.getInstance().getLatestOriginBeta()
-                        .execute().body().getBody();
+        SpotifyApi.getInstance().getLatestOriginBeta()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Spotify>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        latestLink = null;
+                        latestVersionName = null;
+                        latestVersion = null;
+                    }
 
-                //Launch app
-                Resources resources = getResources();
-                Intent i = new Intent(this, MainActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
+                    @Override
+                    public void onNext(Spotify spotify) {
+                        latestLink = spotify.getBody();
+                        latestVersionName = spotify.getName();
+                        latestVersion = spotify.getTagName();
+                    }
 
-                //Download spotify
-                Intent intentDownload = new Intent(this, NotificationDownloadService.class);
-                intentDownload.setAction(NotificationDownloadService.ACTION_DOWNLOAD);
-                intentDownload.putExtra(LATEST_LINK, latestLink);
-                intentDownload.putExtra(LATEST_VERSION_NAME, latestVersionName);
-                intentDownload.putExtra("notification_id", 1);
-                PendingIntent piDownload = PendingIntent.getService(this, 1, intentDownload,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
 
-                //Notification
-                Notification notification = new NotificationCompat.Builder(this)
-                        .setTicker(resources.getString(R.string.app_name))
-                        .setSmallIcon(R.mipmap.ic_notification)
-                        .setContentTitle(getString(R.string.update_available))
-                        .setContentText(getString(R.string.new_version_spotify) + " "
-                                + latestVersion + " " + getString(R.string.available))
-                        .setContentIntent(pi)
-                        .setAutoCancel(true)
-                        .setDefaults(Notification.DEFAULT_ALL)
-                        .setPriority(Notification.PRIORITY_HIGH)
-                        .setColor(getResources().getColor(R.color.colorAccent))
-                        .addAction(R.drawable.ic_file_download_black_24dp,
-                                getString(R.string.install_now), piDownload)
-                        .build();
+                    @Override
+                    public void onComplete() {
+                        makeNotification(1);
+                    }
+                });
+    }
 
-                showBackgroundNotification(1, notification, latestVersion);
+    private void makeNotification(int notificationId) {
+        //Launch app
+        Resources resources = getResources();
+        Intent i = new Intent(this, MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
 
-            } else {
-                return;
-            }
+        //Download spotify
+        Intent intentDownload = new Intent(this, NotificationDownloadService.class);
+        intentDownload.setAction(NotificationDownloadService.ACTION_DOWNLOAD);
+        intentDownload.putExtra(LATEST_LINK, latestLink);
+        intentDownload.putExtra(LATEST_VERSION_NAME, latestVersionName);
+        intentDownload.putExtra("notification_id", notificationId);
+        PendingIntent piDownload = PendingIntent.getService(this, notificationId, intentDownload,
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
-        } catch (Exception e) {
-            return;
-        }
+        //Notification
+        Notification notification = new NotificationCompat.Builder(this)
+                .setTicker(resources.getString(R.string.app_name))
+                .setSmallIcon(R.mipmap.ic_notification)
+                .setContentTitle(getString(R.string.update_available))
+                .setContentText(getString(R.string.new_version) + " "
+                        + latestVersionName + " " + getString(R.string.available))
+                .setContentIntent(pi)
+                .setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setColor(getResources().getColor(R.color.colorAccent))
+                .addAction(R.drawable.ic_file_download_black_24dp,
+                        getString(R.string.install_now), piDownload)
+                .build();
+
+        showBackgroundNotification(notificationId, notification, latestVersion);
     }
 
 
-    private void showBackgroundNotification(int requestCode, Notification notification,
-                                            String latestVersion) {
+    private void showBackgroundNotification(int requestCode, Notification notification, String latestVersion) {
         Intent i = new Intent(ACTION_SHOW_NOTIFICATION);
         i.putExtra(REQUEST_CODE, requestCode);
         i.putExtra(NOTIFICATION, notification);

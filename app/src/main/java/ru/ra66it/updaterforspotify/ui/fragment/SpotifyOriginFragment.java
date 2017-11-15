@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.mvp.presenter.SpotifyOriginPresenter;
 import ru.ra66it.updaterforspotify.mvp.view.BaseViewFragment;
+import ru.ra66it.updaterforspotify.notification.VisibleFragment;
 
 
 import static android.view.View.GONE;
@@ -28,7 +29,7 @@ import static android.view.View.GONE;
  * Created by 2Rabbit on 12.11.2017.
  */
 
-public class SpotifyOriginFragment extends MvpAppCompatFragment implements BaseViewFragment {
+public class SpotifyOriginFragment extends VisibleFragment implements BaseViewFragment {
 
     @InjectPresenter
     SpotifyOriginPresenter mPresenter;
