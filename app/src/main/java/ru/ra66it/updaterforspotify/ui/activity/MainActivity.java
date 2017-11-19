@@ -14,6 +14,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.ra66it.updaterforspotify.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.adapter.MyPagerAdapter;
 import ru.ra66it.updaterforspotify.mvp.presenter.MainActivityPresenter;
@@ -35,9 +36,12 @@ public class MainActivity extends MvpAppCompatActivity implements MainBaseView {
         setContentView(R.layout.activity_viewpager);
         ButterKnife.bind(this);
 
-        mPresenter.startIntro(this);
+        if (QueryPreferneces.isFirstLaunch(this)) {
+            mPresenter.startIntro();
+        } else {
+            mPresenter.initViewPager();
+        }
 
-        mPresenter.initViewPager();
     }
 
     @Override

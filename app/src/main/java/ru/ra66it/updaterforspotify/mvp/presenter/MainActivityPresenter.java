@@ -27,10 +27,8 @@ public class MainActivityPresenter extends MvpPresenter<MainBaseView> {
     }
 
 
-    public void startIntro(Context context) {
-        if (QueryPreferneces.isFirstLaunch(context)) {
-            getViewState().startIntroActivity();
-        }
+    public void startIntro() {
+        getViewState().startIntroActivity();
     }
 
     public void startNotification(Context context) {
