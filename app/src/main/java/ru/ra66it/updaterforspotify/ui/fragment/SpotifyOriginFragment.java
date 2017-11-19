@@ -67,21 +67,13 @@ public class SpotifyOriginFragment extends VisibleFragment implements BaseViewFr
         ButterKnife.bind(this, v);
 
 
-        swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeToRefresh.setRefreshing(false);
-                mPresenter.getLatestVersionSpotify(getContext());
-            }
+        swipeToRefresh.setOnRefreshListener(() -> {
+            swipeToRefresh.setRefreshing(false);
+            mPresenter.getLatestVersionSpotify(getContext());
         });
 
 
-        fabDownloadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPresenter.downloadLatestVersion(getContext());
-            }
-        });
+        fabDownloadButton.setOnClickListener(view -> mPresenter.downloadLatestVersion(getContext()));
 
         return v;
     }

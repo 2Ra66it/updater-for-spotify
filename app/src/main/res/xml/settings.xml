@@ -6,21 +6,21 @@
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="autoOrigin"
-            android:summary="@string/xml_notification_text_origin"
-            android:title="@string/xml_enable_notification" />
+            android:title="@string/xml_enable_notification"
+            android:summary="@string/xml_notification_text_origin" />
 
 
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="autoDf"
-            android:summary="@string/xml_notification_text_dogfood"
-            android:title="@string/xml_enable_notification_dogfood" />
+            android:title="@string/xml_enable_notification_dogfood"
+            android:summary="@string/xml_notification_text_dogfood" />
 
         <SwitchPreference
             android:defaultValue="true"
             android:key="downloadBeta"
-            android:summary="@string/xml_download_beta_text"
-            android:title="@string/xml_download_beta_title" />
+            android:title="@string/xml_download_beta_title"
+            android:summary="@string/xml_download_beta_text" />
 
 
     </PreferenceCategory>
@@ -29,19 +29,28 @@
     <PreferenceCategory android:title="@string/about">
         <Preference
             android:key="donatePref"
-            android:summary="@string/xml_donate_paypal"
-            android:title="@string/donate">
+            android:title="@string/donate"
+            android:summary="@string/xml_donate_paypal">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="@string/xml_paypal_link" />
+        </Preference>
+
+        <Preference
+            android:key="xdaPref"
+            android:title="@string/xml_dogfood_title"
+            android:summary="@string/xml_dogfood_text">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://forum.xda-developers.com/android/apps-games/mod-spotify-dogfood-ad-free-spotify-t3632423/" />
         </Preference>
 
 
         <Preference
             android:icon="@mipmap/ic_github"
             android:key="githubPref"
-            android:summary="@string/xml_see_on_github"
-            android:title="@string/github">
+            android:title="@string/github"
+            android:summary="@string/xml_see_on_github">
 
             <intent
                 android:action="android.intent.action.VIEW"

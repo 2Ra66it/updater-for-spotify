@@ -35,50 +35,41 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         prefEnableNotificationsOrigin = (CheckBoxPreference) findPreference("autoOrigin");
         prefEnableNotificationsOrigin.setChecked(QueryPreferneces.getNotificationOrigin(getActivity()));
-        prefEnableNotificationsOrigin.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                if (prefEnableNotificationsOrigin.isChecked()) {
-                    prefEnableNotificationsDF.setChecked(false);
-                }
-
-                return false;
+        prefEnableNotificationsOrigin.setOnPreferenceClickListener(preference -> {
+            if (prefEnableNotificationsOrigin.isChecked()) {
+                prefEnableNotificationsDF.setChecked(false);
             }
+
+            return false;
         });
 
         prefEnableNotificationsDF = (CheckBoxPreference) findPreference("autoDf");
         prefEnableNotificationsDF.setChecked(QueryPreferneces.getNotificationDogFood(getActivity()));
-        prefEnableNotificationsDF.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                if (prefEnableNotificationsDF.isChecked()) {
-                    prefEnableNotificationsOrigin.setChecked(false);
-                }
-
-                return false;
+        prefEnableNotificationsDF.setOnPreferenceClickListener(preference -> {
+            if (prefEnableNotificationsDF.isChecked()) {
+                prefEnableNotificationsOrigin.setChecked(false);
             }
+
+            return false;
         });
 
         prefDownloadBeta = (SwitchPreference) findPreference("downloadBeta");
         prefDownloadBeta.setChecked(QueryPreferneces.isSpotifyBeta(getActivity()));
-        prefDownloadBeta.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                if (prefDownloadBeta.isChecked()) {
-                    new AlertDialog.Builder(getActivity(), R.style.AlertTheme)
-                            .setMessage(R.string.if_have_not_beta)
-                            .setPositiveButton(android.R.string.ok, null)
-                            .create()
-                            .show();
-                } else {
-                    new AlertDialog.Builder(getActivity(), R.style.AlertTheme)
-                            .setMessage(R.string.if_have_beta)
-                            .setPositiveButton(android.R.string.ok, null)
-                            .create()
-                            .show();
-                }
-                return false;
+        prefDownloadBeta.setOnPreferenceClickListener(preference -> {
+            if (prefDownloadBeta.isChecked()) {
+                new AlertDialog.Builder(getActivity(), R.style.AlertTheme)
+                        .setMessage(R.string.if_have_not_beta)
+                        .setPositiveButton(android.R.string.ok, null)
+                        .create()
+                        .show();
+            } else {
+                new AlertDialog.Builder(getActivity(), R.style.AlertTheme)
+                        .setMessage(R.string.if_have_beta)
+                        .setPositiveButton(android.R.string.ok, null)
+                        .create()
+                        .show();
             }
+            return false;
         });
 
 

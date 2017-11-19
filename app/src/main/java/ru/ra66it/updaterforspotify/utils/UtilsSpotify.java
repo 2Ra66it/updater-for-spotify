@@ -47,12 +47,7 @@ public class UtilsSpotify {
 
         String dfv = version.replaceAll("[0-9]", "").replaceAll("[.]", "").replaceAll("[-]", "");
 
-        if (dfv.equals("dogfood")) {
-            return true;
-        } else {
-            return false;
-        }
-
+        return dfv.equals("dogfood");
     }
 
 

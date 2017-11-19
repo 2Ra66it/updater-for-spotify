@@ -17,7 +17,6 @@ public interface SpotifyApi {
 
     String BASE_URL = "https://api.github.com/";
 
-
     @GET("repos/sergiocastell/spotify-dogfood/releases/latest")
     Observable<Spotify> getLatestDogFood();
 
@@ -28,7 +27,7 @@ public interface SpotifyApi {
     Observable<Spotify> getLatestOriginBeta();
 
 
-    public static SpotifyApi getInstance() {
+    static SpotifyApi getInstance() {
         SpotifyApi service;
         Retrofit retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -40,7 +39,4 @@ public interface SpotifyApi {
         return service;
     }
 
-
-    @GET("repos/sergiocastell/spotify-dogfood/releases/latest")
-    Call<Spotify> getLatestDogFoodSync();
 }

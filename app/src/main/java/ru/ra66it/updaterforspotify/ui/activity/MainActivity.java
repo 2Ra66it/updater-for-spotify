@@ -1,7 +1,6 @@
 package ru.ra66it.updaterforspotify.ui.activity;
 
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -15,12 +14,10 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.ra66it.updaterforspotify.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.adapter.MyPagerAdapter;
 import ru.ra66it.updaterforspotify.mvp.presenter.MainActivityPresenter;
 import ru.ra66it.updaterforspotify.mvp.view.MainBaseView;
-import ru.ra66it.updaterforspotify.notification.PollService;
 
 
 public class MainActivity extends MvpAppCompatActivity implements MainBaseView {
@@ -32,30 +29,26 @@ public class MainActivity extends MvpAppCompatActivity implements MainBaseView {
     @BindView(R.id.view_pager)
     ViewPager viewPager;
 
-    private static final int REQUEST_CODE = 1;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewpager);
         ButterKnife.bind(this);
 
-        mPresenter.getPermission();
-        mPresenter.initViewPager();
+        mPresenter.startIntro(this);
 
+        mPresenter.initViewPager();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (QueryPreferneces.getNotificationDogFood(this)) {
-            PollService.setServiceAlarm(this,
-                    QueryPreferneces.getNotificationDogFood(this));
-        } else if (QueryPreferneces.getNotificationOrigin(this)) {
-            PollService.setServiceAlarm(this,
-                    QueryPreferneces.getNotificationOrigin(this));
-        }
+        mPresenter.startNotification(this);
     }
 
     @Override
@@ -85,7 +78,12 @@ public class MainActivity extends MvpAppCompatActivity implements MainBaseView {
     @Override
     public void getPermission() {
         ActivityCompat.requestPermissions(this,
-                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
+                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+    }
+
+    @Override
+    public void startIntroActivity() {
+        startActivity(new Intent(this, IntroActivity.class));
     }
 
 

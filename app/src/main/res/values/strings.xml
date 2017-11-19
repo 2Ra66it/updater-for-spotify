@@ -3,7 +3,7 @@
     <string name="action_settings">Settings</string>
     <string name="settings_category_preferences">Preferences</string>
     <string name="installed_version">Installed Version</string>
-    <string name="latest_version_dogfood">Latest Version of Dogfood</string>
+    <string name="latest_version">Latest Version</string>
     <string name="install_new">Install new version:</string>
     <string name="install">Install</string>
     <string name="have_last_version">You have the latest version available</string>
@@ -18,6 +18,7 @@
     <string name="up_to_date">Latest version is installed</string>
 
     <string name="spotify_dogfood">Spotify Dogfood</string>
+    <string name="spotify_beta">Spotify Beta</string>
     <string name="spotify">Spotify</string>
     <string name="accept">Accept</string>
 
@@ -33,9 +34,9 @@
     <string name="general">General</string>
     <string name="about">About</string>
     <string name="github">GitHub</string>
-    <string name="donate">Donate</string>
+    <string name="donate">Donate on PayPal</string>
     <string name="xml_see_on_github">See project on GitHub</string>
-    <string name="xml_donate_paypal">Donate on PayPal</string>
+    <string name="xml_donate_paypal">Donate to the developer for coffee ♥</string>
     <string name="xml_paypal_link">https://www.paypal.me/2Ra66it</string>
     <string name="xml_github_link">https://github.com/spotify-dogfood</string>
     <string name="latest_version_original">Latest Version of Spotify</string>
@@ -48,5 +49,15 @@
     <string name="if_have_not_beta">If you have installed Spotify is not beta, please delete it!</string>
     <string name="if_have_beta">If you have installed Spotify Beta, please delete it!</string>
 
+
+
+    <!--                Intro                  -->
+    <string name="disable_notifications">Disable notifications</string>
+    <string name="intro_choose_question">What version of Spotify do I notify you?</string>
+    <string name="intro_welcome_message">Welcome to the Updater for Spotify</string>
+    <string name="intro_permission_label">This app needs the storage permission</string>
+    <string name="intro_permission_text">This is required only for downloading the Spotify to your device</string>
+    <string name="xml_dogfood_title">More about Dogfood</string>
+    <string name="xml_dogfood_text">More about Spotify Dogfood on xda-developers</string>
 
 </resources>

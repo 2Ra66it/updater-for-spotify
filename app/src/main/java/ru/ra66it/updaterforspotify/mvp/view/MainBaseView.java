@@ -12,4 +12,6 @@ public interface MainBaseView extends MvpView{
 
     void getPermission();
 
+    void startIntroActivity();
+
 }

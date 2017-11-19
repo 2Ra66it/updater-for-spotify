@@ -43,9 +43,9 @@ public class SpotifyOriginPresenter extends MvpPresenter<BaseViewFragment> {
 
     public void getLatestVersionSpotify(Context context) {
         if (QueryPreferneces.isSpotifyBeta(context)) {
-            loadDataOrigin(context);
-        } else {
             loadDataBeta(context);
+        } else {
+            loadDataOrigin(context);
         }
     }
 
@@ -137,7 +137,7 @@ public class SpotifyOriginPresenter extends MvpPresenter<BaseViewFragment> {
 
     public void fillData(Context context) {
         if (!latestVersionNumber.equals("0.0.0.0")) {
-            getViewState().setLatestVersionAvailable(latestVersionNumber);
+            getViewState().setLatestVersionAvailable(latestVersionName);
             if (UtilsSpotify.isSpotifyInstalled(context) &&
                     UtilsSpotify.isSpotifyUpdateAvailable(installVersion, latestVersionNumber)) {
                 // Install new version

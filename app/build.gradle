@@ -18,7 +18,7 @@ android {
         }
     }
 
-    compileOptions() {
+    compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -41,7 +41,6 @@ dependencies {
 
     compile 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
@@ -50,4 +49,5 @@ dependencies {
     compile 'io.reactivex.rxjava2:rxjava:2.1.3'
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
 
+    compile 'com.pacioianu.david:ink-page-indicator:1.2.0'
 }

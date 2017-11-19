@@ -2,7 +2,6 @@ package ru.ra66it.updaterforspotify.mvp.presenter;
 
 import android.content.Context;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
@@ -88,7 +87,7 @@ public class SpotifyDfPresenter extends MvpPresenter<BaseViewFragment> {
 
     public void fillDataDf(Context context) {
         if (!latestVersionNumber.equals("0.0.0.0")) {
-            getViewState().setLatestVersionAvailable(latestVersionNumber);
+            getViewState().setLatestVersionAvailable(latestVersionName);
             if (UtilsSpotify.isSpotifyInstalled(context) &&
                     UtilsSpotify.isDogfoodUpdateAvailable(installVersion, latestVersionNumber)) {
                 // Install new version

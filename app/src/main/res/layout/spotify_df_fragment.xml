@@ -92,7 +92,7 @@
                                 android:fontFamily="sans-serif-light"
                                 android:gravity="center"
                                 android:singleLine="true"
-                                android:text="@string/latest_version_dogfood"
+                                android:text="@string/latest_version"
                                 android:textColor="@android:color/black" />
 
                             <TextView
