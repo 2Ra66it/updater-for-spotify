@@ -11,3 +11,13 @@ Updater For Spotify allows you to download the latest version of Spotify Dogfood
 
 
 <img src="https://github.com/spotify-dogfood/updater-for-spotify/raw/master/screenshots/Screenshot_1508176066.png" width="270"> <img src="https://github.com/spotify-dogfood/updater-for-spotify/raw/master/screenshots/Screenshot_1508176076.png" width="270"> <img src="https://github.com/spotify-dogfood/updater-for-spotify/raw/master/screenshots/Screenshot_1506939807.png" width="270">
+
+## Architecture
+MVP
+
+## Libraries
+* [Moxy](https://github.com/Arello-Mobile/Moxy)
+* [Butterknife](https://github.com/JakeWharton/butterknife)
+* [RxJava](https://github.com/ReactiveX/RxJava)
+* [RxAndroid](https://github.com/ReactiveX/RxAndroid)
+* [Retrofit](https://github.com/square/retrofit)
