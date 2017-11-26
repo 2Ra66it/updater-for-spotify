@@ -22,14 +22,15 @@ public class MainActivityPresenter extends MvpPresenter<MainBaseView> {
 
     }
 
-    public void initViewPager() {
-        getViewState().initViewPager();
+    public void initViewPager(Context context) {
+        if (QueryPreferneces.isFirstLaunch(context)) {
+            getViewState().startIntroActivity();
+        } else {
+            getViewState().initViewPager();
+        }
     }
 
 
-    public void startIntro() {
-        getViewState().startIntroActivity();
-    }
 
     public void startNotification(Context context) {
         if (QueryPreferneces.getNotificationDogFood(context)) {

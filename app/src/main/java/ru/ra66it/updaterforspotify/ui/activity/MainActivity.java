@@ -36,12 +36,8 @@ public class MainActivity extends MvpAppCompatActivity implements MainBaseView {
         setContentView(R.layout.activity_viewpager);
         ButterKnife.bind(this);
 
-        if (QueryPreferneces.isFirstLaunch(this)) {
-            mPresenter.startIntro();
-        } else {
-            mPresenter.initViewPager();
-        }
 
+        mPresenter.initViewPager(this);
     }
 
     @Override
