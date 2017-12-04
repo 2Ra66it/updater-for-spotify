@@ -3,10 +3,9 @@ package ru.ra66it.updaterforspotify.mvp.presenter;
 
 import android.content.Context;
 
-import com.arellomobile.mvp.InjectViewState;
-import com.arellomobile.mvp.MvpPresenter;
 
-import ru.ra66it.updaterforspotify.QueryPreferneces;
+import ru.ra66it.updaterforspotify.rest.SpotifyApi;
+import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 import ru.ra66it.updaterforspotify.mvp.view.MainBaseView;
 import ru.ra66it.updaterforspotify.notification.PollService;
 
@@ -15,18 +14,21 @@ import ru.ra66it.updaterforspotify.notification.PollService;
  * Created by 2Rabbit on 12.11.2017.
  */
 
-@InjectViewState
-public class MainActivityPresenter extends MvpPresenter<MainBaseView> {
+public class MainActivityPresenter {
 
-    public MainActivityPresenter() {
+    private MainBaseView baseView;
+    private SpotifyApi spotifyApi;
 
+    public MainActivityPresenter(MainBaseView baseView) {
+        this.baseView = baseView;
+        this.spotifyApi = spotifyApi;
     }
 
     public void initViewPager(Context context) {
         if (QueryPreferneces.isFirstLaunch(context)) {
-            getViewState().startIntroActivity();
+            baseView.startIntroActivity();
         } else {
-            getViewState().initViewPager();
+            baseView.initViewPager();
         }
     }
 

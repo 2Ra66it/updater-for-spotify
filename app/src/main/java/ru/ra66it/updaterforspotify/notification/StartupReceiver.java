@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import ru.ra66it.updaterforspotify.QueryPreferneces;
+import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 
 
 /**

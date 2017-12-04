@@ -3,17 +3,11 @@ package ru.ra66it.updaterforspotify.mvp.presenter;
 import android.content.Context;
 import android.support.design.widget.FloatingActionButton;
 
-import com.arellomobile.mvp.InjectViewState;
-import com.arellomobile.mvp.MvpPresenter;
-
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import ru.ra66it.updaterforspotify.QueryPreferneces;
+import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.model.Spotify;
 import ru.ra66it.updaterforspotify.mvp.view.BaseViewFragment;
@@ -27,18 +21,20 @@ import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
  * Created by 2Rabbit on 11.11.2017.
  */
 
-@InjectViewState
-public class SpotifyOriginPresenter extends MvpPresenter<BaseViewFragment> {
+public class SpotifyOriginPresenter  {
 
+    private BaseViewFragment viewFragment;
     private String latestLink;
     private String latestVersionName;
     private String latestVersionNumber;
     private String installVersion;
 
     private boolean hasError = false;
+    private SpotifyApi spotifyApi;
 
-    public SpotifyOriginPresenter() {
-
+    public SpotifyOriginPresenter(BaseViewFragment viewFragment, SpotifyApi spotifyApi) {
+        this.viewFragment = viewFragment;
+        this.spotifyApi = spotifyApi;
     }
 
     public void getLatestVersionSpotify(Context context) {
@@ -52,7 +48,7 @@ public class SpotifyOriginPresenter extends MvpPresenter<BaseViewFragment> {
     public void loadDataBeta(Context context) {
         if (UtilsNetwork.isNetworkAvailable(context)) {
 
-            SpotifyApi.getInstance().getLatestOriginBeta()
+            spotifyApi.getLatestOriginBeta()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<Spotify>() {
@@ -60,7 +56,7 @@ public class SpotifyOriginPresenter extends MvpPresenter<BaseViewFragment> {
                         public void onSubscribe(Disposable d) {
                             errorLayout(false);
                             latestVersionNumber = "0.0.0.0";
-                            getViewState().showCardProgress();
+                            viewFragment.showCardProgress();
                         }
 
                         @Override
@@ -74,25 +70,24 @@ public class SpotifyOriginPresenter extends MvpPresenter<BaseViewFragment> {
                         @Override
                         public void onError(Throwable e) {
                             errorLayout(true);
-                            getViewState().showErrorSnackbar(R.string.error);
+                            viewFragment.showErrorSnackbar(R.string.error);
                         }
 
                         @Override
                         public void onComplete() {
-                            getViewState().hideCardProgress();
+                            viewFragment.hideCardProgress();
                         }
                     });
 
         } else {
             errorLayout(true);
-            getViewState().showErrorSnackbar(R.string.no_internet_connection);
+            viewFragment.showErrorSnackbar(R.string.no_internet_connection);
         }
     }
 
     public void loadDataOrigin(Context context) {
         if (UtilsNetwork.isNetworkAvailable(context)) {
-
-            SpotifyApi.getInstance().getLatestOrigin()
+            spotifyApi.getLatestOrigin()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<Spotify>() {
@@ -100,7 +95,7 @@ public class SpotifyOriginPresenter extends MvpPresenter<BaseViewFragment> {
                         public void onSubscribe(Disposable d) {
                             errorLayout(false);
                             latestVersionNumber = "0.0.0.0";
-                            getViewState().showCardProgress();
+                            viewFragment.showCardProgress();
                         }
 
                         @Override
@@ -114,18 +109,18 @@ public class SpotifyOriginPresenter extends MvpPresenter<BaseViewFragment> {
                         @Override
                         public void onError(Throwable e) {
                             errorLayout(true);
-                            getViewState().showErrorSnackbar(R.string.error);
+                            viewFragment.showErrorSnackbar(R.string.error);
                         }
 
                         @Override
                         public void onComplete() {
-                            getViewState().hideCardProgress();
+                            viewFragment.hideCardProgress();
                         }
                     });
 
         } else {
             errorLayout(true);
-            getViewState().showErrorSnackbar(R.string.no_internet_connection);
+            viewFragment.showErrorSnackbar(R.string.no_internet_connection);
         }
     }
 
@@ -137,27 +132,27 @@ public class SpotifyOriginPresenter extends MvpPresenter<BaseViewFragment> {
 
     public void fillData(Context context) {
         if (!latestVersionNumber.equals("0.0.0.0")) {
-            getViewState().setLatestVersionAvailable(latestVersionName);
+            viewFragment.setLatestVersionAvailable(latestVersionName);
             if (UtilsSpotify.isSpotifyInstalled(context) &&
                     UtilsSpotify.isSpotifyUpdateAvailable(installVersion, latestVersionNumber)) {
                 // Install new version
-                getViewState().showFAB();
-                getViewState().showCardView();
+                viewFragment.showFAB();
+                viewFragment.showCardView();
 
             } else if (!UtilsSpotify.isSpotifyInstalled(context)) {
                 // Install spotify now
-                getViewState().showFAB();
-                getViewState().showCardView();
+                viewFragment.showFAB();
+                viewFragment.showCardView();
 
             } else if (UtilsSpotify.isDogFoodInstalled(context)) {
-                getViewState().showFAB();
-                getViewState().showCardView();
+                viewFragment.showFAB();
+                viewFragment.showCardView();
 
             } else {
                 //have latest version
-                getViewState().hideFAB();
-                getViewState().hideCardView();
-                getViewState().setInstalledVersion(context.getString(R.string.up_to_date));
+                viewFragment.hideFAB();
+                viewFragment.hideCardView();
+                viewFragment.setInstalledVersion(context.getString(R.string.up_to_date));
             }
 
         }
@@ -167,17 +162,17 @@ public class SpotifyOriginPresenter extends MvpPresenter<BaseViewFragment> {
     public void checkInstalledSpotifyVersion(Context context, FloatingActionButton fab) {
         if (UtilsSpotify.isSpotifyInstalled(context)) {
             installVersion = UtilsSpotify.getInstalledSpotifyVersion(context);
-            getViewState().setInstalledVersion(installVersion);
+            viewFragment.setInstalledVersion(installVersion);
             if (!UtilsSpotify.isDogFoodInstalled(context)) {
                 fab.setImageResource(R.drawable.ic_autorenew_black_24dp);
             }
             fillData(context);
         } else {
-            getViewState().showFAB();
+            viewFragment.showFAB();
             fab.setImageResource(R.drawable.ic_file_download_black_24dp);
-            getViewState().setInstalledVersion(context.getString(R.string.spotify_not_installed));
+            viewFragment.setInstalledVersion(context.getString(R.string.spotify_not_installed));
             if (hasError) {
-                getViewState().hideFAB();
+                viewFragment.hideFAB();
             }
         }
 
@@ -186,12 +181,12 @@ public class SpotifyOriginPresenter extends MvpPresenter<BaseViewFragment> {
     public void errorLayout(boolean bool) {
         if (bool) {
             hasError = true;
-            getViewState().hideLayoutCards();
-            getViewState().hideFAB();
+            viewFragment.hideLayoutCards();
+            viewFragment.hideFAB();
         } else {
             hasError = false;
-            getViewState().showLayoutCards();
-            getViewState().hideFAB();
+            viewFragment.showLayoutCards();
+            viewFragment.hideFAB();
         }
 
     }

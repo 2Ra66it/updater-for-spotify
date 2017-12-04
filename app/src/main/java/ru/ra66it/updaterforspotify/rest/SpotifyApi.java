@@ -15,8 +15,6 @@ import ru.ra66it.updaterforspotify.model.Spotify;
 
 public interface SpotifyApi {
 
-    String BASE_URL = "https://api.github.com/";
-
     @GET("repos/sergiocastell/spotify-dogfood/releases/latest")
     Observable<Spotify> getLatestDogFood();
 
@@ -25,18 +23,5 @@ public interface SpotifyApi {
 
     @GET("repos/spotify-dogfood/spotify-beta-bin/releases/latest")
     Observable<Spotify> getLatestOriginBeta();
-
-
-    static SpotifyApi getInstance() {
-        SpotifyApi service;
-        Retrofit retrofit = new Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(BASE_URL)
-                .build();
-        service = retrofit.create(SpotifyApi.class);
-
-        return service;
-    }
 
 }

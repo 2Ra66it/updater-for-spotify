@@ -12,15 +12,17 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.arellomobile.mvp.MvpAppCompatFragment;
-import com.arellomobile.mvp.presenter.InjectPresenter;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.ra66it.updaterforspotify.MyApplication;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.mvp.presenter.SpotifyOriginPresenter;
 import ru.ra66it.updaterforspotify.mvp.view.BaseViewFragment;
 import ru.ra66it.updaterforspotify.notification.VisibleFragment;
+import ru.ra66it.updaterforspotify.rest.SpotifyApi;
 
 
 import static android.view.View.GONE;
@@ -31,8 +33,6 @@ import static android.view.View.GONE;
 
 public class SpotifyOriginFragment extends VisibleFragment implements BaseViewFragment {
 
-    @InjectPresenter
-    SpotifyOriginPresenter mPresenter;
     @BindView(R.id.cv_latest_orig)
     CardView cvLatestOrig;
     @BindView(R.id.lbl_latest_version_orig)
@@ -48,6 +48,11 @@ public class SpotifyOriginFragment extends VisibleFragment implements BaseViewFr
     @BindView(R.id.layout_cards_orig)
     LinearLayout layoutCards;
 
+    private SpotifyOriginPresenter mPresenter;
+
+    @Inject
+    SpotifyApi spotifyApi;
+
     public static SpotifyOriginFragment newInstance() {
         return new SpotifyOriginFragment();
     }
@@ -56,15 +61,16 @@ public class SpotifyOriginFragment extends VisibleFragment implements BaseViewFr
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter.getLatestVersionSpotify(getContext());
+        MyApplication.getApplicationComponent().inject(this);
     }
-
 
 
     @Override
     public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.spotify_orig_fragment, container, false);
         ButterKnife.bind(this, v);
+        mPresenter = new SpotifyOriginPresenter(this, spotifyApi);
+        mPresenter.getLatestVersionSpotify(getContext());
 
 
         swipeToRefresh.setOnRefreshListener(() -> {

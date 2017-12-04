@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.ra66it.updaterforspotify.QueryPreferneces;
+import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
 
 /**

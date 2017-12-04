@@ -1,4 +1,4 @@
-package ru.ra66it.updaterforspotify;
+package ru.ra66it.updaterforspotify.storage;
 
 import android.content.Context;
 import android.preference.PreferenceManager;

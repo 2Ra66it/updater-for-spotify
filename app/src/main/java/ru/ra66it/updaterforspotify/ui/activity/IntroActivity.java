@@ -9,20 +9,15 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 
 import com.pixelcan.inkpageindicator.InkPageIndicator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.ra66it.updaterforspotify.QueryPreferneces;
+import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.adapter.IntroPagerAdapter;
-import ru.ra66it.updaterforspotify.adapter.MyPagerAdapter;
-import ru.ra66it.updaterforspotify.ui.activity.MainActivity;
 
 /**
  * Created by 2Rabbit on 17.11.2017.
@@ -36,7 +31,7 @@ public class IntroActivity extends AppCompatActivity {
     InkPageIndicator indicator;
     @BindView(R.id.btn_next)
     Button buttonNext;
-    public int localPos;
+    private int localPos;
 
 
     @Override
@@ -68,7 +63,6 @@ public class IntroActivity extends AppCompatActivity {
         });
 
         buttonNext.setOnClickListener(view -> {
-
             switch (localPos) {
                 case 0:
                     viewPager.setCurrentItem(1);
@@ -77,7 +71,7 @@ public class IntroActivity extends AppCompatActivity {
                     viewPager.setCurrentItem(2);
                     break;
                 case 2:
-                    if (ContextCompat.checkSelfPermission(this , Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                         QueryPreferneces.setFirstLaunch(getApplicationContext(), false);
                         Intent intent = new Intent(this, MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -87,7 +81,6 @@ public class IntroActivity extends AppCompatActivity {
                     }
                     break;
             }
-
 
         });
 

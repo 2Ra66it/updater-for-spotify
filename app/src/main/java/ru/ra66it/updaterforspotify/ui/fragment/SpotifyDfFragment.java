@@ -13,15 +13,17 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.arellomobile.mvp.presenter.InjectPresenter;
 
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.ra66it.updaterforspotify.MyApplication;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.mvp.presenter.SpotifyDfPresenter;
 import ru.ra66it.updaterforspotify.mvp.view.BaseViewFragment;
 import ru.ra66it.updaterforspotify.notification.VisibleFragment;
+import ru.ra66it.updaterforspotify.rest.SpotifyApi;
 
 
 import static android.view.View.GONE;
@@ -32,8 +34,6 @@ import static android.view.View.GONE;
 
 public class SpotifyDfFragment extends VisibleFragment implements BaseViewFragment {
 
-    @InjectPresenter
-    SpotifyDfPresenter mPresenter;
     @BindView(R.id.cv_latest_df)
     CardView cvLatestDf;
     @BindView(R.id.lbl_latest_version)
@@ -49,6 +49,11 @@ public class SpotifyDfFragment extends VisibleFragment implements BaseViewFragme
     @BindView(R.id.layout_cards)
     LinearLayout layoutCards;
 
+    private SpotifyDfPresenter mPresenter;
+
+    @Inject
+    SpotifyApi spotifyApi;
+
 
     public static SpotifyDfFragment newInstance() {
         return new SpotifyDfFragment();
@@ -57,13 +62,15 @@ public class SpotifyDfFragment extends VisibleFragment implements BaseViewFragme
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter.getLatestVersionDf(getContext());
+        MyApplication.getApplicationComponent().inject(this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.spotify_df_fragment, container, false);
         ButterKnife.bind(this, v);
+        mPresenter = new SpotifyDfPresenter(this, spotifyApi);
+        mPresenter.getLatestVersionDf(getContext());
 
         swipeToRefresh.setOnRefreshListener(() -> {
             swipeToRefresh.setRefreshing(false);
@@ -71,7 +78,6 @@ public class SpotifyDfFragment extends VisibleFragment implements BaseViewFragme
         });
 
         fabDownloadButton.setOnClickListener(view -> mPresenter.downloadLatestVersion(getContext()));
-
 
 
         return v;

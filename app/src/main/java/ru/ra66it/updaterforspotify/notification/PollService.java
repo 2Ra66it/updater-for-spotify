@@ -16,15 +16,19 @@ import android.util.Log;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import ru.ra66it.updaterforspotify.QueryPreferneces;
+import ru.ra66it.updaterforspotify.MyApplication;
+import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.model.Spotify;
 import ru.ra66it.updaterforspotify.rest.SpotifyApi;
 import ru.ra66it.updaterforspotify.ui.activity.MainActivity;
+import ru.ra66it.updaterforspotify.utils.UtilsNetwork;
 
 
 /**
@@ -50,10 +54,12 @@ public class PollService extends IntentService {
     public static final String LATEST_VERSION = "latest_version";
     public static final String LATEST_VERSION_NAME = "latest_version_name";
 
-
     private String latestVersion;
     private String latestVersionName;
     private String latestLink;
+
+    @Inject
+    SpotifyApi spotifyApi;
 
 
     public static Intent newIntent(Context context) {
@@ -61,6 +67,7 @@ public class PollService extends IntentService {
     }
 
     public static void setServiceAlarm(Context context, boolean isOn) {
+
         Intent i = PollService.newIntent(context);
         PendingIntent pi = PendingIntent.getService(context, 0, i, 0);
 
@@ -86,13 +93,14 @@ public class PollService extends IntentService {
 
     public PollService() {
         super(TAG);
+        MyApplication.getApplicationComponent().inject(this);
     }
 
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         Log.i(TAG, "Received an intent: " + intent);
-        if (!isNetworkAvailableAndConnected()) {
+        if (!UtilsNetwork.isNetworkAvailable(this)) {
             return;
         }
 
@@ -113,7 +121,7 @@ public class PollService extends IntentService {
 
 
     private void notificationsSpotifyDF() {
-        SpotifyApi.getInstance().getLatestDogFood()
+        spotifyApi.getLatestDogFood()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Spotify>() {
@@ -145,8 +153,7 @@ public class PollService extends IntentService {
     }
 
     private void notificationsSpotifyOrig() {
-
-        SpotifyApi.getInstance().getLatestOrigin()
+        spotifyApi.getLatestOrigin()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Spotify>() {
@@ -177,7 +184,7 @@ public class PollService extends IntentService {
     }
 
     private void notificationsSpotifyOrigBeta() {
-        SpotifyApi.getInstance().getLatestOriginBeta()
+        spotifyApi.getLatestOriginBeta()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Spotify>() {
@@ -251,10 +258,4 @@ public class PollService extends IntentService {
         sendOrderedBroadcast(i, PERM_PRIVATE, null, null, Activity.RESULT_OK, null, null);
     }
 
-    private boolean isNetworkAvailableAndConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        boolean isNetworkAvailable = cm.getActiveNetworkInfo() != null;
-        boolean isNetworkConnected = isNetworkAvailable && cm.getActiveNetworkInfo().isConnected();
-        return isNetworkConnected;
-    }
 }

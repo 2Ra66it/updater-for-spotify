@@ -8,13 +8,12 @@ import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
-import com.arellomobile.mvp.MvpAppCompatFragment;
 
 /**
  * Created by 2Rabbit on 28.09.2017.
  */
 
-public abstract class VisibleFragment extends MvpAppCompatFragment {
+public abstract class VisibleFragment extends Fragment {
     private static final String TAG = "VisibleFragment";
 
     @Override
