@@ -31,7 +31,6 @@ public class SpotifyDfPresenter {
     private String latestVersionNumber;
     private String installVersion;
     private boolean hasError = false;
-
     private SpotifyApi spotifyApi;
 
     public SpotifyDfPresenter(BaseViewFragment viewFragment, SpotifyApi spotifyApi) {
@@ -42,36 +41,36 @@ public class SpotifyDfPresenter {
 
     public void getLatestVersionDf(Context context) {
         if (UtilsNetwork.isNetworkAvailable(context)) {
-           spotifyApi.getLatestDogFood()
-                   .subscribeOn(Schedulers.io())
-                   .observeOn(AndroidSchedulers.mainThread())
-                   .subscribe(new Observer<Spotify>() {
-                       @Override
-                       public void onSubscribe(Disposable d) {
-                           errorLayout(false);
-                           viewFragment.showCardProgress();
-                           latestVersionNumber = "0.0.0.0";
-                       }
+            spotifyApi.getLatestDogFood()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Spotify>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            errorLayout(false);
+                            viewFragment.showCardProgress();
+                            latestVersionNumber = "0.0.0.0";
+                        }
 
-                       @Override
-                       public void onNext(Spotify spotify) {
-                           latestLink = spotify.getBody();
-                           latestVersionName = spotify.getName();
-                           latestVersionNumber = spotify.getTagName();
-                           fillDataDf(context);
-                       }
+                        @Override
+                        public void onNext(Spotify spotify) {
+                            latestLink = spotify.getBody();
+                            latestVersionName = spotify.getName();
+                            latestVersionNumber = spotify.getTagName();
+                            fillDataDf(context);
+                        }
 
-                       @Override
-                       public void onError(Throwable e) {
-                           errorLayout(true);
-                           viewFragment.showErrorSnackbar(R.string.error);
-                       }
+                        @Override
+                        public void onError(Throwable e) {
+                            errorLayout(true);
+                            viewFragment.showErrorSnackbar(R.string.error);
+                        }
 
-                       @Override
-                       public void onComplete() {
-                           viewFragment.hideCardProgress();
-                       }
-                   });
+                        @Override
+                        public void onComplete() {
+                            viewFragment.hideCardProgress();
+                        }
+                    });
 
 
         } else {

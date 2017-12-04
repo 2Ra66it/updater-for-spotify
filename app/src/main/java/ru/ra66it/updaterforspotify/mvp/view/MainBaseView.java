@@ -9,8 +9,6 @@ public interface MainBaseView {
 
     void initViewPager();
 
-    void getPermission();
-
     void startIntroActivity();
 
 }

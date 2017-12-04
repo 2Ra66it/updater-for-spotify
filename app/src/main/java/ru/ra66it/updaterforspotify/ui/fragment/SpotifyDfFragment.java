@@ -108,10 +108,6 @@ public class SpotifyDfFragment extends VisibleFragment implements BaseViewFragme
         Snackbar.make(swipeToRefresh, getString(stringId), Snackbar.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void showLatestVersion(String version) {
-        lblLatestVersion.setText(version);
-    }
 
     @Override
     public void hideCardView() {

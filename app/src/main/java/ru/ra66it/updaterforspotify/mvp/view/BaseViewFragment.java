@@ -15,8 +15,6 @@ public interface BaseViewFragment  {
 
     void showErrorSnackbar(int stringId);
 
-    void showLatestVersion(String version);
-
     void hideCardView();
 
     void showCardView();

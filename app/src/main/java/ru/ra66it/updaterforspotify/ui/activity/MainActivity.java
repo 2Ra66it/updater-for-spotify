@@ -77,11 +77,6 @@ public class MainActivity extends AppCompatActivity implements MainBaseView {
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    @Override
-    public void getPermission() {
-        ActivityCompat.requestPermissions(this,
-                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-    }
 
     @Override
     public void startIntroActivity() {

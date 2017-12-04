@@ -17,11 +17,9 @@ import ru.ra66it.updaterforspotify.notification.PollService;
 public class MainActivityPresenter {
 
     private MainBaseView baseView;
-    private SpotifyApi spotifyApi;
 
     public MainActivityPresenter(MainBaseView baseView) {
         this.baseView = baseView;
-        this.spotifyApi = spotifyApi;
     }
 
     public void initViewPager(Context context) {
@@ -31,8 +29,6 @@ public class MainActivityPresenter {
             baseView.initViewPager();
         }
     }
-
-
 
     public void startNotification(Context context) {
         if (QueryPreferneces.getNotificationDogFood(context)) {

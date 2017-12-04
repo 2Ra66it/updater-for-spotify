@@ -21,14 +21,13 @@ import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
  * Created by 2Rabbit on 11.11.2017.
  */
 
-public class SpotifyOriginPresenter  {
+public class SpotifyOriginPresenter {
 
     private BaseViewFragment viewFragment;
     private String latestLink;
     private String latestVersionName;
     private String latestVersionNumber;
     private String installVersion;
-
     private boolean hasError = false;
     private SpotifyApi spotifyApi;
 
@@ -47,7 +46,6 @@ public class SpotifyOriginPresenter  {
 
     public void loadDataBeta(Context context) {
         if (UtilsNetwork.isNetworkAvailable(context)) {
-
             spotifyApi.getLatestOriginBeta()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
