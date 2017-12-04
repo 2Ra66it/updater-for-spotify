@@ -16,7 +16,7 @@ Updater For Spotify allows you to download the latest version of Spotify Dogfood
 MVP
 
 ## Libraries
-* [Moxy](https://github.com/Arello-Mobile/Moxy)
+* [Dagger](https://github.com/google/dagger)
 * [Butterknife](https://github.com/JakeWharton/butterknife)
 * [RxJava](https://github.com/ReactiveX/RxJava)
 * [RxAndroid](https://github.com/ReactiveX/RxAndroid)
