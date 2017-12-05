@@ -70,7 +70,6 @@ public class SpotifyDfFragment extends VisibleFragment implements BaseViewFragme
         View v = inflater.inflate(R.layout.spotify_df_fragment, container, false);
         ButterKnife.bind(this, v);
         mPresenter = new SpotifyDfPresenter(this, spotifyApi);
-        mPresenter.getLatestVersionDf(getContext());
 
         swipeToRefresh.setOnRefreshListener(() -> {
             swipeToRefresh.setRefreshing(false);
@@ -79,6 +78,7 @@ public class SpotifyDfFragment extends VisibleFragment implements BaseViewFragme
 
         fabDownloadButton.setOnClickListener(view -> mPresenter.downloadLatestVersion(getContext()));
 
+        mPresenter.getLatestVersionDf(getContext());
 
         return v;
     }
@@ -105,7 +105,7 @@ public class SpotifyDfFragment extends VisibleFragment implements BaseViewFragme
 
     @Override
     public void showErrorSnackbar(int stringId) {
-        Snackbar.make(swipeToRefresh, getString(stringId), Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(getActivity().findViewById(android.R.id.content), getString(stringId), Snackbar.LENGTH_SHORT).show();
     }
 
 

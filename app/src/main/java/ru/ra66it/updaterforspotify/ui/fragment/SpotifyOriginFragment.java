@@ -70,8 +70,6 @@ public class SpotifyOriginFragment extends VisibleFragment implements BaseViewFr
         View v = inflater.inflate(R.layout.spotify_orig_fragment, container, false);
         ButterKnife.bind(this, v);
         mPresenter = new SpotifyOriginPresenter(this, spotifyApi);
-        mPresenter.getLatestVersionSpotify(getContext());
-
 
         swipeToRefresh.setOnRefreshListener(() -> {
             swipeToRefresh.setRefreshing(false);
@@ -80,6 +78,8 @@ public class SpotifyOriginFragment extends VisibleFragment implements BaseViewFr
 
 
         fabDownloadButton.setOnClickListener(view -> mPresenter.downloadLatestVersion(getContext()));
+
+        mPresenter.getLatestVersionSpotify(getContext());
 
         return v;
     }
@@ -105,7 +105,7 @@ public class SpotifyOriginFragment extends VisibleFragment implements BaseViewFr
 
     @Override
     public void showErrorSnackbar(int stringId) {
-        Snackbar.make(swipeToRefresh, getString(stringId), Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(getActivity().findViewById(android.R.id.content), getString(stringId), Snackbar.LENGTH_SHORT).show();
     }
 
 
