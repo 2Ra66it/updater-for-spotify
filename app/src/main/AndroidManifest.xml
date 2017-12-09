@@ -39,13 +39,18 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ui.activity.IntroActivity" />
+        <activity android:name=".ui.activity.IntroActivity" />
 
         <activity
             android:name=".ui.activity.SettingsActivity"
             android:label="@string/action_settings"
-            android:theme="@style/PreferencesTheme"/>
+            android:theme="@style/PreferencesTheme">
+
+            <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+            </intent-filter>
+
+        </activity>
 
         <service android:name=".notification.PollService" />
 
@@ -65,7 +70,7 @@
 
         <service
             android:name=".notification.NotificationDownloadService"
-            android:exported="false"/>
+            android:exported="false" />
 
     </application>
 

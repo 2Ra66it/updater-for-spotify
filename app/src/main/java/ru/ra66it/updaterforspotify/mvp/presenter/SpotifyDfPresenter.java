@@ -31,15 +31,17 @@ public class SpotifyDfPresenter {
     private String latestVersionNumber;
     private String installVersion;
     private boolean hasError = false;
+    private Context context;
     private SpotifyApi spotifyApi;
 
-    public SpotifyDfPresenter(BaseViewFragment viewFragment, SpotifyApi spotifyApi) {
+    public SpotifyDfPresenter(Context context, BaseViewFragment viewFragment, SpotifyApi spotifyApi) {
+        this.context = context;
         this.viewFragment = viewFragment;
         this.spotifyApi = spotifyApi;
     }
 
 
-    public void getLatestVersionDf(Context context) {
+    public void getLatestVersionDf() {
         if (UtilsNetwork.isNetworkAvailable(context)) {
             spotifyApi.getLatestDogFood()
                     .subscribeOn(Schedulers.io())
@@ -48,6 +50,7 @@ public class SpotifyDfPresenter {
                         @Override
                         public void onSubscribe(Disposable d) {
                             errorLayout(false);
+                            viewFragment.hideNoInternetLayout();
                             viewFragment.showCardProgress();
                             latestVersionNumber = "0.0.0.0";
                         }
@@ -57,7 +60,6 @@ public class SpotifyDfPresenter {
                             latestLink = spotify.getBody();
                             latestVersionName = spotify.getName();
                             latestVersionNumber = spotify.getTagName();
-                            fillDataDf(context);
                         }
 
                         @Override
@@ -68,6 +70,8 @@ public class SpotifyDfPresenter {
 
                         @Override
                         public void onComplete() {
+                            checkInstalledSpotifyDfVersion();
+                            fillDataDf();
                             viewFragment.hideCardProgress();
                         }
                     });
@@ -75,62 +79,60 @@ public class SpotifyDfPresenter {
 
         } else {
             errorLayout(true);
-            viewFragment.showErrorSnackbar(R.string.no_internet_connection);
+            viewFragment.showNoInternetLayout();
         }
     }
 
 
-    public void downloadLatestVersion(Context context) {
+    public void downloadLatestVersion() {
         UtilsDownloadSpotify.downloadSpotify(context, latestLink, latestVersionName);
     }
 
 
-    public void fillDataDf(Context context) {
-        if (!latestVersionNumber.equals("0.0.0.0")) {
-            viewFragment.setLatestVersionAvailable(latestVersionName);
-            if (UtilsSpotify.isSpotifyInstalled(context) &&
-                    UtilsSpotify.isDogfoodUpdateAvailable(installVersion, latestVersionNumber)) {
-                // Install new version
-                viewFragment.showFAB();
-                viewFragment.showCardView();
+    public void fillDataDf() {
+        viewFragment.setLatestVersionAvailable(latestVersionName);
+        if (UtilsSpotify.isSpotifyInstalled(context) &&
+                UtilsSpotify.isDogfoodUpdateAvailable(installVersion, latestVersionNumber)) {
+            // Install new version
+            viewFragment.showFAB();
+            viewFragment.showCardView();
 
-            } else if (!UtilsSpotify.isSpotifyInstalled(context)) {
-                // Install spotify now
-                viewFragment.showFAB();
-                viewFragment.showCardView();
+        } else if (!UtilsSpotify.isSpotifyInstalled(context)) {
+            // Install spotify now
+            viewFragment.showFAB();
+            viewFragment.showCardView();
 
-            } else if (!UtilsSpotify.isDogFoodInstalled(context)) {
-                viewFragment.showFAB();
-                viewFragment.showCardView();
+        } else if (!UtilsSpotify.isDogFoodInstalled(context)) {
+            viewFragment.showFAB();
+            viewFragment.showCardView();
 
-            } else {
-                //have latest version
-                viewFragment.hideFAB();
-                viewFragment.hideCardView();
-                viewFragment.setInstalledVersion(context.getString(R.string.up_to_date));
-            }
-
+        } else {
+            //have latest version
+            viewFragment.hideFAB();
+            viewFragment.hideCardView();
+            viewFragment.setInstalledVersion(context.getString(R.string.up_to_date));
         }
+
 
     }
 
-    public void checkInstalledSpotifyDfVersion(Context context, FloatingActionButton fab) {
-        if (UtilsSpotify.isSpotifyInstalled(context)) {
-            installVersion = UtilsSpotify.getInstalledSpotifyVersion(context);
-            viewFragment.setInstalledVersion(installVersion);
-            if (UtilsSpotify.isDogFoodInstalled(context)) {
-                fab.setImageResource(R.drawable.ic_autorenew_black_24dp);
+    public void checkInstalledSpotifyDfVersion() {
+        if (UtilsNetwork.isNetworkAvailable(context))
+            viewFragment.showCardView();
+            if (UtilsSpotify.isSpotifyInstalled(context)) {
+                installVersion = UtilsSpotify.getInstalledSpotifyVersion(context);
+                if (UtilsSpotify.isDogFoodInstalled(context)) {
+                    viewFragment.setUpdateImageFAB();
+                }
+                fillDataDf();
+            } else {
+                viewFragment.showFAB();
+                viewFragment.setInstallImageFAB();
+                viewFragment.setInstalledVersion(context.getString(R.string.dogfood_not_installed));
+                if (hasError) {
+                    viewFragment.hideFAB();
+                }
             }
-            fillDataDf(context);
-        } else {
-            viewFragment.showFAB();
-            fab.setImageResource(R.drawable.ic_file_download_black_24dp);
-            viewFragment.setInstalledVersion(context.getString(R.string.dogfood_not_installed));
-            if (hasError) {
-                viewFragment.hideFAB();
-            }
-        }
-
     }
 
     public void errorLayout(boolean bool) {

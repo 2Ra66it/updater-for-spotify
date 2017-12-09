@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -47,6 +48,8 @@ public class SpotifyOriginFragment extends VisibleFragment implements BaseViewFr
     FloatingActionButton fabDownloadButton;
     @BindView(R.id.layout_cards_orig)
     LinearLayout layoutCards;
+    @BindView(R.id.layout_no_internet_orig)
+    RelativeLayout noInternetOrigLayout;
 
     private SpotifyOriginPresenter mPresenter;
 
@@ -62,24 +65,24 @@ public class SpotifyOriginFragment extends VisibleFragment implements BaseViewFr
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MyApplication.getApplicationComponent().inject(this);
+        mPresenter = new SpotifyOriginPresenter(getContext(), this, spotifyApi);
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.spotify_orig_fragment, container, false);
         ButterKnife.bind(this, v);
-        mPresenter = new SpotifyOriginPresenter(this, spotifyApi);
 
         swipeToRefresh.setOnRefreshListener(() -> {
             swipeToRefresh.setRefreshing(false);
-            mPresenter.getLatestVersionSpotify(getContext());
+            mPresenter.getLatestVersionSpotify();
         });
 
 
-        fabDownloadButton.setOnClickListener(view -> mPresenter.downloadLatestVersion(getContext()));
+        fabDownloadButton.setOnClickListener(view -> mPresenter.downloadLatestVersion());
 
-        mPresenter.getLatestVersionSpotify(getContext());
+        mPresenter.getLatestVersionSpotify();
 
         return v;
     }
@@ -88,7 +91,7 @@ public class SpotifyOriginFragment extends VisibleFragment implements BaseViewFr
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.checkInstalledSpotifyVersion(getContext(), fabDownloadButton);
+        mPresenter.checkInstalledSpotifyVersion();
     }
 
     @Override
@@ -108,6 +111,16 @@ public class SpotifyOriginFragment extends VisibleFragment implements BaseViewFr
         Snackbar.make(getActivity().findViewById(android.R.id.content), getString(stringId), Snackbar.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void showNoInternetLayout() {
+        noInternetOrigLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideNoInternetLayout() {
+        noInternetOrigLayout.setVisibility(View.GONE);
+    }
+
 
     @Override
     public void hideCardView() {
@@ -122,6 +135,16 @@ public class SpotifyOriginFragment extends VisibleFragment implements BaseViewFr
     @Override
     public void hideFAB() {
         fabDownloadButton.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setUpdateImageFAB() {
+        fabDownloadButton.setImageResource(R.drawable.ic_autorenew_black_24dp);
+    }
+
+    @Override
+    public void setInstallImageFAB() {
+        fabDownloadButton.setImageResource(R.drawable.ic_file_download_black_24dp);
     }
 
     @Override

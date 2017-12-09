@@ -15,11 +15,19 @@ public interface BaseViewFragment  {
 
     void showErrorSnackbar(int stringId);
 
+    void showNoInternetLayout();
+
+    void hideNoInternetLayout();
+
     void hideCardView();
 
     void showCardView();
 
     void hideFAB();
+
+    void setUpdateImageFAB();
+
+    void setInstallImageFAB();
 
     void showFAB();
 

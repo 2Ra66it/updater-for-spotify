@@ -67,7 +67,6 @@ public class PollService extends IntentService {
     }
 
     public static void setServiceAlarm(Context context, boolean isOn) {
-
         Intent i = PollService.newIntent(context);
         PendingIntent pi = PendingIntent.getService(context, 0, i, 0);
 
@@ -114,7 +113,6 @@ public class PollService extends IntentService {
             } else {
                 notificationsSpotifyOrig();
             }
-
         }
 
     }

@@ -37,6 +37,8 @@ public class MainActivityPresenter {
         } else if (QueryPreferneces.getNotificationOrigin(context)) {
             PollService.setServiceAlarm(context,
                     QueryPreferneces.getNotificationOrigin(context));
+        } else {
+            PollService.setServiceAlarm(context, false);
         }
     }
 
