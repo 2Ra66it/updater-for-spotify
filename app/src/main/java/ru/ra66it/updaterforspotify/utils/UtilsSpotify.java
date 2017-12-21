@@ -47,7 +47,7 @@ public class UtilsSpotify {
 
         String dfv = version.replaceAll("[0-9]", "").replaceAll("[.]", "").replaceAll("[-]", "");
 
-        return dfv.equals("dogfood");
+        return (dfv.equals("dogfood") || dfv.contains("dogfood"));
     }
 
 
@@ -61,7 +61,7 @@ public class UtilsSpotify {
             return true;
         }
 
-        if (!dfv.equals("dogfood")) {
+        if (!(dfv.equals("dogfood") || dfv.contains("dogfood"))) {
             installVers = Integer.parseInt(installedVersion.replaceAll("[a-z]", "").replaceAll("[.]", "").replaceAll("[-]", ""));
             int latestVers = Integer.parseInt(latestVersion.replaceAll("[.]", ""));
 
