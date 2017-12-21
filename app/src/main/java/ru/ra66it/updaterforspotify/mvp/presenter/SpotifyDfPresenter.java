@@ -70,7 +70,6 @@ public class SpotifyDfPresenter {
 
                         @Override
                         public void onComplete() {
-                            checkInstalledSpotifyDfVersion();
                             fillDataDf();
                             viewFragment.hideCardProgress();
                         }

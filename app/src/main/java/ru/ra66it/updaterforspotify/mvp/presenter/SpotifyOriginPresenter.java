@@ -79,7 +79,6 @@ public class SpotifyOriginPresenter {
 
                     @Override
                     public void onComplete() {
-                        checkInstalledSpotifyVersion();
                         fillData();
                         viewFragment.hideCardProgress();
                     }
@@ -116,7 +115,6 @@ public class SpotifyOriginPresenter {
 
                     @Override
                     public void onComplete() {
-                        checkInstalledSpotifyVersion();
                         fillData();
                         viewFragment.hideCardProgress();
                     }
