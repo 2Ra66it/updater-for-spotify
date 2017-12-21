@@ -82,7 +82,7 @@ public class UtilsSpotify {
             return true;
         }
 
-        if (dfv.equals("dogfood")) {
+        if (dfv.equals("dogfood") || dfv.contains("dogfood")) {
             installVers = Integer.parseInt(installedVersion.replaceAll("[a-z]", "").replaceAll("[.]", "").replaceAll("[-]", ""));
             int latestVers = Integer.parseInt(latestVersion.replaceAll("[.]", ""));
 
