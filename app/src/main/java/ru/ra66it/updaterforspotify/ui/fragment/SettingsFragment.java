@@ -23,8 +23,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     SwitchPreference prefDownloadBeta;
     SharedPreferences prefs;
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +35,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         prefEnableNotificationsOrigin.setOnPreferenceClickListener(preference -> {
             if (prefEnableNotificationsOrigin.isChecked()) {
                 prefEnableNotificationsDF.setChecked(false);
+            } else {
+                prefDownloadBeta.setChecked(false);
             }
 
             return false;

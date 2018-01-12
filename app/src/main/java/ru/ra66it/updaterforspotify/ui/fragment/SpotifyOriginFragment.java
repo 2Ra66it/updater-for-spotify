@@ -3,6 +3,7 @@ package ru.ra66it.updaterforspotify.ui.fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -18,11 +19,11 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import ru.ra66it.updaterforspotify.MyApplication;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.mvp.presenter.SpotifyOriginPresenter;
 import ru.ra66it.updaterforspotify.mvp.view.BaseViewFragment;
-import ru.ra66it.updaterforspotify.notification.VisibleFragment;
 import ru.ra66it.updaterforspotify.rest.SpotifyApi;
 
 
@@ -32,7 +33,7 @@ import static android.view.View.GONE;
  * Created by 2Rabbit on 12.11.2017.
  */
 
-public class SpotifyOriginFragment extends VisibleFragment implements BaseViewFragment {
+public class SpotifyOriginFragment extends Fragment implements BaseViewFragment {
 
     @BindView(R.id.cv_latest_orig)
     CardView cvLatestOrig;
@@ -52,6 +53,7 @@ public class SpotifyOriginFragment extends VisibleFragment implements BaseViewFr
     RelativeLayout noInternetOrigLayout;
 
     private SpotifyOriginPresenter mPresenter;
+    private Unbinder unbinder;
 
     @Inject
     SpotifyApi spotifyApi;
@@ -72,7 +74,7 @@ public class SpotifyOriginFragment extends VisibleFragment implements BaseViewFr
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.spotify_orig_fragment, container, false);
-        ButterKnife.bind(this, v);
+        unbinder = ButterKnife.bind(this, v);
 
         swipeToRefresh.setOnRefreshListener(() -> {
             swipeToRefresh.setRefreshing(false);
@@ -92,6 +94,13 @@ public class SpotifyOriginFragment extends VisibleFragment implements BaseViewFr
     public void onResume() {
         super.onResume();
         mPresenter.checkInstalledSpotifyVersion();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPresenter.onDispose();
+        unbinder.unbind();
     }
 
     @Override

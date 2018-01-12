@@ -4,10 +4,9 @@ package ru.ra66it.updaterforspotify.mvp.presenter;
 import android.content.Context;
 
 
-import ru.ra66it.updaterforspotify.rest.SpotifyApi;
+import ru.ra66it.updaterforspotify.notification.PollService;
 import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 import ru.ra66it.updaterforspotify.mvp.view.MainBaseView;
-import ru.ra66it.updaterforspotify.notification.PollService;
 
 
 /**
@@ -32,11 +31,9 @@ public class MainActivityPresenter {
 
     public void startNotification(Context context) {
         if (QueryPreferneces.getNotificationDogFood(context)) {
-            PollService.setServiceAlarm(context,
-                    QueryPreferneces.getNotificationDogFood(context));
+            PollService.setServiceAlarm(context, QueryPreferneces.getNotificationDogFood(context));
         } else if (QueryPreferneces.getNotificationOrigin(context)) {
-            PollService.setServiceAlarm(context,
-                    QueryPreferneces.getNotificationOrigin(context));
+            PollService.setServiceAlarm(context, QueryPreferneces.getNotificationOrigin(context));
         } else {
             PollService.setServiceAlarm(context, false);
         }

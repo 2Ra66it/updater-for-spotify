@@ -44,6 +44,7 @@
         <activity
             android:name=".ui.activity.SettingsActivity"
             android:label="@string/action_settings"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/PreferencesTheme">
 
             <intent-filter>
@@ -52,21 +53,10 @@
 
         </activity>
 
-        <service android:name=".notification.PollService" />
-
-        <receiver android:name=".notification.StartupReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
-            android:name=".notification.NotificationReceiver"
-            android:exported="false">
-            <intent-filter android:priority="-999">
-                <action android:name="ru.ra66it.android.updaterforspotify.SHOW_NOTIFICATION" />
-            </intent-filter>
-        </receiver>
+        <service android:name=".notification.PollService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <service
             android:name=".notification.NotificationDownloadService"

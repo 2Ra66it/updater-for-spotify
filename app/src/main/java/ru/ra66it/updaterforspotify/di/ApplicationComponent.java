@@ -4,7 +4,6 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import ru.ra66it.updaterforspotify.notification.PollService;
-import ru.ra66it.updaterforspotify.ui.activity.MainActivity;
 import ru.ra66it.updaterforspotify.ui.fragment.SpotifyDfFragment;
 import ru.ra66it.updaterforspotify.ui.fragment.SpotifyOriginFragment;
 

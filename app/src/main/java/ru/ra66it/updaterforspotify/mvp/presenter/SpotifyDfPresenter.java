@@ -1,13 +1,10 @@
 package ru.ra66it.updaterforspotify.mvp.presenter;
 
 import android.content.Context;
-import android.support.design.widget.FloatingActionButton;
-
-
-import javax.inject.Inject;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import ru.ra66it.updaterforspotify.R;
@@ -33,11 +30,13 @@ public class SpotifyDfPresenter {
     private boolean hasError = false;
     private Context context;
     private SpotifyApi spotifyApi;
+    private CompositeDisposable compositeDisposable;
 
     public SpotifyDfPresenter(Context context, BaseViewFragment viewFragment, SpotifyApi spotifyApi) {
         this.context = context;
         this.viewFragment = viewFragment;
         this.spotifyApi = spotifyApi;
+        this.compositeDisposable = new CompositeDisposable();
     }
 
 
@@ -49,6 +48,7 @@ public class SpotifyDfPresenter {
                     .subscribe(new Observer<Spotify>() {
                         @Override
                         public void onSubscribe(Disposable d) {
+                            compositeDisposable.add(d);
                             errorLayout(false);
                             viewFragment.hideNoInternetLayout();
                             viewFragment.showCardProgress();
@@ -118,20 +118,20 @@ public class SpotifyDfPresenter {
     public void checkInstalledSpotifyDfVersion() {
         if (UtilsNetwork.isNetworkAvailable(context))
             viewFragment.showCardView();
-            if (UtilsSpotify.isSpotifyInstalled(context)) {
-                installVersion = UtilsSpotify.getInstalledSpotifyVersion(context);
-                if (UtilsSpotify.isDogFoodInstalled(context)) {
-                    viewFragment.setUpdateImageFAB();
-                }
-                fillDataDf();
-            } else {
-                viewFragment.showFAB();
-                viewFragment.setInstallImageFAB();
-                viewFragment.setInstalledVersion(context.getString(R.string.dogfood_not_installed));
-                if (hasError) {
-                    viewFragment.hideFAB();
-                }
+        if (UtilsSpotify.isSpotifyInstalled(context)) {
+            installVersion = UtilsSpotify.getInstalledSpotifyVersion(context);
+            if (UtilsSpotify.isDogFoodInstalled(context)) {
+                viewFragment.setUpdateImageFAB();
             }
+            fillDataDf();
+        } else {
+            viewFragment.showFAB();
+            viewFragment.setInstallImageFAB();
+            viewFragment.setInstalledVersion(context.getString(R.string.dogfood_not_installed));
+            if (hasError) {
+                viewFragment.hideFAB();
+            }
+        }
     }
 
     public void errorLayout(boolean bool) {
@@ -145,6 +145,10 @@ public class SpotifyDfPresenter {
             viewFragment.hideFAB();
         }
 
+    }
+
+    public void onDispose() {
+        compositeDisposable.dispose();
     }
 
 }

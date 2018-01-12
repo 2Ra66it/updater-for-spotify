@@ -1,16 +1,18 @@
 package ru.ra66it.updaterforspotify.notification;
 
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.IntentService;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobParameters;
+import android.app.job.JobScheduler;
+import android.app.job.JobService;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.net.ConnectivityManager;
-import android.os.SystemClock;
-import android.support.annotation.Nullable;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -20,111 +22,105 @@ import javax.inject.Inject;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import ru.ra66it.updaterforspotify.MyApplication;
-import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.model.Spotify;
 import ru.ra66it.updaterforspotify.rest.SpotifyApi;
+import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 import ru.ra66it.updaterforspotify.ui.activity.MainActivity;
-import ru.ra66it.updaterforspotify.utils.UtilsNetwork;
-
+import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
 
 /**
- * Created by 2Rabbit on 25.09.2017.
+ * Created by 2Rabbit on 07.01.2018.
  */
 
-public class PollService extends IntentService {
 
-    private static final String TAG = "PollService";
+public class PollService extends JobService {
 
+    private static final String TAG = PollService.class.getSimpleName();
     private static final long POLL_INTERVAL = TimeUnit.DAYS.toMillis(1);
-
-    public static final String ACTION_SHOW_NOTIFICATION =
-            "ru.ra66it.android.updaterforspotify.SHOW_NOTIFICATION";
-
-    public static final String PERM_PRIVATE =
-            "ru.ra66it.android.updaterforspotify.PRIVATE";
-
-    public static final String REQUEST_CODE = "REQUEST_CODE";
-    public static final String NOTIFICATION = "NOTIFICATION";
-
+    private static final int JOB_ID = 123;
+    public static final String NOTIFICATION_ID = "notification_id";
+    public static final String NOTIFICATION_CHANEL = "UFS_CHANEL_ID";
     public static final String LATEST_LINK = "latest_link";
     public static final String LATEST_VERSION = "latest_version";
     public static final String LATEST_VERSION_NAME = "latest_version_name";
-
     private String latestVersion;
     private String latestVersionName;
     private String latestLink;
 
+    private CompositeDisposable compositeDisposable;
+
     @Inject
     SpotifyApi spotifyApi;
 
-
-    public static Intent newIntent(Context context) {
-        return new Intent(context, PollService.class);
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        MyApplication.getApplicationComponent().inject(this);
+        Log.i(TAG, "Received an JobService");
+        compositeDisposable = new CompositeDisposable();
     }
+
 
     public static void setServiceAlarm(Context context, boolean isOn) {
-        Intent i = PollService.newIntent(context);
-        PendingIntent pi = PendingIntent.getService(context, 0, i, 0);
+        ComponentName component = new ComponentName(context, PollService.class);
+        JobInfo builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            builder = new JobInfo.Builder(JOB_ID, component)
+                    .setMinimumLatency(POLL_INTERVAL)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .setPersisted(true)
+                    .build();
+        } else {
+            builder = new JobInfo.Builder(JOB_ID, component)
+                    .setPeriodic(POLL_INTERVAL)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .setPersisted(true)
+                    .build();
+        }
 
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
         if (isOn) {
-            alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),
-                    POLL_INTERVAL, pi);
+            jobScheduler.schedule(builder);
         } else {
-            alarmManager.cancel(pi);
-            pi.cancel();
+            jobScheduler.cancelAll();
         }
 
-        QueryPreferneces.setAlarmOn(context, isOn);
     }
-
-    public static boolean isServiceAlarmOn(Context context) {
-        Intent i = PollService.newIntent(context);
-        PendingIntent pi = PendingIntent.getService(context, 0, i, PendingIntent.FLAG_NO_CREATE);
-        return pi != null;
-    }
-
-
-    public PollService() {
-        super(TAG);
-        MyApplication.getApplicationComponent().inject(this);
-    }
-
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-        Log.i(TAG, "Received an intent: " + intent);
-        if (!UtilsNetwork.isNetworkAvailable(this)) {
-            return;
-        }
-
+    public boolean onStartJob(JobParameters jobParameters) {
         if (QueryPreferneces.getNotificationDogFood(this)) {
-            notificationsSpotifyDF();
-        }
-
-        if (QueryPreferneces.getNotificationOrigin(this)) {
+            notificationsSpotifyDF(jobParameters);
+        } else if (QueryPreferneces.getNotificationOrigin(this)) {
             if (QueryPreferneces.isSpotifyBeta(this)) {
-                notificationsSpotifyOrigBeta();
+                notificationsSpotifyOrigBeta(jobParameters);
             } else {
-                notificationsSpotifyOrig();
+                notificationsSpotifyOrig(jobParameters);
             }
         }
 
+        return true;
     }
 
+    @Override
+    public boolean onStopJob(JobParameters jobParameters) {
+        return true;
+    }
 
-    private void notificationsSpotifyDF() {
+    private void notificationsSpotifyDF(JobParameters jobParameters) {
         spotifyApi.getLatestDogFood()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Spotify>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
                         latestLink = null;
                         latestVersionName = null;
                         latestVersion = null;
@@ -140,23 +136,25 @@ public class PollService extends IntentService {
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
+                        Log.e(TAG, e.toString());
                     }
 
                     @Override
                     public void onComplete() {
-                       makeNotification(0);
+                        makeNotification(0);
+                        jobFinished(jobParameters, true);
                     }
                 });
     }
 
-    private void notificationsSpotifyOrig() {
+    private void notificationsSpotifyOrig(JobParameters jobParameters) {
         spotifyApi.getLatestOrigin()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Spotify>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
                         latestLink = null;
                         latestVersionName = null;
                         latestVersion = null;
@@ -171,23 +169,25 @@ public class PollService extends IntentService {
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
+                        Log.e(TAG, e.toString());
                     }
 
                     @Override
                     public void onComplete() {
-                       makeNotification(1);
+                        makeNotification(1);
+                        jobFinished(jobParameters, true);
                     }
                 });
     }
 
-    private void notificationsSpotifyOrigBeta() {
+    private void notificationsSpotifyOrigBeta(JobParameters jobParameters) {
         spotifyApi.getLatestOriginBeta()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Spotify>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
                         latestLink = null;
                         latestVersionName = null;
                         latestVersion = null;
@@ -202,12 +202,13 @@ public class PollService extends IntentService {
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
+                        Log.e(TAG, e.toString());
                     }
 
                     @Override
                     public void onComplete() {
                         makeNotification(1);
+                        jobFinished(jobParameters, true);
                     }
                 });
     }
@@ -224,12 +225,13 @@ public class PollService extends IntentService {
         intentDownload.setAction(NotificationDownloadService.ACTION_DOWNLOAD);
         intentDownload.putExtra(LATEST_LINK, latestLink);
         intentDownload.putExtra(LATEST_VERSION_NAME, latestVersionName);
-        intentDownload.putExtra("notification_id", notificationId);
+        intentDownload.putExtra(NOTIFICATION_ID, notificationId);
         PendingIntent piDownload = PendingIntent.getService(this, notificationId, intentDownload,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
+
         //Notification
-        Notification notification = new NotificationCompat.Builder(this)
+        Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANEL)
                 .setTicker(resources.getString(R.string.app_name))
                 .setSmallIcon(R.mipmap.ic_notification)
                 .setContentTitle(getString(R.string.update_available))
@@ -244,16 +246,40 @@ public class PollService extends IntentService {
                         getString(R.string.install_now), piDownload)
                 .build();
 
-        showBackgroundNotification(notificationId, notification, latestVersion);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        makeNotificationChanel(notificationManager);
+
+        showNotification(notificationId, notificationManager, notification);
+
     }
 
-
-    private void showBackgroundNotification(int requestCode, Notification notification, String latestVersion) {
-        Intent i = new Intent(ACTION_SHOW_NOTIFICATION);
-        i.putExtra(REQUEST_CODE, requestCode);
-        i.putExtra(NOTIFICATION, notification);
-        i.putExtra(LATEST_VERSION, latestVersion);
-        sendOrderedBroadcast(i, PERM_PRIVATE, null, null, Activity.RESULT_OK, null, null);
+    private void makeNotificationChanel(NotificationManager notificationManager) {
+        //Show notification on Android O
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANEL, getString(R.string.notificaion_chanel_name), NotificationManager.IMPORTANCE_HIGH);
+            channel.enableLights(true);
+            channel.enableVibration(true);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
+    private void showNotification(int notificationId, NotificationManager notificationManager, Notification notification) {
+        if (notificationId == 0 && UtilsSpotify.isDogfoodUpdateAvailable(
+                UtilsSpotify.getInstalledSpotifyVersion(this), latestVersion)) {
+
+            notificationManager.notify(notificationId, notification);
+        } else if (notificationId == 1 && UtilsSpotify.isSpotifyUpdateAvailable(
+                UtilsSpotify.getInstalledSpotifyVersion(this), latestVersion)) {
+
+            notificationManager.notify(notificationId, notification);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.dispose();
+    }
 }

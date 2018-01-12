@@ -59,5 +59,6 @@
     <string name="intro_permission_text">This is required only for downloading the Spotify to your device</string>
     <string name="xml_dogfood_title">More about Dogfood</string>
     <string name="xml_dogfood_text">More about Spotify Dogfood on xda-developers</string>
+    <string name="notificaion_chanel_name">Jesus Christ, That\'s Jason Bourne!</string>
 
 </resources>

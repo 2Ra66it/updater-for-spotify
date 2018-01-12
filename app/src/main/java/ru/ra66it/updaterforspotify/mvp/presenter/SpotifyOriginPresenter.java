@@ -1,17 +1,17 @@
 package ru.ra66it.updaterforspotify.mvp.presenter;
 
 import android.content.Context;
-import android.support.design.widget.FloatingActionButton;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.model.Spotify;
 import ru.ra66it.updaterforspotify.mvp.view.BaseViewFragment;
 import ru.ra66it.updaterforspotify.rest.SpotifyApi;
+import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 import ru.ra66it.updaterforspotify.utils.UtilsDownloadSpotify;
 import ru.ra66it.updaterforspotify.utils.UtilsNetwork;
 import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
@@ -31,11 +31,13 @@ public class SpotifyOriginPresenter {
     private boolean hasError = false;
     private Context context;
     private SpotifyApi spotifyApi;
+    private CompositeDisposable compositeDisposable;
 
     public SpotifyOriginPresenter(Context context, BaseViewFragment viewFragment, SpotifyApi spotifyApi) {
         this.context = context;
         this.viewFragment = viewFragment;
         this.spotifyApi = spotifyApi;
+        this.compositeDisposable = new CompositeDisposable();
     }
 
     public void getLatestVersionSpotify() {
@@ -58,6 +60,7 @@ public class SpotifyOriginPresenter {
                 .subscribe(new Observer<Spotify>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
                         errorLayout(false);
                         viewFragment.hideNoInternetLayout();
                         latestVersionNumber = "0.0.0.0";
@@ -190,5 +193,8 @@ public class SpotifyOriginPresenter {
 
     }
 
+    public void onDispose() {
+        compositeDisposable.dispose();
+    }
 
 }

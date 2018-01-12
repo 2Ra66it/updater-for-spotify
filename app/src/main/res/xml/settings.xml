@@ -28,6 +28,7 @@
 
     <PreferenceCategory android:title="@string/about">
         <Preference
+            android:icon="@drawable/ic_paypal"
             android:key="donatePref"
             android:title="@string/donate"
             android:summary="@string/xml_donate_paypal">
@@ -37,6 +38,7 @@
         </Preference>
 
         <Preference
+            android:icon="@drawable/ic_xda"
             android:key="xdaPref"
             android:title="@string/xml_dogfood_title"
             android:summary="@string/xml_dogfood_text">
@@ -45,9 +47,19 @@
                 android:data="https://forum.xda-developers.com/android/apps-games/mod-spotify-dogfood-ad-free-spotify-t3632423/" />
         </Preference>
 
+        <Preference
+            android:icon="@drawable/ic_telegram"
+            android:key="tgPref"
+            android:title="Telegram Group"
+            android:summary="Telegram group users of Spotify Dogfood">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://t.me/spotifydogfood" />
+        </Preference>
+
 
         <Preference
-            android:icon="@mipmap/ic_github"
+            android:icon="@drawable/ic_github"
             android:key="githubPref"
             android:title="@string/github"
             android:summary="@string/xml_see_on_github">
