@@ -18,6 +18,7 @@ public class UtilsDownloadSpotify {
     public static void downloadSpotify(Context context, String url, String name) {
         //Remove unnecessary characters in the link
         String fullUrl = url.split(": ")[1];
+        String fullName = name.replace(" ", "_").replaceAll("\\.", "_");
 
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(fullUrl));
         request.setTitle(context.getString(R.string.downloading) + " " + name);
@@ -25,7 +26,7 @@ public class UtilsDownloadSpotify {
         request.setNotificationVisibility(DownloadManager.Request
                 .VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
-                name + ".apk");
+                fullName + ".apk");
 
         DownloadManager manager = (DownloadManager) context
                 .getSystemService(Context.DOWNLOAD_SERVICE);
