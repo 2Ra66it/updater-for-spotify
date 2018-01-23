@@ -142,7 +142,7 @@ public class PollService extends JobService {
                     @Override
                     public void onComplete() {
                         makeNotification(0);
-                        jobFinished(jobParameters, true);
+                        jobFinished(jobParameters, false);
                     }
                 });
     }
@@ -175,7 +175,7 @@ public class PollService extends JobService {
                     @Override
                     public void onComplete() {
                         makeNotification(1);
-                        jobFinished(jobParameters, true);
+                        jobFinished(jobParameters, false);
                     }
                 });
     }
@@ -208,7 +208,7 @@ public class PollService extends JobService {
                     @Override
                     public void onComplete() {
                         makeNotification(1);
-                        jobFinished(jobParameters, true);
+                        jobFinished(jobParameters, false);
                     }
                 });
     }
