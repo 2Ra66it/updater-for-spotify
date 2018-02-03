@@ -64,8 +64,8 @@ public class UtilsSpotify {
             return true;
         }
 
-        if (!(dfv.equals("dogfood") || dfv.contains("dogfood"))) {
-            installVers = Integer.parseInt(installedVersion.replaceAll("[a-z]", "").replaceAll("[.]", "").replaceAll("[-]", ""));
+        if (!(dfv.equals("dogfood") || !dfv.contains("dogfood"))) {
+            installVers = Integer.parseInt(installedVersion.replaceAll("[^0-9]", ""));
             int latestVers = Integer.parseInt(latestVersion.replaceAll("[.]", ""));
 
             return installVers < latestVers;
@@ -86,7 +86,7 @@ public class UtilsSpotify {
         }
 
         if (dfv.equals("dogfood") || dfv.contains("dogfood")) {
-            installVers = Integer.parseInt(installedVersion.replaceAll("[a-z]", "").replaceAll("[.]", "").replaceAll("[-]", ""));
+            installVers = Integer.parseInt(installedVersion.replaceAll("[^0-9]", ""));
             int latestVers = Integer.parseInt(latestVersion.replaceAll("[.]", ""));
 
             return installVers < latestVers;

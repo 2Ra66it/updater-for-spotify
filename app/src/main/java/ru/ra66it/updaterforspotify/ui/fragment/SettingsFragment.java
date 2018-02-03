@@ -63,17 +63,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         prefDownloadBeta.setChecked(QueryPreferneces.isSpotifyBeta(getActivity()));
         prefDownloadBeta.setOnPreferenceClickListener(preference -> {
             if (prefDownloadBeta.isChecked()) {
-                new AlertDialog.Builder(getActivity(), R.style.AlertTheme)
-                        .setMessage(R.string.if_have_not_beta)
-                        .setPositiveButton(android.R.string.ok, null)
-                        .create()
-                        .show();
+                showDialog(getString(R.string.if_have_not_beta));
             } else {
-                new AlertDialog.Builder(getActivity(), R.style.AlertTheme)
-                        .setMessage(R.string.if_have_beta)
-                        .setPositiveButton(android.R.string.ok, null)
-                        .create()
-                        .show();
+                showDialog(getString(R.string.if_have_beta));
             }
             return false;
         });
@@ -86,9 +78,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             if (i >= 6) {
                 QueryPreferneces.setNotificationDogFoodC(getContext(), !QueryPreferneces.getNotificationDogFoodC(getContext()));
                 if (QueryPreferneces.getNotificationDogFoodC(getContext())) {
-                    Toast.makeText(getContext(), R.string.dfc_is_available, Toast.LENGTH_SHORT).show();
+                    showDialogWithTitle(getString(R.string.dfc_is_available), getString(R.string.if_have_dogfood));
                 } else {
-                    Toast.makeText(getContext(), R.string.dfc_is_not_available, Toast.LENGTH_SHORT).show();
+                    showDialogWithTitle(getString(R.string.dfc_is_not_available), getString(R.string.if_have_dogfoodc));
                 }
                 i = 0;
             }
@@ -96,6 +88,25 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             return true;
         });
 
+    }
+
+    private void showDialog(String message) {
+        new AlertDialog.Builder(getActivity(), R.style.AlertTheme)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, null)
+                .setCancelable(false)
+                .create()
+                .show();
+    }
+
+    private void showDialogWithTitle(String title, String message) {
+        new AlertDialog.Builder(getActivity(), R.style.AlertTheme)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, null)
+                .setCancelable(false)
+                .create()
+                .show();
     }
 
     @Override

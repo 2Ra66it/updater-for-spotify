@@ -48,6 +48,8 @@
     <string name="xml_download_beta_text">Download the latest version of Spotify Beta</string>
     <string name="if_have_not_beta">If you have installed Spotify is not beta, please delete it!</string>
     <string name="if_have_beta">If you have installed Spotify Beta, please delete it!</string>
+    <string name="if_have_dogfoodc">If you have installed Dogfood CORE, please delete it!</string>
+    <string name="if_have_dogfood">If you have installed Spotify Dogfood, please delete it!</string>
 
 
 

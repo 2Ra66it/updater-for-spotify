@@ -22,7 +22,6 @@ import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
 public class SpotifyOriginPresenter {
 
     private BaseViewFragment view;
-    private String installVersion;
     private boolean hasError = false;
     private Context context;
     private FullSpotifyModel fullSpotifyModel;
@@ -104,7 +103,7 @@ public class SpotifyOriginPresenter {
     private void fillData() {
         view.setLatestVersionAvailable(fullSpotifyModel.getLatestVersionName());
         if (UtilsSpotify.isSpotifyInstalled(context) &&
-                UtilsSpotify.isSpotifyUpdateAvailable(installVersion, fullSpotifyModel.getLatestVersionNumber())) {
+                UtilsSpotify.isSpotifyUpdateAvailable(UtilsSpotify.getInstalledSpotifyVersion(context), fullSpotifyModel.getLatestVersionNumber())) {
             // Install new version
             view.showFAB();
             view.showCardView();
@@ -130,8 +129,7 @@ public class SpotifyOriginPresenter {
         if (UtilsNetwork.isNetworkAvailable(context))
             view.showCardView();
         if (UtilsSpotify.isSpotifyInstalled(context)) {
-            installVersion = UtilsSpotify.getInstalledSpotifyVersion(context);
-            view.setInstalledVersion(installVersion);
+            view.setInstalledVersion(UtilsSpotify.getInstalledSpotifyVersion(context));
             if (!UtilsSpotify.isDogFoodInstalled(context)) {
                 view.setUpdateImageFAB();
             }
