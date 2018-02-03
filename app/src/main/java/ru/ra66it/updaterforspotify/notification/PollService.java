@@ -27,6 +27,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import ru.ra66it.updaterforspotify.MyApplication;
 import ru.ra66it.updaterforspotify.R;
+import ru.ra66it.updaterforspotify.model.FullSpotifyModel;
 import ru.ra66it.updaterforspotify.model.Spotify;
 import ru.ra66it.updaterforspotify.rest.SpotifyApi;
 import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
@@ -48,11 +49,9 @@ public class PollService extends JobService {
     public static final String LATEST_LINK = "latest_link";
     public static final String LATEST_VERSION = "latest_version";
     public static final String LATEST_VERSION_NAME = "latest_version_name";
-    private String latestVersion;
-    private String latestVersionName;
-    private String latestLink;
 
     private CompositeDisposable compositeDisposable;
+    private FullSpotifyModel fullSpotifyModel;
 
     @Inject
     SpotifyApi spotifyApi;
@@ -65,13 +64,13 @@ public class PollService extends JobService {
         compositeDisposable = new CompositeDisposable();
     }
 
-
     public static void setServiceAlarm(Context context, boolean isOn) {
         ComponentName component = new ComponentName(context, PollService.class);
         JobInfo builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             builder = new JobInfo.Builder(JOB_ID, component)
                     .setMinimumLatency(POLL_INTERVAL)
+                    .setOverrideDeadline(POLL_INTERVAL)
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                     .setPersisted(true)
                     .build();
@@ -86,6 +85,7 @@ public class PollService extends JobService {
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
         if (isOn) {
+            jobScheduler.cancel(JOB_ID);
             jobScheduler.schedule(builder);
         } else {
             jobScheduler.cancelAll();
@@ -97,6 +97,8 @@ public class PollService extends JobService {
     public boolean onStartJob(JobParameters jobParameters) {
         if (QueryPreferneces.getNotificationDogFood(this)) {
             notificationsSpotifyDF(jobParameters);
+        } else if (QueryPreferneces.getNotificationDogFoodC(this)) {
+            notificationsSpotifyDFC(jobParameters);
         } else if (QueryPreferneces.getNotificationOrigin(this)) {
             if (QueryPreferneces.isSpotifyBeta(this)) {
                 notificationsSpotifyOrigBeta(jobParameters);
@@ -114,106 +116,78 @@ public class PollService extends JobService {
     }
 
     private void notificationsSpotifyDF(JobParameters jobParameters) {
-        spotifyApi.getLatestDogFood()
+        compositeDisposable.add(spotifyApi.getLatestDogFood()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Spotify>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        compositeDisposable.add(d);
-                        latestLink = null;
-                        latestVersionName = null;
-                        latestVersion = null;
-                    }
+                .doOnSubscribe(disposable -> {
+                    compositeDisposable.add(disposable);
+                })
+                .doOnComplete(() -> {
+                    makeNotification(0, fullSpotifyModel);
+                    jobFinished(jobParameters, true);
+                })
+                .subscribe(spotify -> {
+                    fullSpotifyModel = new FullSpotifyModel(spotify);
+                }, throwable -> {
+                    Log.i(TAG, throwable.getMessage());
+                }));
+    }
 
-                    @Override
-                    public void onNext(Spotify spotify) {
-                        latestLink = spotify.getBody();
-                        latestVersionName = spotify.getName();
-                        latestVersion = spotify.getTagName();
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, e.toString());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        makeNotification(0);
-                        jobFinished(jobParameters, false);
-                    }
-                });
+    private void notificationsSpotifyDFC(JobParameters jobParameters) {
+        compositeDisposable.add(spotifyApi.getLatestDogFoodC()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(disposable -> {
+                    compositeDisposable.add(disposable);
+                })
+                .doOnComplete(() -> {
+                    makeNotification(0, fullSpotifyModel);
+                    jobFinished(jobParameters, true);
+                })
+                .subscribe(spotify -> {
+                    fullSpotifyModel = new FullSpotifyModel(spotify);
+                }, throwable -> {
+                    Log.i(TAG, throwable.getMessage());
+                }));
     }
 
     private void notificationsSpotifyOrig(JobParameters jobParameters) {
-        spotifyApi.getLatestOrigin()
+        compositeDisposable.add(spotifyApi.getLatestOrigin()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Spotify>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        compositeDisposable.add(d);
-                        latestLink = null;
-                        latestVersionName = null;
-                        latestVersion = null;
-                    }
-
-                    @Override
-                    public void onNext(Spotify spotify) {
-                        latestLink = spotify.getBody();
-                        latestVersionName = spotify.getName();
-                        latestVersion = spotify.getTagName();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, e.toString());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        makeNotification(1);
-                        jobFinished(jobParameters, false);
-                    }
-                });
+                .doOnSubscribe(disposable -> {
+                    compositeDisposable.add(disposable);
+                })
+                .doOnComplete(() -> {
+                    makeNotification(1, fullSpotifyModel);
+                    jobFinished(jobParameters, true);
+                })
+                .subscribe(spotify -> {
+                    fullSpotifyModel = new FullSpotifyModel(spotify);
+                }, throwable -> {
+                    Log.i(TAG, throwable.getMessage());
+                }));
     }
 
     private void notificationsSpotifyOrigBeta(JobParameters jobParameters) {
-        spotifyApi.getLatestOriginBeta()
+        compositeDisposable.add(spotifyApi.getLatestOriginBeta()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Spotify>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        compositeDisposable.add(d);
-                        latestLink = null;
-                        latestVersionName = null;
-                        latestVersion = null;
-                    }
-
-                    @Override
-                    public void onNext(Spotify spotify) {
-                        latestLink = spotify.getBody();
-                        latestVersionName = spotify.getName();
-                        latestVersion = spotify.getTagName();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, e.toString());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        makeNotification(1);
-                        jobFinished(jobParameters, false);
-                    }
-                });
+                .doOnSubscribe(disposable -> {
+                    compositeDisposable.add(disposable);
+                })
+                .doOnComplete(() -> {
+                    makeNotification(1, fullSpotifyModel);
+                    jobFinished(jobParameters, true);
+                })
+                .subscribe(spotify -> {
+                    fullSpotifyModel = new FullSpotifyModel(spotify);
+                }, throwable -> {
+                    Log.i(TAG, throwable.getMessage());
+                }));
     }
 
-    private void makeNotification(int notificationId) {
+    private void makeNotification(int notificationId, FullSpotifyModel fullSpotifyModel) {
         //Launch app
         Resources resources = getResources();
         Intent i = new Intent(this, MainActivity.class)
@@ -223,8 +197,8 @@ public class PollService extends JobService {
         //Download spotify
         Intent intentDownload = new Intent(this, NotificationDownloadService.class);
         intentDownload.setAction(NotificationDownloadService.ACTION_DOWNLOAD);
-        intentDownload.putExtra(LATEST_LINK, latestLink);
-        intentDownload.putExtra(LATEST_VERSION_NAME, latestVersionName);
+        intentDownload.putExtra(LATEST_LINK, fullSpotifyModel.getLatestLink());
+        intentDownload.putExtra(LATEST_VERSION_NAME, fullSpotifyModel.getLatestVersionName());
         intentDownload.putExtra(NOTIFICATION_ID, notificationId);
         PendingIntent piDownload = PendingIntent.getService(this, notificationId, intentDownload,
                 PendingIntent.FLAG_UPDATE_CURRENT);
@@ -236,7 +210,7 @@ public class PollService extends JobService {
                 .setSmallIcon(R.mipmap.ic_notification)
                 .setContentTitle(getString(R.string.update_available))
                 .setContentText(getString(R.string.new_version) + " "
-                        + latestVersionName + " " + getString(R.string.available))
+                        + fullSpotifyModel.getLatestVersionName() + " " + getString(R.string.available))
                 .setContentIntent(pi)
                 .setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_ALL)
@@ -267,11 +241,11 @@ public class PollService extends JobService {
 
     private void showNotification(int notificationId, NotificationManager notificationManager, Notification notification) {
         if (notificationId == 0 && UtilsSpotify.isDogfoodUpdateAvailable(
-                UtilsSpotify.getInstalledSpotifyVersion(this), latestVersion)) {
+                UtilsSpotify.getInstalledSpotifyVersion(this), fullSpotifyModel.getLatestVersionNumber())) {
 
             notificationManager.notify(notificationId, notification);
         } else if (notificationId == 1 && UtilsSpotify.isSpotifyUpdateAvailable(
-                UtilsSpotify.getInstalledSpotifyVersion(this), latestVersion)) {
+                UtilsSpotify.getInstalledSpotifyVersion(this), fullSpotifyModel.getLatestVersionNumber())) {
 
             notificationManager.notify(notificationId, notification);
         }
@@ -280,6 +254,8 @@ public class PollService extends JobService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        compositeDisposable.dispose();
+        if (compositeDisposable != null && !compositeDisposable.isDisposed()) {
+            compositeDisposable.dispose();
+        }
     }
 }

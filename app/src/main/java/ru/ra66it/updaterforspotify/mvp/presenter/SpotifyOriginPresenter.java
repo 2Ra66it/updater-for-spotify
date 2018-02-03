@@ -2,13 +2,11 @@ package ru.ra66it.updaterforspotify.mvp.presenter;
 
 import android.content.Context;
 
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import ru.ra66it.updaterforspotify.R;
-import ru.ra66it.updaterforspotify.model.Spotify;
+import ru.ra66it.updaterforspotify.model.FullSpotifyModel;
 import ru.ra66it.updaterforspotify.mvp.view.BaseViewFragment;
 import ru.ra66it.updaterforspotify.rest.SpotifyApi;
 import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
@@ -23,19 +21,17 @@ import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
 
 public class SpotifyOriginPresenter {
 
-    private BaseViewFragment viewFragment;
-    private String latestLink;
-    private String latestVersionName;
-    private String latestVersionNumber;
+    private BaseViewFragment view;
     private String installVersion;
     private boolean hasError = false;
     private Context context;
+    private FullSpotifyModel fullSpotifyModel;
     private SpotifyApi spotifyApi;
     private CompositeDisposable compositeDisposable;
 
-    public SpotifyOriginPresenter(Context context, BaseViewFragment viewFragment, SpotifyApi spotifyApi) {
+    public SpotifyOriginPresenter(Context context, BaseViewFragment view, SpotifyApi spotifyApi) {
         this.context = context;
-        this.viewFragment = viewFragment;
+        this.view = view;
         this.spotifyApi = spotifyApi;
         this.compositeDisposable = new CompositeDisposable();
     }
@@ -49,152 +45,123 @@ public class SpotifyOriginPresenter {
             }
         } else {
             errorLayout(true);
-            viewFragment.showNoInternetLayout();
+            view.showNoInternetLayout();
         }
     }
 
-    public void loadDataBeta() {
-        spotifyApi.getLatestOriginBeta()
+    private void loadDataBeta() {
+        compositeDisposable.add(spotifyApi.getLatestOriginBeta()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Spotify>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        compositeDisposable.add(d);
-                        errorLayout(false);
-                        viewFragment.hideNoInternetLayout();
-                        latestVersionNumber = "0.0.0.0";
-                        viewFragment.showCardProgress();
-                    }
-
-                    @Override
-                    public void onNext(Spotify spotify) {
-                        latestLink = spotify.getBody();
-                        latestVersionName = spotify.getName();
-                        latestVersionNumber = spotify.getTagName();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        errorLayout(true);
-                        viewFragment.showErrorSnackbar(R.string.error);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        fillData();
-                        viewFragment.hideCardProgress();
-                    }
-                });
-
-
+                .doOnSubscribe(d -> {
+                    compositeDisposable.add(d);
+                    errorLayout(false);
+                    view.hideNoInternetLayout();
+                    view.showProgress();
+                })
+                .doOnComplete(() -> {
+                    fillData();
+                    view.hideProgress();
+                    view.showLayoutCards();
+                })
+                .subscribe(spotify -> {
+                    fullSpotifyModel = new FullSpotifyModel(spotify);
+                }, throwable -> {
+                    errorLayout(true);
+                    view.hideProgress();
+                    view.showErrorSnackbar(R.string.error);
+                }));
     }
 
-    public void loadDataOrigin() {
-        spotifyApi.getLatestOrigin()
+    private void loadDataOrigin() {
+        compositeDisposable.add(spotifyApi.getLatestOrigin()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Spotify>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        errorLayout(false);
-                        viewFragment.hideNoInternetLayout();
-                        latestVersionNumber = "0.0.0.0";
-                        viewFragment.showCardProgress();
-                    }
-
-                    @Override
-                    public void onNext(Spotify spotify) {
-                        latestLink = spotify.getBody();
-                        latestVersionName = spotify.getName();
-                        latestVersionNumber = spotify.getTagName();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        errorLayout(true);
-                        viewFragment.showErrorSnackbar(R.string.error);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        fillData();
-                        viewFragment.hideCardProgress();
-                    }
-                });
-
+                .doOnSubscribe(d -> {
+                    compositeDisposable.add(d);
+                    errorLayout(false);
+                    view.hideNoInternetLayout();
+                    view.showProgress();
+                })
+                .doOnComplete(() -> {
+                    fillData();
+                    view.hideProgress();
+                    view.showLayoutCards();
+                })
+                .subscribe(spotify -> {
+                    fullSpotifyModel = new FullSpotifyModel(spotify);
+                }, throwable -> {
+                    errorLayout(true);
+                    view.hideProgress();
+                    view.showErrorSnackbar(R.string.error);
+                }));
     }
-
 
     public void downloadLatestVersion() {
-        UtilsDownloadSpotify.downloadSpotify(context, latestLink, latestVersionName);
+        UtilsDownloadSpotify.downloadSpotify(context, fullSpotifyModel.getLatestLink(), fullSpotifyModel.getLatestVersionName());
     }
 
-
-    public void fillData() {
-        viewFragment.setLatestVersionAvailable(latestVersionName);
+    private void fillData() {
+        view.setLatestVersionAvailable(fullSpotifyModel.getLatestVersionName());
         if (UtilsSpotify.isSpotifyInstalled(context) &&
-                UtilsSpotify.isSpotifyUpdateAvailable(installVersion, latestVersionNumber)) {
+                UtilsSpotify.isSpotifyUpdateAvailable(installVersion, fullSpotifyModel.getLatestVersionNumber())) {
             // Install new version
-            viewFragment.showFAB();
-            viewFragment.showCardView();
+            view.showFAB();
+            view.showCardView();
 
         } else if (!UtilsSpotify.isSpotifyInstalled(context)) {
             // Install spotify now
-            viewFragment.showFAB();
-            viewFragment.showCardView();
+            view.showFAB();
+            view.showCardView();
 
         } else if (UtilsSpotify.isDogFoodInstalled(context)) {
-            viewFragment.showFAB();
-            viewFragment.showCardView();
+            view.showFAB();
+            view.showCardView();
 
         } else {
             //have latest version
-            viewFragment.hideFAB();
-            viewFragment.hideCardView();
-            viewFragment.setInstalledVersion(context.getString(R.string.up_to_date));
+            view.hideFAB();
+            view.hideCardView();
+            view.setInstalledVersion(context.getString(R.string.up_to_date));
         }
-
-
     }
 
     public void checkInstalledSpotifyVersion() {
         if (UtilsNetwork.isNetworkAvailable(context))
-            viewFragment.showCardView();
-            if (UtilsSpotify.isSpotifyInstalled(context)) {
-                installVersion = UtilsSpotify.getInstalledSpotifyVersion(context);
-                viewFragment.setInstalledVersion(installVersion);
-                if (!UtilsSpotify.isDogFoodInstalled(context)) {
-                    viewFragment.setUpdateImageFAB();
-                }
-                fillData();
-            } else {
-                viewFragment.showFAB();
-                viewFragment.setInstallImageFAB();
-                viewFragment.setInstalledVersion(context.getString(R.string.spotify_not_installed));
-                if (hasError) {
-                    viewFragment.hideFAB();
-                }
+            view.showCardView();
+        if (UtilsSpotify.isSpotifyInstalled(context)) {
+            installVersion = UtilsSpotify.getInstalledSpotifyVersion(context);
+            view.setInstalledVersion(installVersion);
+            if (!UtilsSpotify.isDogFoodInstalled(context)) {
+                view.setUpdateImageFAB();
             }
-
+            getLatestVersionSpotify();
+        } else {
+            view.showFAB();
+            view.setInstallImageFAB();
+            view.setInstalledVersion(context.getString(R.string.spotify_not_installed));
+            if (hasError) {
+                view.hideFAB();
+            }
+        }
     }
 
-
-    public void errorLayout(boolean bool) {
+    private void errorLayout(boolean bool) {
         if (bool) {
             hasError = true;
-            viewFragment.hideLayoutCards();
-            viewFragment.hideFAB();
+            view.hideLayoutCards();
+            view.hideFAB();
         } else {
             hasError = false;
-            viewFragment.showLayoutCards();
-            viewFragment.hideFAB();
+            view.showLayoutCards();
+            view.hideFAB();
         }
-
     }
 
     public void onDispose() {
-        compositeDisposable.dispose();
+        if (compositeDisposable != null && !compositeDisposable.isDisposed()) {
+            compositeDisposable.dispose();
+        }
     }
 
 }

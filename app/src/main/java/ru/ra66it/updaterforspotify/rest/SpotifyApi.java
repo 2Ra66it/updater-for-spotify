@@ -18,6 +18,9 @@ public interface SpotifyApi {
     @GET("repos/sergiocastell/spotify-dogfood/releases/latest")
     Observable<Spotify> getLatestDogFood();
 
+    @GET("repos/spotify-dogfood/dogfood-core-bin/releases/latest")
+    Observable<Spotify> getLatestDogFoodC();
+
     @GET("repos/spotify-dogfood/spotify-bin/releases/latest")
     Observable<Spotify> getLatestOrigin();
 

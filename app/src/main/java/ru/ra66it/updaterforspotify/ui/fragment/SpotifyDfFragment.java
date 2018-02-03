@@ -78,12 +78,12 @@ public class SpotifyDfFragment extends Fragment implements BaseViewFragment {
 
         swipeToRefresh.setOnRefreshListener(() -> {
             swipeToRefresh.setRefreshing(false);
-            mPresenter.getLatestVersionDf();
+            mPresenter.getLatestDogfood();
         });
 
         fabDownloadButton.setOnClickListener(view -> mPresenter.downloadLatestVersion());
 
-        mPresenter.getLatestVersionDf();
+        mPresenter.getLatestDogfood();
         return v;
     }
 
@@ -102,15 +102,14 @@ public class SpotifyDfFragment extends Fragment implements BaseViewFragment {
     }
 
     @Override
-    public void showCardProgress() {
-        lblLatestVersion.setVisibility(GONE);
+    public void showProgress() {
+        layoutCards.setVisibility(GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void hideCardProgress() {
+    public void hideProgress() {
         progressBar.setVisibility(View.GONE);
-        lblLatestVersion.setVisibility(View.VISIBLE);
     }
 
     @Override

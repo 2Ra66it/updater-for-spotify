@@ -2,15 +2,14 @@ package ru.ra66it.updaterforspotify.mvp.presenter;
 
 import android.content.Context;
 
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import ru.ra66it.updaterforspotify.R;
-import ru.ra66it.updaterforspotify.model.Spotify;
+import ru.ra66it.updaterforspotify.model.FullSpotifyModel;
 import ru.ra66it.updaterforspotify.mvp.view.BaseViewFragment;
 import ru.ra66it.updaterforspotify.rest.SpotifyApi;
+import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 import ru.ra66it.updaterforspotify.utils.UtilsDownloadSpotify;
 import ru.ra66it.updaterforspotify.utils.UtilsNetwork;
 import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
@@ -22,133 +21,145 @@ import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
 
 public class SpotifyDfPresenter {
 
-    private BaseViewFragment viewFragment;
-    private String latestLink;
-    private String latestVersionName;
-    private String latestVersionNumber;
+    private BaseViewFragment view;
     private String installVersion;
     private boolean hasError = false;
     private Context context;
+    private FullSpotifyModel fullSpotifyModel;
     private SpotifyApi spotifyApi;
     private CompositeDisposable compositeDisposable;
 
-    public SpotifyDfPresenter(Context context, BaseViewFragment viewFragment, SpotifyApi spotifyApi) {
+    public SpotifyDfPresenter(Context context, BaseViewFragment view, SpotifyApi spotifyApi) {
         this.context = context;
-        this.viewFragment = viewFragment;
+        this.view = view;
         this.spotifyApi = spotifyApi;
         this.compositeDisposable = new CompositeDisposable();
     }
 
-
-    public void getLatestVersionDf() {
+    public void getLatestDogfood() {
         if (UtilsNetwork.isNetworkAvailable(context)) {
-            spotifyApi.getLatestDogFood()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<Spotify>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            compositeDisposable.add(d);
-                            errorLayout(false);
-                            viewFragment.hideNoInternetLayout();
-                            viewFragment.showCardProgress();
-                            latestVersionNumber = "0.0.0.0";
-                        }
-
-                        @Override
-                        public void onNext(Spotify spotify) {
-                            latestLink = spotify.getBody();
-                            latestVersionName = spotify.getName();
-                            latestVersionNumber = spotify.getTagName();
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            errorLayout(true);
-                            viewFragment.showErrorSnackbar(R.string.error);
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            fillDataDf();
-                            viewFragment.hideCardProgress();
-                        }
-                    });
-
-
+            if (QueryPreferneces.getNotificationDogFoodC(context)) {
+                loadLatestDFC();
+            } else {
+                loadLatestDF();
+            }
         } else {
             errorLayout(true);
-            viewFragment.showNoInternetLayout();
+            view.showNoInternetLayout();
         }
     }
 
-
-    public void downloadLatestVersion() {
-        UtilsDownloadSpotify.downloadSpotify(context, latestLink, latestVersionName);
+    public void loadLatestDF() {
+        compositeDisposable.add(spotifyApi.getLatestDogFood()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(d -> {
+                    compositeDisposable.add(d);
+                    errorLayout(true);
+                    view.hideNoInternetLayout();
+                    view.showProgress();
+                })
+                .doOnComplete(() -> {
+                    fillDataDf();
+                    view.hideProgress();
+                    view.showLayoutCards();
+                })
+                .subscribe(spotify -> {
+                    fullSpotifyModel = new FullSpotifyModel(spotify);
+                }, throwable -> {
+                    errorLayout(true);
+                    view.hideProgress();
+                    view.showErrorSnackbar(R.string.error);
+                }));
     }
 
+    public void loadLatestDFC() {
+        compositeDisposable.add(spotifyApi.getLatestDogFoodC()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(d -> {
+                    compositeDisposable.add(d);
+                    errorLayout(true);
+                    view.hideNoInternetLayout();
+                    view.showProgress();
+                })
+                .doOnComplete(() -> {
+                    fillDataDf();
+                    view.hideProgress();
+                    view.showLayoutCards();
+                })
+                .subscribe(spotify -> {
+                    fullSpotifyModel = new FullSpotifyModel(spotify);
+                }, throwable -> {
+                    errorLayout(true);
+                    view.hideProgress();
+                    view.showErrorSnackbar(R.string.error);
+                }));
+    }
 
-    public void fillDataDf() {
-        viewFragment.setLatestVersionAvailable(latestVersionName);
+    public void downloadLatestVersion() {
+        UtilsDownloadSpotify.downloadSpotify(context, fullSpotifyModel.getLatestLink(), fullSpotifyModel.getLatestVersionName());
+    }
+
+    private void fillDataDf() {
+        view.setLatestVersionAvailable(fullSpotifyModel.getLatestVersionName());
         if (UtilsSpotify.isSpotifyInstalled(context) &&
-                UtilsSpotify.isDogfoodUpdateAvailable(installVersion, latestVersionNumber)) {
+                UtilsSpotify.isDogfoodUpdateAvailable(installVersion, fullSpotifyModel.getLatestVersionNumber())) {
             // Install new version
-            viewFragment.showFAB();
-            viewFragment.showCardView();
+            view.showFAB();
+            view.showCardView();
 
         } else if (!UtilsSpotify.isSpotifyInstalled(context)) {
             // Install spotify now
-            viewFragment.showFAB();
-            viewFragment.showCardView();
+            view.showFAB();
+            view.showCardView();
 
         } else if (!UtilsSpotify.isDogFoodInstalled(context)) {
-            viewFragment.showFAB();
-            viewFragment.showCardView();
+            view.showFAB();
+            view.showCardView();
 
         } else {
             //have latest version
-            viewFragment.hideFAB();
-            viewFragment.hideCardView();
-            viewFragment.setInstalledVersion(context.getString(R.string.up_to_date));
+            view.hideFAB();
+            view.hideCardView();
+            view.setInstalledVersion(context.getString(R.string.up_to_date));
         }
-
-
     }
 
     public void checkInstalledSpotifyDfVersion() {
         if (UtilsNetwork.isNetworkAvailable(context))
-            viewFragment.showCardView();
+            view.showCardView();
         if (UtilsSpotify.isSpotifyInstalled(context)) {
             installVersion = UtilsSpotify.getInstalledSpotifyVersion(context);
+            view.setInstalledVersion(installVersion);
             if (UtilsSpotify.isDogFoodInstalled(context)) {
-                viewFragment.setUpdateImageFAB();
+                view.setUpdateImageFAB();
             }
-            fillDataDf();
         } else {
-            viewFragment.showFAB();
-            viewFragment.setInstallImageFAB();
-            viewFragment.setInstalledVersion(context.getString(R.string.dogfood_not_installed));
+            view.showFAB();
+            view.setInstallImageFAB();
+            view.setInstalledVersion(context.getString(R.string.dogfood_not_installed));
             if (hasError) {
-                viewFragment.hideFAB();
+                view.hideFAB();
             }
         }
     }
 
-    public void errorLayout(boolean bool) {
+    private void errorLayout(boolean bool) {
         if (bool) {
             hasError = true;
-            viewFragment.hideLayoutCards();
-            viewFragment.hideFAB();
+            view.hideLayoutCards();
+            view.hideFAB();
         } else {
             hasError = false;
-            viewFragment.showLayoutCards();
-            viewFragment.hideFAB();
+            view.showLayoutCards();
+            view.hideFAB();
         }
-
     }
 
     public void onDispose() {
-        compositeDisposable.dispose();
+        if (compositeDisposable != null && !compositeDisposable.isDisposed()) {
+            compositeDisposable.dispose();
+        }
     }
-
 }

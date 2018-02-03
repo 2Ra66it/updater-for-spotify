@@ -104,15 +104,14 @@ public class SpotifyOriginFragment extends Fragment implements BaseViewFragment 
     }
 
     @Override
-    public void showCardProgress() {
-        lblLatestVersion.setVisibility(GONE);
+    public void showProgress() {
+        layoutCards.setVisibility(GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void hideCardProgress() {
+    public void hideProgress() {
         progressBar.setVisibility(View.GONE);
-        lblLatestVersion.setVisibility(View.VISIBLE);
     }
 
     @Override

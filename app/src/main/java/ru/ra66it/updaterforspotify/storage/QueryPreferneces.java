@@ -14,6 +14,7 @@ public class QueryPreferneces {
     private static final String PREF_IS_ALARM_ON = "is_alarm_on";
     private static final String PREF_IS_BETA = "is_beta";
     private static final String PREF_IS_FIRST = "if_first";
+    private static final String PREF_SECRET = "is_secret";
 
 
     public static boolean getNotificationDogFood(Context context) {
@@ -52,18 +53,17 @@ public class QueryPreferneces {
                 .apply();
     }
 
-    public static boolean isAlarmOn(Context context) {
+    public static boolean getNotificationDogFoodC(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(PREF_IS_ALARM_ON, false);
+                .getBoolean(PREF_SECRET, false);
     }
 
-    public static void setAlarmOn(Context context, boolean isOn) {
+    public static void setNotificationDogFoodC(Context context, boolean isOn) {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
-                .putBoolean(PREF_IS_ALARM_ON, isOn)
+                .putBoolean(PREF_SECRET, isOn)
                 .apply();
     }
-
 
     public static boolean isFirstLaunch(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)

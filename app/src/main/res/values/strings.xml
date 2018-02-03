@@ -60,5 +60,8 @@
     <string name="xml_dogfood_title">More about Dogfood</string>
     <string name="xml_dogfood_text">More about Spotify Dogfood on xda-developers</string>
     <string name="notificaion_chanel_name">Jesus Christ, That\'s Jason Bourne!</string>
+    <string name="info">Info</string>
+    <string name="dfc_is_available">Dogfood Core is available</string>
+    <string name="dfc_is_not_available">Dogfood is available</string>
 
 </resources>

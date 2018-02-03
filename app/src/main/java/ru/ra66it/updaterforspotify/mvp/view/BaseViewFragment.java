@@ -9,9 +9,9 @@ package ru.ra66it.updaterforspotify.mvp.view;
 
 public interface BaseViewFragment  {
 
-    void showCardProgress();
+    void showProgress();
 
-    void hideCardProgress();
+    void hideProgress();
 
     void showErrorSnackbar(int stringId);
 
