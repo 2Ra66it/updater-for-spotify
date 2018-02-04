@@ -55,7 +55,6 @@ public class UtilsSpotify {
 
 
     public static Boolean isSpotifyUpdateAvailable(String installedVersion, String latestVersion) {
-        int installVers;
         String dfv;
 
         if (!installedVersion.equals("")) {
@@ -65,7 +64,7 @@ public class UtilsSpotify {
         }
 
         if (!(dfv.equals("dogfood") || !dfv.contains("dogfood"))) {
-            installVers = Integer.parseInt(installedVersion.replaceAll("[^0-9]", ""));
+            int installVers = Integer.parseInt(installedVersion.replaceAll("[^0-9]", ""));
             int latestVers = Integer.parseInt(latestVersion.replaceAll("[.]", ""));
 
             return installVers < latestVers;
@@ -76,7 +75,6 @@ public class UtilsSpotify {
     }
 
     public static Boolean isDogfoodUpdateAvailable(String installedVersion, String latestVersion) {
-        int installVers;
         String dfv;
 
         if (!installedVersion.equals("")) {
@@ -86,7 +84,7 @@ public class UtilsSpotify {
         }
 
         if (dfv.equals("dogfood") || dfv.contains("dogfood")) {
-            installVers = Integer.parseInt(installedVersion.replaceAll("[^0-9]", ""));
+            int installVers = Integer.parseInt(installedVersion.replaceAll("[^0-9]", ""));
             int latestVers = Integer.parseInt(latestVersion.replaceAll("[.]", ""));
 
             return installVers < latestVers;

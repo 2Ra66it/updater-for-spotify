@@ -2,19 +2,16 @@ package ru.ra66it.updaterforspotify.ui.fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.support.v7.app.AlertDialog;
-import android.widget.Toast;
 
 import ru.ra66it.updaterforspotify.BuildConfig;
-import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
+import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 
 
 /**
@@ -63,9 +60,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         prefDownloadBeta.setChecked(QueryPreferneces.isSpotifyBeta(getActivity()));
         prefDownloadBeta.setOnPreferenceClickListener(preference -> {
             if (prefDownloadBeta.isChecked()) {
-                showDialog(getString(R.string.if_have_not_beta));
+                showDialogWithTitle(getString(R.string.spotify_beta_available), getString(R.string.if_have_not_beta));
             } else {
-                showDialog(getString(R.string.if_have_beta));
+                showDialogWithTitle(getString(R.string.spotify_origin_is_available), getString(R.string.if_have_beta));
             }
             return false;
         });
@@ -76,11 +73,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         prefAppInfo.setOnPreferenceClickListener(preference -> {
             i++;
             if (i >= 6) {
-                QueryPreferneces.setNotificationDogFoodC(getContext(), !QueryPreferneces.getNotificationDogFoodC(getContext()));
-                if (QueryPreferneces.getNotificationDogFoodC(getContext())) {
+                QueryPreferneces.setNotificationDogFoodC(getActivity(), !QueryPreferneces.getNotificationDogFoodC(getActivity()));
+                if (QueryPreferneces.getNotificationDogFoodC(getActivity())) {
                     showDialogWithTitle(getString(R.string.dfc_is_available), getString(R.string.if_have_dogfood));
                 } else {
-                    showDialogWithTitle(getString(R.string.dfc_is_not_available), getString(R.string.if_have_dogfoodc));
+                    showDialogWithTitle(getString(R.string.df_light_available), getString(R.string.if_have_dogfoodc));
                 }
                 i = 0;
             }
@@ -90,14 +87,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     }
 
-    private void showDialog(String message) {
-        new AlertDialog.Builder(getActivity(), R.style.AlertTheme)
-                .setMessage(message)
-                .setPositiveButton(android.R.string.ok, null)
-                .setCancelable(false)
-                .create()
-                .show();
-    }
 
     private void showDialogWithTitle(String title, String message) {
         new AlertDialog.Builder(getActivity(), R.style.AlertTheme)
