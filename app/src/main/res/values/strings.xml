@@ -19,6 +19,7 @@
     <string name="accept">Accept</string>
 
     <!--                Notification                  -->
+    <string name="notificaion_chanel_name">Jesus Christ, That\'s Jason Bourne!</string>
     <string name="update_available">Update Available</string>
     <string name="new_version">New version of</string>
     <string name="available">available!</string>
@@ -34,7 +35,7 @@
     <string name="xml_see_on_github">See project on GitHub</string>
     <string name="xml_donate_paypal">Donate to the developer for coffee ♥</string>
     <string name="xml_paypal_link">https://www.paypal.me/2Ra66it</string>
-    <string name="xml_github_link">https://github.com/spotify-dogfood</string>
+    <string name="xml_github_link">https://github.com/2Ra66it/updater-for-spotify</string>
     <string name="latest_version_original">Latest Version of Spotify</string>
     <string name="xml_enable_notification">Enable Notifications for Spotify</string>
     <string name="xml_notification_text_origin">You will receive a notification for every new version of Spotify</string>
@@ -51,7 +52,6 @@
     <string name="intro_welcome_message">Welcome to the Updater for Spotify</string>
     <string name="intro_permission_label">This app needs the storage permission</string>
     <string name="intro_permission_text">This is required only for downloading the Spotify to your device</string>
-    <string name="notificaion_chanel_name">Jesus Christ, That\'s Jason Bourne!</string>
     <string name="info">Info</string>
     <string name="spotify_origin_is_available">Spotify (not Beta) is available</string>
     <string name="spotify_beta_available">Spotify Beta is available</string>
