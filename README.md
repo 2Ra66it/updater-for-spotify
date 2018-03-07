@@ -10,7 +10,7 @@ Updater For Spotify allows you to download the latest version of Spotify and Spo
 * [Download](https://github.com/2Ra66it/updater-for-spotify/raw/master/app/release/app-release.apk)
 
 
-<img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1506939807.png" width="270"> <img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1508176076.png" width="270"> <img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1506939807.png" width="270">
+<img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1520452854.png" width="270"> <img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1508176076.png" width="270"> <img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1520453120.png" width="270">
 
 ## Architecture
 MVP
