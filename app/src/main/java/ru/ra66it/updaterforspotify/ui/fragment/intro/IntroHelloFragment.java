@@ -15,17 +15,13 @@ import ru.ra66it.updaterforspotify.R;
 
 public class IntroHelloFragment extends Fragment {
 
-
     public static IntroHelloFragment newInstance() {
         return new IntroHelloFragment();
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.intro_hello_fragment, container, false);
-
-
         return v;
     }
 }

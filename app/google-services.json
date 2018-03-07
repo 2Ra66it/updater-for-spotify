@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "306019611925",
+    "firebase_url": "https://updater-for-spotify.firebaseio.com",
+    "project_id": "updater-for-spotify",
+    "storage_bucket": "updater-for-spotify.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:306019611925:android:5a9f1172b5426c92",
+        "android_client_info": {
+          "package_name": "ru.ra66it.updaterforspotify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "306019611925-59gho2tcltmvr32cbvi0jbuquefrembb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQsTMG8tD79tGmijlsXxuXj4wXvues_6c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

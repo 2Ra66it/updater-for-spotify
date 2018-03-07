@@ -3,42 +3,32 @@ package ru.ra66it.updaterforspotify.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import ru.ra66it.updaterforspotify.R;
-import ru.ra66it.updaterforspotify.adapter.MyPagerAdapter;
 import ru.ra66it.updaterforspotify.mvp.presenter.MainActivityPresenter;
 import ru.ra66it.updaterforspotify.mvp.view.MainBaseView;
+import ru.ra66it.updaterforspotify.ui.fragment.SpotifyOriginFragment;
+import ru.ra66it.updaterforspotify.utils.SingleFragmentActivity;
 
 
-public class MainActivity extends AppCompatActivity implements MainBaseView {
-
-    @BindView(R.id.tab_layout)
-    TabLayout tabLayout;
-    @BindView(R.id.view_pager)
-    ViewPager viewPager;
+public class MainActivity extends SingleFragmentActivity implements MainBaseView {
 
     private MainActivityPresenter mPresenter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_viewpager);
-        ButterKnife.bind(this);
-
-        mPresenter = new MainActivityPresenter(this);
-        mPresenter.initViewPager(this);
+    protected Fragment createFragment() {
+        return SpotifyOriginFragment.newInstance();
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mPresenter = new MainActivityPresenter(this);
+
+        mPresenter.startIntroActivity(this);
     }
 
     @Override
@@ -61,14 +51,6 @@ public class MainActivity extends AppCompatActivity implements MainBaseView {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    public void initViewPager() {
-        viewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
-        viewPager.setOffscreenPageLimit(2);
-        tabLayout.setupWithViewPager(viewPager);
     }
 
 

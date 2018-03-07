@@ -38,59 +38,13 @@ public class UtilsSpotify {
     }
 
 
-    public static boolean isDogFoodInstalled(Context context) {
-
-        String version = "";
-
-        try {
-            version = context.getPackageManager().getPackageInfo("com.spotify.music", 0).versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.i(TAG, "Spotify Dogfood not installed");
-        }
-
-        String dfv = version.replaceAll("[0-9]", "").replaceAll("[.]", "").replaceAll("[-]", "");
-
-        return (dfv.equals("dogfood") || dfv.contains("dogfood"));
-    }
-
-
     public static Boolean isSpotifyUpdateAvailable(String installedVersion, String latestVersion) {
         String dfv;
 
-        if (!installedVersion.equals("")) {
-            dfv = installedVersion.replaceAll("[0-9]", "").replaceAll("[.]", "").replaceAll("[-]", "");
-        } else {
-            return true;
-        }
+        int installVers = Integer.parseInt(installedVersion.replaceAll("[^0-9]", ""));
+        int latestVers = Integer.parseInt(latestVersion.replaceAll("[.]", ""));
 
-        if (!(dfv.equals("dogfood") || !dfv.contains("dogfood"))) {
-            int installVers = Integer.parseInt(installedVersion.replaceAll("[^0-9]", ""));
-            int latestVers = Integer.parseInt(latestVersion.replaceAll("[.]", ""));
-
-            return installVers < latestVers;
-        } else {
-            return true;
-        }
-
-    }
-
-    public static Boolean isDogfoodUpdateAvailable(String installedVersion, String latestVersion) {
-        String dfv;
-
-        if (!installedVersion.equals("")) {
-            dfv = installedVersion.replaceAll("[0-9]", "").replaceAll("[.]", "").replaceAll("[-]", "");
-        } else {
-            return true;
-        }
-
-        if (dfv.equals("dogfood") || dfv.contains("dogfood")) {
-            int installVers = Integer.parseInt(installedVersion.replaceAll("[^0-9]", ""));
-            int latestVers = Integer.parseInt(latestVersion.replaceAll("[.]", ""));
-
-            return installVers < latestVers;
-        } else {
-            return true;
-        }
+        return installVers < latestVers;
 
 
     }

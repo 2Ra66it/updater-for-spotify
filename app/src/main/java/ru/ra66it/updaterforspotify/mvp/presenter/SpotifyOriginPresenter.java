@@ -37,14 +37,15 @@ public class SpotifyOriginPresenter {
 
     public void getLatestVersionSpotify() {
         if (UtilsNetwork.isNetworkAvailable(context)) {
-            if (QueryPreferneces.isSpotifyBeta(context)) {
-                loadDataBeta();
-            } else {
+            if (!QueryPreferneces.isSpotifyBeta(context)) {
                 loadDataOrigin();
+            } else {
+                loadDataBeta();
             }
         } else {
             errorLayout(true);
             view.showNoInternetLayout();
+
         }
     }
 
@@ -107,16 +108,10 @@ public class SpotifyOriginPresenter {
             // Install new version
             view.showFAB();
             view.showCardView();
-
         } else if (!UtilsSpotify.isSpotifyInstalled(context)) {
             // Install spotify now
             view.showFAB();
             view.showCardView();
-
-        } else if (UtilsSpotify.isDogFoodInstalled(context)) {
-            view.showFAB();
-            view.showCardView();
-
         } else {
             //have latest version
             view.hideFAB();
@@ -130,9 +125,7 @@ public class SpotifyOriginPresenter {
             view.showCardView();
         if (UtilsSpotify.isSpotifyInstalled(context)) {
             view.setInstalledVersion(UtilsSpotify.getInstalledSpotifyVersion(context));
-            if (!UtilsSpotify.isDogFoodInstalled(context)) {
-                view.setUpdateImageFAB();
-            }
+            view.setUpdateImageFAB();
             getLatestVersionSpotify();
         } else {
             view.showFAB();

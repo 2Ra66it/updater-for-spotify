@@ -20,12 +20,14 @@ import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    CheckBoxPreference prefEnableNotificationsDF;
     CheckBoxPreference prefEnableNotificationsOrigin;
     SwitchPreference prefDownloadBeta;
     Preference prefAppInfo;
     SharedPreferences prefs;
-    int i = 0;
+
+    public static SettingsFragment newInstance() {
+        return new SettingsFragment();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,23 +40,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         prefEnableNotificationsOrigin.setChecked(QueryPreferneces.getNotificationOrigin(getActivity()));
         prefEnableNotificationsOrigin.setOnPreferenceClickListener(preference -> {
             if (prefEnableNotificationsOrigin.isChecked()) {
-                prefEnableNotificationsDF.setChecked(false);
-            } else {
                 prefDownloadBeta.setChecked(false);
             }
-
             return false;
         });
 
-        prefEnableNotificationsDF = (CheckBoxPreference) findPreference("autoDf");
-        prefEnableNotificationsDF.setChecked(QueryPreferneces.getNotificationDogFood(getActivity()));
-        prefEnableNotificationsDF.setOnPreferenceClickListener(preference -> {
-            if (prefEnableNotificationsDF.isChecked()) {
-                prefEnableNotificationsOrigin.setChecked(false);
-            }
-
-            return false;
-        });
 
         prefDownloadBeta = (SwitchPreference) findPreference("downloadBeta");
         prefDownloadBeta.setChecked(QueryPreferneces.isSpotifyBeta(getActivity()));
@@ -70,20 +60,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         prefAppInfo = findPreference("verPref");
         prefAppInfo.setSummary(BuildConfig.VERSION_NAME);
-        prefAppInfo.setOnPreferenceClickListener(preference -> {
-            i++;
-            if (i >= 6) {
-                QueryPreferneces.setNotificationDogFoodC(getActivity(), !QueryPreferneces.getNotificationDogFoodC(getActivity()));
-                if (QueryPreferneces.getNotificationDogFoodC(getActivity())) {
-                    showDialogWithTitle(getString(R.string.dfc_is_available), getString(R.string.if_have_dogfood));
-                } else {
-                    showDialogWithTitle(getString(R.string.df_light_available), getString(R.string.if_have_dogfoodc));
-                }
-                i = 0;
-            }
-
-            return true;
-        });
 
     }
 
@@ -100,9 +76,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        QueryPreferneces.setNotificationDogFood(getActivity(),
-                prefEnableNotificationsDF.isChecked());
-
         QueryPreferneces.setNotificationOrigin(getActivity(),
                 prefEnableNotificationsOrigin.isChecked());
 

@@ -14,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -25,7 +24,6 @@ import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.mvp.presenter.SpotifyOriginPresenter;
 import ru.ra66it.updaterforspotify.mvp.view.BaseViewFragment;
 import ru.ra66it.updaterforspotify.rest.SpotifyApi;
-
 
 import static android.view.View.GONE;
 
@@ -61,7 +59,6 @@ public class SpotifyOriginFragment extends Fragment implements BaseViewFragment 
     public static SpotifyOriginFragment newInstance() {
         return new SpotifyOriginFragment();
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

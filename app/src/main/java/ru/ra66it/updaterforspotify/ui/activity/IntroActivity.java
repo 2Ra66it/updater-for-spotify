@@ -1,7 +1,6 @@
 package ru.ra66it.updaterforspotify.ui.activity;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,9 +14,9 @@ import com.pixelcan.inkpageindicator.InkPageIndicator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.adapter.IntroPagerAdapter;
+import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 
 /**
  * Created by 2Rabbit on 17.11.2017.
@@ -32,7 +31,6 @@ public class IntroActivity extends AppCompatActivity {
     @BindView(R.id.btn_next)
     Button buttonNext;
     private int localPos;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,12 +71,12 @@ public class IntroActivity extends AppCompatActivity {
                 case 2:
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                         QueryPreferneces.setFirstLaunch(getApplicationContext(), false);
-                        Intent intent = new Intent(this, MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
+                        finish();
                     } else {
                         getPermission();
                     }
+                    break;
+                default:
                     break;
             }
 

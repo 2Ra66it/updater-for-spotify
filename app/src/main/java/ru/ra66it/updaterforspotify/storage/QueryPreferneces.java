@@ -9,25 +9,9 @@ import android.preference.PreferenceManager;
 
 public class QueryPreferneces {
 
-    private static final String PREF_NOTIFICATION_DF = "notification_df";
     private static final String PREF_NOTIFICATION_ORIGIN = "notification_origin";
-    private static final String PREF_IS_ALARM_ON = "is_alarm_on";
-    private static final String PREF_IS_BETA = "is_beta";
     private static final String PREF_IS_FIRST = "if_first";
-    private static final String PREF_SECRET = "is_secret";
-
-
-    public static boolean getNotificationDogFood(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(PREF_NOTIFICATION_DF, false);
-    }
-
-    public static void setNotificationDogFood(Context context, boolean isOn) {
-        PreferenceManager.getDefaultSharedPreferences(context)
-                .edit()
-                .putBoolean(PREF_NOTIFICATION_DF, isOn)
-                .apply();
-    }
+    private static final String PREF_IS_BETA = "is_beta";
 
     public static boolean getNotificationOrigin(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
@@ -53,17 +37,6 @@ public class QueryPreferneces {
                 .apply();
     }
 
-    public static boolean getNotificationDogFoodC(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(PREF_SECRET, false);
-    }
-
-    public static void setNotificationDogFoodC(Context context, boolean isOn) {
-        PreferenceManager.getDefaultSharedPreferences(context)
-                .edit()
-                .putBoolean(PREF_SECRET, isOn)
-                .apply();
-    }
 
     public static boolean isFirstLaunch(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)

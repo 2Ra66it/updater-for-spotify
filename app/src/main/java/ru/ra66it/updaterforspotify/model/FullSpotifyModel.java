@@ -11,9 +11,9 @@ public class FullSpotifyModel {
     private String latestVersionNumber;
 
     public FullSpotifyModel(Spotify spotify) {
-        latestLink = spotify.getBody();
+        latestLink = spotify.getUrl();
         latestVersionName = spotify.getName();
-        latestVersionNumber = spotify.getTagName();
+        latestVersionNumber = spotify.getVersion();
     }
 
     public String getLatestLink() {

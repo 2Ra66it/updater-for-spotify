@@ -7,8 +7,6 @@ package ru.ra66it.updaterforspotify.mvp.view;
 
 public interface MainBaseView {
 
-    void initViewPager();
-
     void startIntroActivity();
 
 }

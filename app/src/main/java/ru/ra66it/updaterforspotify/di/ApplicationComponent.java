@@ -4,7 +4,6 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import ru.ra66it.updaterforspotify.notification.PollService;
-import ru.ra66it.updaterforspotify.ui.fragment.SpotifyDfFragment;
 import ru.ra66it.updaterforspotify.ui.fragment.SpotifyOriginFragment;
 
 /**
@@ -15,7 +14,6 @@ import ru.ra66it.updaterforspotify.ui.fragment.SpotifyOriginFragment;
 @Component(modules = RestModule.class)
 public interface ApplicationComponent {
 
-    void inject(SpotifyDfFragment fragment);
     void inject(SpotifyOriginFragment fragment);
 
     void inject(PollService service);

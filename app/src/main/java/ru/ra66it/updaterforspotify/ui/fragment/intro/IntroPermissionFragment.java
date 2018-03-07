@@ -23,8 +23,6 @@ public class IntroPermissionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.intro_permission_fragment, container, false);
-
-
         return v;
     }
 }

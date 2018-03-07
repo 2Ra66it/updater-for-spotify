@@ -27,13 +27,12 @@ public class SettingsActivity extends AppCompatActivity {
         SettingsFragment settingsFragment = new SettingsFragment();
         ft.add(android.R.id.content, settingsFragment, "SettingsFragment");
         ft.commit();
-
     }
 
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed();
+        finish();
         return true;
     }
 }

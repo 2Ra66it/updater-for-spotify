@@ -21,18 +21,14 @@ public class MainActivityPresenter {
         this.baseView = baseView;
     }
 
-    public void initViewPager(Context context) {
+    public void startIntroActivity(Context context) {
         if (QueryPreferneces.isFirstLaunch(context)) {
             baseView.startIntroActivity();
-        } else {
-            baseView.initViewPager();
         }
     }
 
     public void startNotification(Context context) {
-        if (QueryPreferneces.getNotificationDogFood(context)) {
-            PollService.setServiceAlarm(context, QueryPreferneces.getNotificationDogFood(context));
-        } else if (QueryPreferneces.getNotificationOrigin(context)) {
+        if (QueryPreferneces.getNotificationOrigin(context)) {
             PollService.setServiceAlarm(context, QueryPreferneces.getNotificationOrigin(context));
         } else {
             PollService.setServiceAlarm(context, false);

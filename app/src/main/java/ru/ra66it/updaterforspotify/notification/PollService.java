@@ -20,17 +20,13 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import ru.ra66it.updaterforspotify.MyApplication;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.model.FullSpotifyModel;
-import ru.ra66it.updaterforspotify.model.Spotify;
 import ru.ra66it.updaterforspotify.rest.SpotifyApi;
-import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 import ru.ra66it.updaterforspotify.ui.activity.MainActivity;
 import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
 
@@ -95,7 +91,7 @@ public class PollService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
-        if (QueryPreferneces.getNotificationDogFood(this)) {
+      /*  if (QueryPreferneces.getNotificationSpotifyBeta(this)) {
             notificationsSpotifyDF(jobParameters);
         } else if (QueryPreferneces.getNotificationDogFoodC(this)) {
             notificationsSpotifyDFC(jobParameters);
@@ -105,7 +101,7 @@ public class PollService extends JobService {
             } else {
                 notificationsSpotifyOrig(jobParameters);
             }
-        }
+        }*/
 
         return true;
     }
@@ -115,41 +111,7 @@ public class PollService extends JobService {
         return true;
     }
 
-    private void notificationsSpotifyDF(JobParameters jobParameters) {
-        compositeDisposable.add(spotifyApi.getLatestDogFood()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(disposable -> {
-                    compositeDisposable.add(disposable);
-                })
-                .doOnComplete(() -> {
-                    makeNotification(0, fullSpotifyModel);
-                    jobFinished(jobParameters, true);
-                })
-                .subscribe(spotify -> {
-                    fullSpotifyModel = new FullSpotifyModel(spotify);
-                }, throwable -> {
-                    Log.i(TAG, throwable.getMessage());
-                }));
-    }
 
-    private void notificationsSpotifyDFC(JobParameters jobParameters) {
-        compositeDisposable.add(spotifyApi.getLatestDogFoodC()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(disposable -> {
-                    compositeDisposable.add(disposable);
-                })
-                .doOnComplete(() -> {
-                    makeNotification(0, fullSpotifyModel);
-                    jobFinished(jobParameters, true);
-                })
-                .subscribe(spotify -> {
-                    fullSpotifyModel = new FullSpotifyModel(spotify);
-                }, throwable -> {
-                    Log.i(TAG, throwable.getMessage());
-                }));
-    }
 
     private void notificationsSpotifyOrig(JobParameters jobParameters) {
         compositeDisposable.add(spotifyApi.getLatestOrigin()
@@ -240,11 +202,11 @@ public class PollService extends JobService {
     }
 
     private void showNotification(int notificationId, NotificationManager notificationManager, Notification notification) {
-        if (notificationId == 0 && UtilsSpotify.isDogfoodUpdateAvailable(
+        /*if (notificationId == 0 && UtilsSpotify.isDogfoodUpdateAvailable(
                 UtilsSpotify.getInstalledSpotifyVersion(this), fullSpotifyModel.getLatestVersionNumber())) {
 
             notificationManager.notify(notificationId, notification);
-        } else if (notificationId == 1 && UtilsSpotify.isSpotifyUpdateAvailable(
+        } else*/ if (notificationId == 1 && UtilsSpotify.isSpotifyUpdateAvailable(
                 UtilsSpotify.getInstalledSpotifyVersion(this), fullSpotifyModel.getLatestVersionNumber())) {
 
             notificationManager.notify(notificationId, notification);

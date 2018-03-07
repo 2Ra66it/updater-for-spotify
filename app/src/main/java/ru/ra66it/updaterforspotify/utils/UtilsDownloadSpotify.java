@@ -16,11 +16,9 @@ import ru.ra66it.updaterforspotify.R;
 public class UtilsDownloadSpotify {
 
     public static void downloadSpotify(Context context, String url, String name) {
-        //Remove unnecessary characters in the link
-        String fullUrl = url.split(": ")[1];
         String fullName = name.replace(" ", "_").replaceAll("\\.", "_");
 
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(fullUrl));
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         request.setTitle(context.getString(R.string.downloading) + " " + name);
         request.setDescription(context.getString(R.string.downloading_in));
         request.setNotificationVisibility(DownloadManager.Request

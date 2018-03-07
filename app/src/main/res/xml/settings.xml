@@ -9,13 +9,6 @@
             android:summary="@string/xml_notification_text_origin"
             android:title="@string/xml_enable_notification" />
 
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="autoDf"
-            android:summary="@string/xml_notification_text_dogfood"
-            android:title="@string/xml_enable_notification_dogfood" />
-
         <SwitchPreference
             android:defaultValue="true"
             android:key="downloadBeta"
@@ -35,26 +28,6 @@
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="@string/xml_paypal_link" />
-        </Preference>
-
-        <Preference
-            android:icon="@drawable/ic_xda"
-            android:key="xdaPref"
-            android:summary="@string/xml_dogfood_text"
-            android:title="@string/xml_dogfood_title">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://forum.xda-developers.com/android/apps-games/mod-spotify-dogfood-ad-free-spotify-t3632423/" />
-        </Preference>
-
-        <Preference
-            android:icon="@drawable/ic_telegram"
-            android:key="tgPref"
-            android:summary="Telegram group users of Spotify Dogfood"
-            android:title="Telegram Group">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://t.me/spotifydogfood" />
         </Preference>
 
         <Preference
