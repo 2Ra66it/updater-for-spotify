@@ -1,12 +1,9 @@
 package ru.ra66it.updaterforspotify.mvp.presenter;
 
 
-import android.content.Context;
-
-
-import ru.ra66it.updaterforspotify.notification.PollService;
-import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 import ru.ra66it.updaterforspotify.mvp.view.MainBaseView;
+import ru.ra66it.updaterforspotify.notification.PollService;
+import ru.ra66it.updaterforspotify.storage.QueryPreferences;
 
 
 /**
@@ -15,23 +12,25 @@ import ru.ra66it.updaterforspotify.mvp.view.MainBaseView;
 
 public class MainActivityPresenter {
 
-    private MainBaseView baseView;
+    private MainBaseView mView;
+    private QueryPreferences queryPreferences;
 
-    public MainActivityPresenter(MainBaseView baseView) {
-        this.baseView = baseView;
+    public MainActivityPresenter(MainBaseView mView, QueryPreferences queryPreferences) {
+        this.mView = mView;
+        this.queryPreferences = queryPreferences;
     }
 
-    public void startIntroActivity(Context context) {
-        if (QueryPreferneces.isFirstLaunch(context)) {
-            baseView.startIntroActivity();
+    public void startIntroActivity() {
+        if (queryPreferences.isFirstLaunch()) {
+            mView.startIntroActivity();
         }
     }
 
-    public void startNotification(Context context) {
-        if (QueryPreferneces.getNotificationOrigin(context)) {
-            PollService.setServiceAlarm(context, QueryPreferneces.getNotificationOrigin(context));
+    public void startNotification() {
+        if (queryPreferences.getNotificationOrigin()) {
+            PollService.setServiceAlarm(queryPreferences.getNotificationOrigin());
         } else {
-            PollService.setServiceAlarm(context, false);
+            PollService.setServiceAlarm(false);
         }
     }
 

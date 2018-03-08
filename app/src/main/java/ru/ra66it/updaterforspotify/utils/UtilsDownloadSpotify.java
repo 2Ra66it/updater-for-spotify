@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.widget.Toast;
 
+import ru.ra66it.updaterforspotify.MyApplication;
 import ru.ra66it.updaterforspotify.R;
 
 
@@ -15,21 +16,21 @@ import ru.ra66it.updaterforspotify.R;
 
 public class UtilsDownloadSpotify {
 
-    public static void downloadSpotify(Context context, String url, String name) {
+    public static void downloadSpotify(String url, String name) {
         String fullName = name.replace(" ", "_").replaceAll("\\.", "_");
 
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        request.setTitle(context.getString(R.string.downloading) + " " + name);
-        request.setDescription(context.getString(R.string.downloading_in));
+        request.setTitle(StringService.getById(R.string.downloading) + " " + name);
+        request.setDescription(StringService.getById(R.string.downloading_in));
         request.setNotificationVisibility(DownloadManager.Request
                 .VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
                 fullName + ".apk");
 
-        DownloadManager manager = (DownloadManager) context
+        DownloadManager manager = (DownloadManager) MyApplication.getContext()
                 .getSystemService(Context.DOWNLOAD_SERVICE);
         manager.enqueue(request);
 
-        Toast.makeText(context, name + " is downloading", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MyApplication.getContext(), name + " is downloading", Toast.LENGTH_SHORT).show();
     }
 }

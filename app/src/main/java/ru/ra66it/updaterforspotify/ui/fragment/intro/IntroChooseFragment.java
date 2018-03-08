@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
 import ru.ra66it.updaterforspotify.R;
 
 /**
@@ -41,8 +40,8 @@ public class IntroChooseFragment extends Fragment {
             llChooseBeta.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
             llChooseNothin.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
 
-            QueryPreferneces.setNotificationOrigin(getContext(), true);
-            QueryPreferneces.setSpotifyBeta(getContext(), false);
+           /* QueryPreferences.setNotificationOrigin(getContext(), true);
+            QueryPreferences.setSpotifyBeta(getContext(), false);*/
         });
 
         llChooseBeta.setOnClickListener(view -> {
@@ -51,8 +50,8 @@ public class IntroChooseFragment extends Fragment {
             llChooseOrigin.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
             llChooseNothin.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
 
-            QueryPreferneces.setNotificationOrigin(getContext(), false);
-            QueryPreferneces.setSpotifyBeta(getContext(), true);
+            /*QueryPreferences.setNotificationOrigin(getContext(), false);
+            QueryPreferences.setSpotifyBeta(getContext(), true);*/
         });
 
         llChooseNothin.setBackgroundColor(getResources().getColor(R.color.darkChoose));
@@ -62,8 +61,8 @@ public class IntroChooseFragment extends Fragment {
             llChooseBeta.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
             llChooseOrigin.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
 
-            QueryPreferneces.setNotificationOrigin(getContext(), false);
-            QueryPreferneces.setSpotifyBeta(getContext(), false);
+            /*QueryPreferences.setNotificationOrigin(getContext(), false);
+            QueryPreferences.setSpotifyBeta(getContext(), false);*/
         });
 
         return v;

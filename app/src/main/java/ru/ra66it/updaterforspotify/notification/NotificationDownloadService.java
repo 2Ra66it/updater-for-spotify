@@ -32,7 +32,7 @@ public class NotificationDownloadService extends IntentService {
             NotificationManager manager = (NotificationManager)
                     this.getSystemService(Context.NOTIFICATION_SERVICE);
             manager.cancel(id);
-            UtilsDownloadSpotify.downloadSpotify(this, link, name);
+            UtilsDownloadSpotify.downloadSpotify(link, name);
         }
     }
 }

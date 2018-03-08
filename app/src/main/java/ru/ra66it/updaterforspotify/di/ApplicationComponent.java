@@ -4,6 +4,9 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import ru.ra66it.updaterforspotify.notification.PollService;
+import ru.ra66it.updaterforspotify.ui.activity.IntroActivity;
+import ru.ra66it.updaterforspotify.ui.activity.MainActivity;
+import ru.ra66it.updaterforspotify.ui.fragment.SettingsFragment;
 import ru.ra66it.updaterforspotify.ui.fragment.SpotifyOriginFragment;
 
 /**
@@ -11,10 +14,16 @@ import ru.ra66it.updaterforspotify.ui.fragment.SpotifyOriginFragment;
  */
 
 @Singleton
-@Component(modules = RestModule.class)
+@Component(modules = {RestModule.class, SharedPreferencesModule.class})
 public interface ApplicationComponent {
 
     void inject(SpotifyOriginFragment fragment);
+
+    void inject(SettingsFragment fragment);
+
+    void inject(IntroActivity activity);
+
+    void inject(MainActivity activity);
 
     void inject(PollService service);
 }

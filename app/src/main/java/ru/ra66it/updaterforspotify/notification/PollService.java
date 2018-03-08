@@ -27,6 +27,7 @@ import ru.ra66it.updaterforspotify.MyApplication;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.model.FullSpotifyModel;
 import ru.ra66it.updaterforspotify.rest.SpotifyApi;
+import ru.ra66it.updaterforspotify.storage.QueryPreferences;
 import ru.ra66it.updaterforspotify.ui.activity.MainActivity;
 import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
 
@@ -51,6 +52,8 @@ public class PollService extends JobService {
 
     @Inject
     SpotifyApi spotifyApi;
+    @Inject
+    QueryPreferences queryPreferences;
 
     @Override
     public void onCreate() {
@@ -58,10 +61,11 @@ public class PollService extends JobService {
         MyApplication.getApplicationComponent().inject(this);
         Log.i(TAG, "Received an JobService");
         compositeDisposable = new CompositeDisposable();
+
     }
 
-    public static void setServiceAlarm(Context context, boolean isOn) {
-        ComponentName component = new ComponentName(context, PollService.class);
+    public static void setServiceAlarm(boolean isOn) {
+        ComponentName component = new ComponentName(MyApplication.getContext(), PollService.class);
         JobInfo builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             builder = new JobInfo.Builder(JOB_ID, component)
@@ -78,7 +82,7 @@ public class PollService extends JobService {
                     .build();
         }
 
-        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        JobScheduler jobScheduler = (JobScheduler) MyApplication.getContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
         if (isOn) {
             jobScheduler.cancel(JOB_ID);
@@ -91,17 +95,13 @@ public class PollService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
-      /*  if (QueryPreferneces.getNotificationSpotifyBeta(this)) {
-            notificationsSpotifyDF(jobParameters);
-        } else if (QueryPreferneces.getNotificationDogFoodC(this)) {
-            notificationsSpotifyDFC(jobParameters);
-        } else if (QueryPreferneces.getNotificationOrigin(this)) {
-            if (QueryPreferneces.isSpotifyBeta(this)) {
+       if (queryPreferences.getNotificationOrigin()) {
+            if (queryPreferences.isSpotifyBeta()) {
                 notificationsSpotifyOrigBeta(jobParameters);
             } else {
                 notificationsSpotifyOrig(jobParameters);
             }
-        }*/
+        }
 
         return true;
     }
@@ -110,7 +110,6 @@ public class PollService extends JobService {
     public boolean onStopJob(JobParameters jobParameters) {
         return true;
     }
-
 
 
     private void notificationsSpotifyOrig(JobParameters jobParameters) {
@@ -202,12 +201,8 @@ public class PollService extends JobService {
     }
 
     private void showNotification(int notificationId, NotificationManager notificationManager, Notification notification) {
-        /*if (notificationId == 0 && UtilsSpotify.isDogfoodUpdateAvailable(
-                UtilsSpotify.getInstalledSpotifyVersion(this), fullSpotifyModel.getLatestVersionNumber())) {
-
-            notificationManager.notify(notificationId, notification);
-        } else*/ if (notificationId == 1 && UtilsSpotify.isSpotifyUpdateAvailable(
-                UtilsSpotify.getInstalledSpotifyVersion(this), fullSpotifyModel.getLatestVersionNumber())) {
+        if (notificationId == 1 && UtilsSpotify.isSpotifyUpdateAvailable(
+                UtilsSpotify.getInstalledSpotifyVersion(), fullSpotifyModel.getLatestVersionNumber())) {
 
             notificationManager.notify(notificationId, notification);
         }

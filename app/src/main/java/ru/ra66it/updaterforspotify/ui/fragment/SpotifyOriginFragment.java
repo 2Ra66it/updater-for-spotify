@@ -24,6 +24,7 @@ import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.mvp.presenter.SpotifyOriginPresenter;
 import ru.ra66it.updaterforspotify.mvp.view.BaseViewFragment;
 import ru.ra66it.updaterforspotify.rest.SpotifyApi;
+import ru.ra66it.updaterforspotify.storage.QueryPreferences;
 
 import static android.view.View.GONE;
 
@@ -55,6 +56,8 @@ public class SpotifyOriginFragment extends Fragment implements BaseViewFragment 
 
     @Inject
     SpotifyApi spotifyApi;
+    @Inject
+    QueryPreferences queryPreferences;
 
     public static SpotifyOriginFragment newInstance() {
         return new SpotifyOriginFragment();
@@ -64,7 +67,7 @@ public class SpotifyOriginFragment extends Fragment implements BaseViewFragment 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MyApplication.getApplicationComponent().inject(this);
-        mPresenter = new SpotifyOriginPresenter(getContext(), this, spotifyApi);
+        mPresenter = new SpotifyOriginPresenter(queryPreferences, this, spotifyApi);
     }
 
 

@@ -9,9 +9,12 @@ import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.support.v7.app.AlertDialog;
 
+import javax.inject.Inject;
+
 import ru.ra66it.updaterforspotify.BuildConfig;
+import ru.ra66it.updaterforspotify.MyApplication;
 import ru.ra66it.updaterforspotify.R;
-import ru.ra66it.updaterforspotify.storage.QueryPreferneces;
+import ru.ra66it.updaterforspotify.storage.QueryPreferences;
 
 
 /**
@@ -25,19 +28,19 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     Preference prefAppInfo;
     SharedPreferences prefs;
 
-    public static SettingsFragment newInstance() {
-        return new SettingsFragment();
-    }
+    @Inject
+    QueryPreferences queryPreferences;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MyApplication.getApplicationComponent().inject(this);
         addPreferencesFromResource(R.xml.settings);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         prefEnableNotificationsOrigin = (CheckBoxPreference) findPreference("autoOrigin");
-        prefEnableNotificationsOrigin.setChecked(QueryPreferneces.getNotificationOrigin(getActivity()));
+        prefEnableNotificationsOrigin.setChecked(queryPreferences.getNotificationOrigin());
         prefEnableNotificationsOrigin.setOnPreferenceClickListener(preference -> {
             if (prefEnableNotificationsOrigin.isChecked()) {
                 prefDownloadBeta.setChecked(false);
@@ -47,7 +50,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
 
         prefDownloadBeta = (SwitchPreference) findPreference("downloadBeta");
-        prefDownloadBeta.setChecked(QueryPreferneces.isSpotifyBeta(getActivity()));
+        prefDownloadBeta.setChecked(queryPreferences.isSpotifyBeta());
         prefDownloadBeta.setOnPreferenceClickListener(preference -> {
             if (prefDownloadBeta.isChecked()) {
                 showDialogWithTitle(getString(R.string.spotify_beta_available), getString(R.string.if_have_not_beta));
@@ -76,11 +79,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        QueryPreferneces.setNotificationOrigin(getActivity(),
+        queryPreferences.setNotificationOrigin(
                 prefEnableNotificationsOrigin.isChecked());
 
-        QueryPreferneces.setSpotifyBeta(getActivity(),
-                prefDownloadBeta.isChecked());
+        queryPreferences.setSpotifyBeta(prefDownloadBeta.isChecked());
     }
 
 
