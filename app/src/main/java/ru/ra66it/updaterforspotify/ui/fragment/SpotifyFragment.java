@@ -22,7 +22,7 @@ import butterknife.Unbinder;
 import ru.ra66it.updaterforspotify.MyApplication;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.mvp.presenter.SpotifyOriginPresenter;
-import ru.ra66it.updaterforspotify.mvp.view.BaseViewFragment;
+import ru.ra66it.updaterforspotify.mvp.view.SpotifyView;
 import ru.ra66it.updaterforspotify.rest.SpotifyApi;
 import ru.ra66it.updaterforspotify.storage.QueryPreferences;
 
@@ -32,7 +32,7 @@ import static android.view.View.GONE;
  * Created by 2Rabbit on 12.11.2017.
  */
 
-public class SpotifyOriginFragment extends Fragment implements BaseViewFragment {
+public class SpotifyFragment extends Fragment implements SpotifyView {
 
     @BindView(R.id.cv_latest_orig)
     CardView cvLatestOrig;
@@ -59,15 +59,15 @@ public class SpotifyOriginFragment extends Fragment implements BaseViewFragment 
     @Inject
     QueryPreferences queryPreferences;
 
-    public static SpotifyOriginFragment newInstance() {
-        return new SpotifyOriginFragment();
+    public static SpotifyFragment newInstance() {
+        return new SpotifyFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MyApplication.getApplicationComponent().inject(this);
-        mPresenter = new SpotifyOriginPresenter(queryPreferences, this, spotifyApi);
+        mPresenter = new SpotifyOriginPresenter(this, spotifyApi, queryPreferences);
     }
 
 
@@ -81,10 +81,7 @@ public class SpotifyOriginFragment extends Fragment implements BaseViewFragment 
             mPresenter.getLatestVersionSpotify();
         });
 
-
-        fabDownloadButton.setOnClickListener(view -> mPresenter.downloadLatestVersion());
-
-        mPresenter.getLatestVersionSpotify();
+        fabDownloadButton.setOnClickListener(view -> mPresenter.downloadLatestVersion() );
 
         return v;
     }
@@ -93,13 +90,18 @@ public class SpotifyOriginFragment extends Fragment implements BaseViewFragment 
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.checkInstalledSpotifyVersion();
+        mPresenter.subscribe();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mPresenter.unsubscribe();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mPresenter.onDispose();
         unbinder.unbind();
     }
 

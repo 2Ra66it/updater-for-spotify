@@ -31,6 +31,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Inject
     QueryPreferences queryPreferences;
 
+    public static SettingsFragment newInstance() {
+        return new SettingsFragment();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

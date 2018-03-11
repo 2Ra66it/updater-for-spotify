@@ -40,8 +40,15 @@ public class UtilsSpotify {
 
 
     public static Boolean isSpotifyUpdateAvailable(String installedVersion, String latestVersion) {
+        String install = installedVersion;
+        int installVers = 0;
 
-        int installVers = Integer.parseInt(installedVersion.replaceAll("[^0-9]", ""));
+        if (installedVersion.isEmpty())      {
+            install = "0";
+        } else {
+            installVers = Integer.parseInt(install.replaceAll("[^0-9]", ""));
+        }
+
         int latestVers = Integer.parseInt(latestVersion.replaceAll("[.]", ""));
 
         return installVers < latestVers;

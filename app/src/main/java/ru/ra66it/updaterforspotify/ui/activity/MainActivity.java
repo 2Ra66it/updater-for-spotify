@@ -3,7 +3,7 @@ package ru.ra66it.updaterforspotify.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -14,11 +14,11 @@ import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.mvp.presenter.MainActivityPresenter;
 import ru.ra66it.updaterforspotify.mvp.view.MainBaseView;
 import ru.ra66it.updaterforspotify.storage.QueryPreferences;
-import ru.ra66it.updaterforspotify.ui.fragment.SpotifyOriginFragment;
-import ru.ra66it.updaterforspotify.utils.SingleFragmentActivity;
+import ru.ra66it.updaterforspotify.ui.fragment.SpotifyFragment;
+import ru.ra66it.updaterforspotify.utils.ActivityUtils;
 
 
-public class MainActivity extends SingleFragmentActivity implements MainBaseView {
+public class MainActivity extends AppCompatActivity implements MainBaseView {
 
     private MainActivityPresenter mPresenter;
 
@@ -26,15 +26,15 @@ public class MainActivity extends SingleFragmentActivity implements MainBaseView
     QueryPreferences queryPreferences;
 
     @Override
-    protected Fragment createFragment() {
-        return SpotifyOriginFragment.newInstance();
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_fragment);
         MyApplication.getApplicationComponent().inject(this);
         mPresenter = new MainActivityPresenter(this, queryPreferences);
+
+        SpotifyFragment spotifyFragmentFragment = SpotifyFragment.newInstance();
+        ActivityUtils.addSupportFragmentToActivity(getSupportFragmentManager(),
+                spotifyFragmentFragment, R.id.fragment_container);
 
         mPresenter.startIntroActivity();
     }

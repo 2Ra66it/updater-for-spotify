@@ -5,7 +5,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.model.FullSpotifyModel;
-import ru.ra66it.updaterforspotify.mvp.view.BaseViewFragment;
+import ru.ra66it.updaterforspotify.mvp.view.SpotifyView;
 import ru.ra66it.updaterforspotify.rest.SpotifyApi;
 import ru.ra66it.updaterforspotify.storage.QueryPreferences;
 import ru.ra66it.updaterforspotify.utils.StringService;
@@ -20,14 +20,13 @@ import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
 
 public class SpotifyOriginPresenter {
 
-    private BaseViewFragment mView;
-    private boolean hasError = false;
+    private SpotifyView mView;
     private FullSpotifyModel fullSpotifyModel;
     private SpotifyApi spotifyApi;
     private QueryPreferences queryPreferences;
     private CompositeDisposable compositeDisposable;
 
-    public SpotifyOriginPresenter(QueryPreferences queryPreferences, BaseViewFragment mView, SpotifyApi spotifyApi) {
+    public SpotifyOriginPresenter(SpotifyView mView, SpotifyApi spotifyApi, QueryPreferences queryPreferences) {
         this.mView = mView;
         this.spotifyApi = spotifyApi;
         this.queryPreferences = queryPreferences;
@@ -104,12 +103,16 @@ public class SpotifyOriginPresenter {
         if (UtilsSpotify.isSpotifyInstalled() &&
                 UtilsSpotify.isSpotifyUpdateAvailable(UtilsSpotify.getInstalledSpotifyVersion(), fullSpotifyModel.getLatestVersionNumber())) {
             // Install new version
-            mView.showFAB();
             mView.showCardView();
+            mView.showFAB();
+            mView.setUpdateImageFAB();
+            mView.setInstalledVersion(UtilsSpotify.getInstalledSpotifyVersion());
         } else if (!UtilsSpotify.isSpotifyInstalled()) {
             // Install spotify now
+            mView.setInstallImageFAB();
             mView.showFAB();
             mView.showCardView();
+            mView.setInstalledVersion(StringService.getById(R.string.spotify_not_installed));
         } else {
             //have latest version
             mView.hideFAB();
@@ -118,39 +121,21 @@ public class SpotifyOriginPresenter {
         }
     }
 
-    public void checkInstalledSpotifyVersion() {
-        if (UtilsNetwork.isNetworkAvailable())
-            mView.showCardView();
-        if (UtilsSpotify.isSpotifyInstalled()) {
-            mView.setInstalledVersion(UtilsSpotify.getInstalledSpotifyVersion());
-            mView.setUpdateImageFAB();
-            getLatestVersionSpotify();
-        } else {
-            mView.showFAB();
-            mView.setInstallImageFAB();
-            mView.setInstalledVersion(StringService.getById(R.string.spotify_not_installed));
-            if (hasError) {
-                mView.hideFAB();
-            }
-        }
-    }
-
     private void errorLayout(boolean bool) {
         if (bool) {
-            hasError = true;
             mView.hideLayoutCards();
             mView.hideFAB();
         } else {
-            hasError = false;
             mView.showLayoutCards();
             mView.hideFAB();
         }
     }
 
-    public void onDispose() {
-        if (compositeDisposable != null && !compositeDisposable.isDisposed()) {
-            compositeDisposable.dispose();
-        }
+    public void subscribe() {
+        getLatestVersionSpotify();
     }
 
+    public void unsubscribe() {
+        compositeDisposable.clear();
+    }
 }
