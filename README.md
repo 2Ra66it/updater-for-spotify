@@ -1,4 +1,4 @@
-![](https://github.com/2Ra66it/updater-for-spotify/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
+![](https://github.com/2Ra66it/updater-for-spotify/blob/master/app/src/main/res/mipmap-xxhdpi/ic_launcher.png)
 ## Updater For Spotify 
 > Updater for Spotify and Spotify Beta.
 
