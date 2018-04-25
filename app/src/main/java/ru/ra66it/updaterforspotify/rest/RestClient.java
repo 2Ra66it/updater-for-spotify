@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RestClient {
 
-    private String BASE_URL = "https://updater-for-spotify.firebaseio.com/";
+    private String BASE_URL = "https://firestore.googleapis.com/v1beta1/projects/updater-for-spotify/databases/(default)/documents/updater-for-spotify/";
 
     private Retrofit retrofit;
 

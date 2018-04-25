@@ -62,7 +62,7 @@ public class SpotifyOriginPresenter {
                     mView.showLayoutCards();
                 })
                 .subscribe(spotify -> {
-                    fullSpotifyModel = new FullSpotifyModel(spotify);
+                    fullSpotifyModel = new FullSpotifyModel(spotify.getFields());
                 }, throwable -> {
                     errorLayout(true);
                     mView.hideProgress();
@@ -86,7 +86,7 @@ public class SpotifyOriginPresenter {
                     mView.showLayoutCards();
                 })
                 .subscribe(spotify -> {
-                    fullSpotifyModel = new FullSpotifyModel(spotify);
+                    fullSpotifyModel = new FullSpotifyModel(spotify.getFields());
                 }, throwable -> {
                     errorLayout(true);
                     mView.hideProgress();

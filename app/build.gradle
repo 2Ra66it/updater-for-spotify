@@ -6,10 +6,10 @@ android {
     buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "ru.ra66it.updaterforspotify"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
-        versionName "1.06"
+        versionName "1.07"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

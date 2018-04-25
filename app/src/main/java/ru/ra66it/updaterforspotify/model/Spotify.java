@@ -14,24 +14,46 @@ public class Spotify implements Serializable{
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("url")
+    @SerializedName("fields")
     @Expose
-    private String url;
-    @SerializedName("version")
+    private Fields fields;
+    @SerializedName("createTime")
     @Expose
-    private String version;
+    private String createTime;
+    @SerializedName("updateTime")
+    @Expose
+    private String updateTime;
 
     public String getName() {
         return name;
     }
 
-    public String getUrl() {
-        return url;
+    public void setName(String name) {
+        this.name = name;
     }
 
+    public Fields getFields() {
+        return fields;
+    }
 
-    public String getVersion() {
-        return version;
+    public void setFields(Fields fields) {
+        this.fields = fields;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 
 }

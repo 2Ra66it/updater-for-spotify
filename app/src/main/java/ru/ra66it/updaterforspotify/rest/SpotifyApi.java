@@ -11,10 +11,10 @@ import ru.ra66it.updaterforspotify.model.Spotify;
 
 public interface SpotifyApi {
 
-    @GET("spotify.json")
+    @GET("spotify")
     Observable<Spotify> getLatestOrigin();
 
-    @GET("spotify_beta.json")
+    @GET("spotify_beta")
     Observable<Spotify> getLatestOriginBeta();
 
 }

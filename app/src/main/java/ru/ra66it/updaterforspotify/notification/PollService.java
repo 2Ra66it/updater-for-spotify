@@ -124,7 +124,7 @@ public class PollService extends JobService {
                     jobFinished(jobParameters, true);
                 })
                 .subscribe(spotify -> {
-                    fullSpotifyModel = new FullSpotifyModel(spotify);
+                    fullSpotifyModel = new FullSpotifyModel(spotify.getFields());
                 }, throwable -> {
                     Log.i(TAG, throwable.getMessage());
                 }));
@@ -142,7 +142,7 @@ public class PollService extends JobService {
                     jobFinished(jobParameters, true);
                 })
                 .subscribe(spotify -> {
-                    fullSpotifyModel = new FullSpotifyModel(spotify);
+                    fullSpotifyModel = new FullSpotifyModel(spotify.getFields());
                 }, throwable -> {
                     Log.i(TAG, throwable.getMessage());
                 }));
