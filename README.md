@@ -7,8 +7,13 @@
 Updater For Spotify allows you to download the latest version of Spotify and Spotify Beta.
 
 ## Download latest version Updater For Spotify
-* [Download](https://github.com/2Ra66it/updater-for-spotify/raw/master/app/release/app-release.apk)
 
+<a href="https://f-droid.org/packages/com.mschlauch.comfortreader/" target="_blank">
+<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80"/></a>
+
+or via the [Release section](https://github.com/2Ra66it/updater-for-spotify/releases)
+
+## Screenshots
 
 <img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1520452854.png" width="270"> <img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1508176076.png" width="270"> <img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1520453120.png" width="270">
 
