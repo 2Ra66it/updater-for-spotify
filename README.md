@@ -8,7 +8,7 @@ Updater For Spotify allows you to download the latest version of Spotify and Spo
 
 ## Download latest version Updater For Spotify
 
-<a href="https://f-droid.org/packages/com.mschlauch.comfortreader/" target="_blank">
+<a href="https://f-droid.org/packages/ru.ra66it.updaterforspotify/" target="_blank">
 <img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80"/></a>
 
 or via the [Release section](https://github.com/2Ra66it/updater-for-spotify/releases)
