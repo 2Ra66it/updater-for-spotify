@@ -67,20 +67,13 @@ public class PollService extends JobService {
     public static void setServiceAlarm(boolean isOn) {
         ComponentName component = new ComponentName(MyApplication.getContext(), PollService.class);
         JobInfo builder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            builder = new JobInfo.Builder(JOB_ID, component)
-                    .setMinimumLatency(POLL_INTERVAL)
-                    .setOverrideDeadline(POLL_INTERVAL)
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setPersisted(true)
-                    .build();
-        } else {
-            builder = new JobInfo.Builder(JOB_ID, component)
-                    .setPeriodic(POLL_INTERVAL)
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setPersisted(true)
-                    .build();
-        }
+
+        builder = new JobInfo.Builder(JOB_ID, component)
+                .setPeriodic(POLL_INTERVAL)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPersisted(true)
+                .build();
+
 
         JobScheduler jobScheduler = (JobScheduler) MyApplication.getContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
@@ -95,7 +88,7 @@ public class PollService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
-       if (queryPreferences.getNotificationOrigin()) {
+        if (queryPreferences.getNotificationOrigin()) {
             if (queryPreferences.isSpotifyBeta()) {
                 notificationsSpotifyOrigBeta(jobParameters);
             } else {

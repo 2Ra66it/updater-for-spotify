@@ -14,7 +14,7 @@ public interface SpotifyApi {
     @GET("spotify")
     Observable<Spotify> getLatestOrigin();
 
-    @GET("spotify_beta")
+    @GET("spotify-beta")
     Observable<Spotify> getLatestOriginBeta();
 
 }
