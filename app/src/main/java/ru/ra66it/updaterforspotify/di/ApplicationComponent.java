@@ -14,7 +14,7 @@ import ru.ra66it.updaterforspotify.ui.fragment.SettingsFragment;
  */
 
 @Singleton
-@Component(modules = {RestModule.class, SharedPreferencesModule.class})
+@Component(modules = {AppModule.class, RestModule.class, SharedPreferencesModule.class})
 public interface ApplicationComponent {
 
     void inject(SpotifyFragment fragment);

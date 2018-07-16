@@ -11,19 +11,12 @@ import dagger.Provides;
 /**
  * Created by 2Rabbit on 08.03.2018.
  */
-
 @Module
 public class SharedPreferencesModule {
 
-    private Context context;
-
-    public SharedPreferencesModule(Context context) {
-        this.context = context;
-    }
-
     @Provides
     @Singleton
-    SharedPreferences provideSharedPreferences() {
+    SharedPreferences provideSharedPreferences(Context context) {
         return context.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
     }
 }

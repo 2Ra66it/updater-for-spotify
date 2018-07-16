@@ -32,7 +32,6 @@ public class IntroActivity extends AppCompatActivity implements IntroView {
     InkPageIndicator indicator;
     @BindView(R.id.btn_next)
     Button buttonNext;
-    private int localPos;
 
     @Inject
     QueryPreferences queryPreferences;
@@ -52,25 +51,8 @@ public class IntroActivity extends AppCompatActivity implements IntroView {
         viewPager.setAdapter(new IntroPagerAdapter(getSupportFragmentManager()));
         indicator.setViewPager(viewPager);
 
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                localPos = position;
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
         buttonNext.setOnClickListener(view -> {
-            switch (localPos) {
+            switch (viewPager.getCurrentItem()) {
                 case 0:
                     viewPager.setCurrentItem(1);
                     break;
@@ -83,7 +65,6 @@ public class IntroActivity extends AppCompatActivity implements IntroView {
                 default:
                     break;
             }
-
         });
 
     }
