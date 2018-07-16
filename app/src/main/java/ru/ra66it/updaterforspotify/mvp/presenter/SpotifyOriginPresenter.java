@@ -1,5 +1,7 @@
 package ru.ra66it.updaterforspotify.mvp.presenter;
 
+import android.content.Context;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -13,7 +15,6 @@ import ru.ra66it.updaterforspotify.utils.UtilsDownloadSpotify;
 import ru.ra66it.updaterforspotify.utils.UtilsNetwork;
 import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
 
-
 /**
  * Created by 2Rabbit on 11.11.2017.
  */
@@ -25,16 +26,18 @@ public class SpotifyOriginPresenter {
     private SpotifyApi spotifyApi;
     private QueryPreferences queryPreferences;
     private CompositeDisposable compositeDisposable;
+    private final Context context;
 
-    public SpotifyOriginPresenter(SpotifyView mView, SpotifyApi spotifyApi, QueryPreferences queryPreferences) {
+    public SpotifyOriginPresenter(SpotifyView mView, Context context, SpotifyApi spotifyApi, QueryPreferences queryPreferences) {
         this.mView = mView;
+        this.context = context;
         this.spotifyApi = spotifyApi;
         this.queryPreferences = queryPreferences;
         this.compositeDisposable = new CompositeDisposable();
     }
 
     public void getLatestVersionSpotify() {
-        if (UtilsNetwork.isNetworkAvailable()) {
+        if (UtilsNetwork.isNetworkAvailable(context)) {
             if (!queryPreferences.isSpotifyBeta()) {
                 loadDataOrigin();
             } else {

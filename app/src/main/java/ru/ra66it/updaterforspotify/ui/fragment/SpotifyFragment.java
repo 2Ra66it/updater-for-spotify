@@ -1,5 +1,6 @@
 package ru.ra66it.updaterforspotify.ui.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -58,6 +59,8 @@ public class SpotifyFragment extends Fragment implements SpotifyView {
     SpotifyApi spotifyApi;
     @Inject
     QueryPreferences queryPreferences;
+    @Inject
+    Context context;
 
     public static SpotifyFragment newInstance() {
         return new SpotifyFragment();
@@ -67,9 +70,8 @@ public class SpotifyFragment extends Fragment implements SpotifyView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MyApplication.getApplicationComponent().inject(this);
-        mPresenter = new SpotifyOriginPresenter(this, spotifyApi, queryPreferences);
+        mPresenter = new SpotifyOriginPresenter(this, context, spotifyApi, queryPreferences);
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
