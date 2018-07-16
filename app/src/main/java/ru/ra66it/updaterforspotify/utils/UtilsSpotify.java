@@ -8,13 +8,12 @@ import ru.ra66it.updaterforspotify.MyApplication;
 /**
  * Created by 2Rabbit on 20.09.2017.
  */
-
 public class UtilsSpotify {
 
     private static final String TAG = UtilsSpotify.class.getSimpleName();
 
     public static Boolean isSpotifyInstalled() {
-        Boolean res;
+        boolean res;
 
         try {
             MyApplication.getContext().getPackageManager().getPackageInfo("com.spotify.music", 0);
@@ -38,19 +37,10 @@ public class UtilsSpotify {
         return version;
     }
 
-
-    public static Boolean isSpotifyUpdateAvailable(String installedVersion, String latestVersion) {
-        String install = installedVersion;
-        int installVers = 0;
-
-        if (installedVersion.isEmpty())      {
-            install = "0";
-        } else {
-            installVers = Integer.parseInt(install.replaceAll("[^0-9]", ""));
-        }
-
-        int latestVers = Integer.parseInt(latestVersion.replaceAll("[.]", ""));
-
+    public static boolean isSpotifyUpdateAvailable(String installedVersion, String latestVersion) {
+        if (installedVersion.isEmpty()) return true;
+        final int installVers = Integer.parseInt(installedVersion.replaceAll("[^0-9]", ""));
+        final int latestVers = Integer.parseInt(latestVersion.replaceAll("[.\\s]", ""));
         return installVers < latestVers;
     }
 }
