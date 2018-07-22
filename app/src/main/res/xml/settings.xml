@@ -9,13 +9,6 @@
             android:summary="@string/xml_notification_text_origin"
             android:title="@string/xml_enable_notification" />
 
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="downloadBeta"
-            android:summary="@string/xml_download_beta_text"
-            android:title="@string/xml_download_beta_title" />
-
-
     </PreferenceCategory>
 
 

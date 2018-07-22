@@ -14,7 +14,7 @@ public class UtilsSpotify {
     private static final String TAG = UtilsSpotify.class.getSimpleName();
 
     public static Boolean isSpotifyInstalled() {
-        Boolean res;
+        boolean res;
 
         try {
             MyApplication.getContext().getPackageManager().getPackageInfo("com.spotify.music", 0);
@@ -27,7 +27,7 @@ public class UtilsSpotify {
     }
 
     public static String getInstalledSpotifyVersion() {
-        String version = "";
+        String version = "0";
 
         try {
             version = MyApplication.getContext().getPackageManager().getPackageInfo("com.spotify.music", 0).versionName;
@@ -39,18 +39,9 @@ public class UtilsSpotify {
     }
 
 
-    public static Boolean isSpotifyUpdateAvailable(String installedVersion, String latestVersion) {
-        String install = installedVersion;
-        int installVers = 0;
-
-        if (installedVersion.isEmpty())      {
-            install = "0";
-        } else {
-            installVers = Integer.parseInt(install.replaceAll("[^0-9]", ""));
-        }
-
-        int latestVers = Integer.parseInt(latestVersion.replaceAll("[.]", ""));
-
-        return installVers < latestVers;
+    public static Boolean isSpotifyUpdateAvailable(String installedVersion, String latestedVersion) {
+        int installVersion = Integer.parseInt(installedVersion.replaceAll("[^0-9]", "").replaceAll("\\s+", ""));
+        int latestVersion = Integer.parseInt(latestedVersion.replaceAll("[.]", "").replaceAll("\\s+", ""));
+        return installVersion < latestVersion;
     }
 }

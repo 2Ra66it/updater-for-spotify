@@ -23,54 +23,24 @@ public class SpotifyOriginPresenter {
     private SpotifyView mView;
     private FullSpotifyModel fullSpotifyModel;
     private SpotifyApi spotifyApi;
-    private QueryPreferences queryPreferences;
     private CompositeDisposable compositeDisposable;
 
-    public SpotifyOriginPresenter(SpotifyView mView, SpotifyApi spotifyApi, QueryPreferences queryPreferences) {
+    public SpotifyOriginPresenter(SpotifyView mView, SpotifyApi spotifyApi) {
         this.mView = mView;
         this.spotifyApi = spotifyApi;
-        this.queryPreferences = queryPreferences;
         this.compositeDisposable = new CompositeDisposable();
     }
 
     public void getLatestVersionSpotify() {
         if (UtilsNetwork.isNetworkAvailable()) {
-            if (!queryPreferences.isSpotifyBeta()) {
-                loadDataOrigin();
-            } else {
-                loadDataBeta();
-            }
+            loadData();
         } else {
             errorLayout(true);
             mView.showNoInternetLayout();
         }
     }
 
-    private void loadDataBeta() {
-        compositeDisposable.add(spotifyApi.getLatestOriginBeta()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(d -> {
-                    compositeDisposable.add(d);
-                    errorLayout(false);
-                    mView.hideNoInternetLayout();
-                    mView.showProgress();
-                })
-                .doOnComplete(() -> {
-                    fillData();
-                    mView.hideProgress();
-                    mView.showLayoutCards();
-                })
-                .subscribe(spotify -> {
-                    fullSpotifyModel = new FullSpotifyModel(spotify.getFields());
-                }, throwable -> {
-                    errorLayout(true);
-                    mView.hideProgress();
-                    mView.showErrorSnackbar(R.string.error);
-                }));
-    }
-
-    private void loadDataOrigin() {
+    private void loadData() {
         compositeDisposable.add(spotifyApi.getLatestOrigin()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -86,7 +56,7 @@ public class SpotifyOriginPresenter {
                     mView.showLayoutCards();
                 })
                 .subscribe(spotify -> {
-                    fullSpotifyModel = new FullSpotifyModel(spotify.getFields());
+                    fullSpotifyModel = new FullSpotifyModel(spotify);
                 }, throwable -> {
                     errorLayout(true);
                     mView.hideProgress();

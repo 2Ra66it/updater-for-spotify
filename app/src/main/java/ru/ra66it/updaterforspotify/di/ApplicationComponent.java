@@ -8,6 +8,7 @@ import ru.ra66it.updaterforspotify.notification.PollService;
 import ru.ra66it.updaterforspotify.ui.activity.IntroActivity;
 import ru.ra66it.updaterforspotify.ui.activity.MainActivity;
 import ru.ra66it.updaterforspotify.ui.fragment.SettingsFragment;
+import ru.ra66it.updaterforspotify.ui.fragment.intro.IntroChooseFragment;
 
 /**
  * Created by 2Rabbit on 04.12.2017.
@@ -26,4 +27,6 @@ public interface ApplicationComponent {
     void inject(MainActivity activity);
 
     void inject(PollService service);
+
+    void inject(IntroChooseFragment fragment);
 }

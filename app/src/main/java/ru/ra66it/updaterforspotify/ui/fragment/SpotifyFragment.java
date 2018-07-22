@@ -1,9 +1,16 @@
 package ru.ra66it.updaterforspotify.ui.fragment;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -21,12 +28,20 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import ru.ra66it.updaterforspotify.MyApplication;
 import ru.ra66it.updaterforspotify.R;
+import ru.ra66it.updaterforspotify.model.FullSpotifyModel;
 import ru.ra66it.updaterforspotify.mvp.presenter.SpotifyOriginPresenter;
 import ru.ra66it.updaterforspotify.mvp.view.SpotifyView;
+import ru.ra66it.updaterforspotify.notification.NotificationDownloadService;
+import ru.ra66it.updaterforspotify.notification.PollService;
 import ru.ra66it.updaterforspotify.rest.SpotifyApi;
 import ru.ra66it.updaterforspotify.storage.QueryPreferences;
+import ru.ra66it.updaterforspotify.ui.activity.MainActivity;
 
 import static android.view.View.GONE;
+import static ru.ra66it.updaterforspotify.notification.PollService.LATEST_LINK;
+import static ru.ra66it.updaterforspotify.notification.PollService.LATEST_VERSION_NAME;
+import static ru.ra66it.updaterforspotify.notification.PollService.NOTIFICATION_CHANEL;
+import static ru.ra66it.updaterforspotify.notification.PollService.NOTIFICATION_ID;
 
 /**
  * Created by 2Rabbit on 12.11.2017.
@@ -56,8 +71,6 @@ public class SpotifyFragment extends Fragment implements SpotifyView {
 
     @Inject
     SpotifyApi spotifyApi;
-    @Inject
-    QueryPreferences queryPreferences;
 
     public static SpotifyFragment newInstance() {
         return new SpotifyFragment();
@@ -67,7 +80,7 @@ public class SpotifyFragment extends Fragment implements SpotifyView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MyApplication.getApplicationComponent().inject(this);
-        mPresenter = new SpotifyOriginPresenter(this, spotifyApi, queryPreferences);
+        mPresenter = new SpotifyOriginPresenter(this, spotifyApi);
     }
 
 
@@ -81,7 +94,7 @@ public class SpotifyFragment extends Fragment implements SpotifyView {
             mPresenter.getLatestVersionSpotify();
         });
 
-        fabDownloadButton.setOnClickListener(view -> mPresenter.downloadLatestVersion() );
+        fabDownloadButton.setOnClickListener(view -> mPresenter.downloadLatestVersion());
 
         return v;
     }

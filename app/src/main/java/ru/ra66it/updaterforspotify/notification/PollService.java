@@ -12,6 +12,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.media.RingtoneManager;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -61,7 +62,6 @@ public class PollService extends JobService {
         MyApplication.getApplicationComponent().inject(this);
         Log.i(TAG, "Received an JobService");
         compositeDisposable = new CompositeDisposable();
-
     }
 
     public static void setServiceAlarm(boolean isOn) {
@@ -74,28 +74,25 @@ public class PollService extends JobService {
                 .setPersisted(true)
                 .build();
 
-
         JobScheduler jobScheduler = (JobScheduler) MyApplication.getContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
         if (isOn) {
-            jobScheduler.cancel(JOB_ID);
-            jobScheduler.schedule(builder);
+            if (jobScheduler.getAllPendingJobs().size() == 0) {
+                jobScheduler.schedule(builder);
+            }
         } else {
-            jobScheduler.cancelAll();
+            if (jobScheduler != null) {
+                jobScheduler.cancelAll();
+            }
         }
 
     }
 
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
-        if (queryPreferences.getNotificationOrigin()) {
-            if (queryPreferences.isSpotifyBeta()) {
-                notificationsSpotifyOrigBeta(jobParameters);
-            } else {
-                notificationsSpotifyOrig(jobParameters);
-            }
+        if (queryPreferences.getNotifications()) {
+            notificationsSpotify(jobParameters);
         }
-
         return true;
     }
 
@@ -105,7 +102,7 @@ public class PollService extends JobService {
     }
 
 
-    private void notificationsSpotifyOrig(JobParameters jobParameters) {
+    private void notificationsSpotify(JobParameters jobParameters) {
         compositeDisposable.add(spotifyApi.getLatestOrigin()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -114,28 +111,10 @@ public class PollService extends JobService {
                 })
                 .doOnComplete(() -> {
                     makeNotification(1, fullSpotifyModel);
-                    jobFinished(jobParameters, true);
+                    jobFinished(jobParameters, false);
                 })
                 .subscribe(spotify -> {
-                    fullSpotifyModel = new FullSpotifyModel(spotify.getFields());
-                }, throwable -> {
-                    Log.i(TAG, throwable.getMessage());
-                }));
-    }
-
-    private void notificationsSpotifyOrigBeta(JobParameters jobParameters) {
-        compositeDisposable.add(spotifyApi.getLatestOriginBeta()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(disposable -> {
-                    compositeDisposable.add(disposable);
-                })
-                .doOnComplete(() -> {
-                    makeNotification(1, fullSpotifyModel);
-                    jobFinished(jobParameters, true);
-                })
-                .subscribe(spotify -> {
-                    fullSpotifyModel = new FullSpotifyModel(spotify.getFields());
+                    fullSpotifyModel = new FullSpotifyModel(spotify);
                 }, throwable -> {
                     Log.i(TAG, throwable.getMessage());
                 }));
@@ -143,7 +122,7 @@ public class PollService extends JobService {
 
     private void makeNotification(int notificationId, FullSpotifyModel fullSpotifyModel) {
         //Launch app
-        Resources resources = getResources();
+        Resources resources = MyApplication.getContext().getResources();
         Intent i = new Intent(this, MainActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
@@ -159,7 +138,7 @@ public class PollService extends JobService {
 
 
         //Notification
-        Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANEL)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setTicker(resources.getString(R.string.app_name))
                 .setSmallIcon(R.mipmap.ic_notification)
                 .setContentTitle(getString(R.string.update_available))
@@ -167,34 +146,35 @@ public class PollService extends JobService {
                         + fullSpotifyModel.getLatestVersionName() + " " + getString(R.string.available))
                 .setContentIntent(pi)
                 .setAutoCancel(true)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setColor(getResources().getColor(R.color.colorAccent))
                 .addAction(R.drawable.ic_file_download_black_24dp,
-                        getString(R.string.install_now), piDownload)
-                .build();
+                        getString(R.string.install_now), piDownload);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        makeNotificationChanel(notificationManager);
+        makeNotificationChanel(notificationManager, builder);
 
-        showNotification(notificationId, notificationManager, notification);
+        showNotification(notificationId, notificationManager, builder.build());
 
     }
 
-    private void makeNotificationChanel(NotificationManager notificationManager) {
+    private void makeNotificationChanel(NotificationManager notificationManager, NotificationCompat.Builder builder) {
         //Show notification on Android O
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANEL, getString(R.string.notificaion_chanel_name), NotificationManager.IMPORTANCE_HIGH);
             channel.enableLights(true);
             channel.enableVibration(true);
             channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            builder.setChannelId(NOTIFICATION_CHANEL);
             notificationManager.createNotificationChannel(channel);
         }
     }
 
     private void showNotification(int notificationId, NotificationManager notificationManager, Notification notification) {
-        if (notificationId == 1 && UtilsSpotify.isSpotifyUpdateAvailable(
+        if (UtilsSpotify.isSpotifyUpdateAvailable(
                 UtilsSpotify.getInstalledSpotifyVersion(), fullSpotifyModel.getLatestVersionNumber())) {
 
             notificationManager.notify(notificationId, notification);

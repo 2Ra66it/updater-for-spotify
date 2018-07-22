@@ -11,10 +11,6 @@ import ru.ra66it.updaterforspotify.model.Spotify;
 
 public interface SpotifyApi {
 
-    @GET("spotify")
+    @GET("api/7/app/getMeta/package_name=com.spotify.music")
     Observable<Spotify> getLatestOrigin();
-
-    @GET("spotify-beta")
-    Observable<Spotify> getLatestOriginBeta();
-
 }

@@ -13,28 +13,18 @@ public class QueryPreferences {
     private SharedPreferences sharedPreferences;
     private static final String PREF_NOTIFICATION_ORIGIN = "notification_origin";
     private static final String PREF_IS_FIRST = "if_first";
-    private static final String PREF_IS_BETA = "is_beta";
 
     @Inject
     public QueryPreferences(SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
     }
 
-    public boolean getNotificationOrigin() {
+    public boolean getNotifications() {
         return sharedPreferences.getBoolean(PREF_NOTIFICATION_ORIGIN, false);
     }
 
-    public void setNotificationOrigin(boolean isOn) {
+    public void setNotifications(boolean isOn) {
         sharedPreferences.edit().putBoolean(PREF_NOTIFICATION_ORIGIN, isOn)
-                .apply();
-    }
-
-    public boolean isSpotifyBeta() {
-        return sharedPreferences.getBoolean(PREF_IS_BETA, false);
-    }
-
-    public void setSpotifyBeta(boolean isOn) {
-        sharedPreferences.edit().putBoolean(PREF_IS_BETA, isOn)
                 .apply();
     }
 

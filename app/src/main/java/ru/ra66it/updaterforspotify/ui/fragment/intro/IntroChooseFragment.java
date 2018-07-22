@@ -6,11 +6,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.Switch;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.ra66it.updaterforspotify.MyApplication;
 import ru.ra66it.updaterforspotify.R;
+import ru.ra66it.updaterforspotify.storage.QueryPreferences;
 
 /**
  * Created by 2Rabbit on 17.11.2017.
@@ -18,12 +24,11 @@ import ru.ra66it.updaterforspotify.R;
 
 public class IntroChooseFragment extends Fragment {
 
-    @BindView(R.id.layout_choose_sptf)
-    LinearLayout llChooseOrigin;
-    @BindView(R.id.layout_choose_sptf_beta)
-    LinearLayout llChooseBeta;
-    @BindView(R.id.layout_choose_nothing)
-    LinearLayout llChooseNothin;
+    @BindView(R.id.switch_notif)
+    Switch switchNotification;
+
+    @Inject
+    QueryPreferences queryPreferences;
 
     public static IntroChooseFragment newInstance() {
         return new IntroChooseFragment();
@@ -33,37 +38,9 @@ public class IntroChooseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.intro_choose_fragment, container, false);
         ButterKnife.bind(this, v);
+        MyApplication.getApplicationComponent().inject(this);
 
-        llChooseOrigin.setOnClickListener(view -> {
-
-            llChooseOrigin.setBackgroundColor(getResources().getColor(R.color.darkChoose));
-            llChooseBeta.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-            llChooseNothin.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-
-           /* QueryPreferences.setNotificationOrigin(getContext(), true);
-            QueryPreferences.setSpotifyBeta(getContext(), false);*/
-        });
-
-        llChooseBeta.setOnClickListener(view -> {
-
-            llChooseBeta.setBackgroundColor(getResources().getColor(R.color.darkChoose));
-            llChooseOrigin.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-            llChooseNothin.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-
-            /*QueryPreferences.setNotificationOrigin(getContext(), false);
-            QueryPreferences.setSpotifyBeta(getContext(), true);*/
-        });
-
-        llChooseNothin.setBackgroundColor(getResources().getColor(R.color.darkChoose));
-        llChooseNothin.setOnClickListener(view -> {
-
-            llChooseNothin.setBackgroundColor(getResources().getColor(R.color.darkChoose));
-            llChooseBeta.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-            llChooseOrigin.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-
-            /*QueryPreferences.setNotificationOrigin(getContext(), false);
-            QueryPreferences.setSpotifyBeta(getContext(), false);*/
-        });
+        switchNotification.setOnCheckedChangeListener((compoundButton, b) -> queryPreferences.setNotifications(switchNotification.isChecked()));
 
         return v;
     }

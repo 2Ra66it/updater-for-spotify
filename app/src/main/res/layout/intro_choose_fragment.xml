@@ -12,82 +12,27 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/layoutChoose"
+            android:id="@+id/layout_choose_nothing"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="80dp"
             android:layout_marginBottom="50dp"
-            android:orientation="vertical">
+            android:gravity="center"
+            android:orientation="horizontal">
 
+            <Switch
+                android:id="@+id/switch_notif"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-            <LinearLayout
-                android:id="@+id/layout_choose_sptf_beta"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="8dp">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/logo_beta" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="@string/spotify_beta"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layout_choose_sptf"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="8dp">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/logo_origin" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="@string/spotify"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp" />
-
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/layout_choose_nothing"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="@string/disable_notifications"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp" />
-
-
-            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/xml_enable_notification"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
 
         </LinearLayout>
-
 
         <TextView
             android:id="@+id/textWhat"

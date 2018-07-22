@@ -14,7 +14,6 @@ import ru.ra66it.updaterforspotify.ui.fragment.intro.IntroPermissionFragment;
 
 public class IntroPagerAdapter extends FragmentPagerAdapter {
 
-
     private static final int FRAGMENT_COUNT = 3;
 
     public IntroPagerAdapter(FragmentManager fm) {
@@ -39,8 +38,5 @@ public class IntroPagerAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return FRAGMENT_COUNT;
     }
-
-
-
 
 }

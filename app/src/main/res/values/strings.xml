@@ -37,18 +37,13 @@
     <string name="xml_paypal_link">https://www.paypal.me/2Ra66it</string>
     <string name="xml_github_link">https://github.com/2Ra66it/updater-for-spotify</string>
     <string name="latest_version_original">Latest Version of Spotify</string>
-    <string name="xml_enable_notification">Enable Notifications for Spotify</string>
+    <string name="xml_enable_notification">Enable Notifications</string>
     <string name="xml_notification_text_origin">You will receive a notification for every new version of Spotify</string>
-    <string name="xml_download_beta_title">Download Spotify Beta</string>
-    <string name="xml_download_beta_text">Download the latest version of Spotify Beta</string>
-    <string name="if_have_not_beta">If you have installed Spotify is not beta, please delete it, otherwise when installing Spotify Beta you will get an error!</string>
-    <string name="if_have_beta">If you have installed Spotify Beta, please delete it, otherwise when installing Spotify you will get an error!</string>
-
 
 
     <!--                Intro                  -->
     <string name="disable_notifications">Disable notifications</string>
-    <string name="intro_choose_question">What version of Spotify do I notify you?</string>
+    <string name="intro_choose_question">Do you want to receive notifications of a new version?</string>
     <string name="intro_welcome_message">Welcome to the Updater for Spotify</string>
     <string name="intro_permission_label">This app needs the storage permission</string>
     <string name="intro_permission_text">This is required only for downloading the Spotify to your device</string>

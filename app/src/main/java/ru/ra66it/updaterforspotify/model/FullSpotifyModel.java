@@ -10,10 +10,10 @@ public class FullSpotifyModel {
     private String latestVersionName;
     private String latestVersionNumber;
 
-    public FullSpotifyModel(Fields spotify) {
-        latestLink = spotify.getLink().getStringValue();
-        latestVersionName = spotify.getName().getStringValue();
-        latestVersionNumber = spotify.getVersion().getStringValue();
+    public FullSpotifyModel(Spotify spotify) {
+        latestLink = spotify.getData().getFile().getPath();
+        latestVersionName = spotify.getData().getName() + " " + spotify.getData().getFile().getVername();
+        latestVersionNumber = spotify.getData().getFile().getVername();
     }
 
     public String getLatestLink() {

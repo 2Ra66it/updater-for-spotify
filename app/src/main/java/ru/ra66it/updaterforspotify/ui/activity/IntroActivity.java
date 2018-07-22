@@ -42,10 +42,10 @@ public class IntroActivity extends AppCompatActivity implements IntroView {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MyApplication.getApplicationComponent().inject(this);
-        getSupportActionBar().hide();
         setContentView(R.layout.activity_intro);
+        MyApplication.getApplicationComponent().inject(this);
         ButterKnife.bind(this);
+        getSupportActionBar().hide();
 
         mPresenter = new IntroActivityPresenter(this, queryPreferences);
 
@@ -60,12 +60,10 @@ public class IntroActivity extends AppCompatActivity implements IntroView {
 
             @Override
             public void onPageSelected(int position) {
-
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
 
@@ -85,7 +83,6 @@ public class IntroActivity extends AppCompatActivity implements IntroView {
             }
 
         });
-
     }
 
     @Override
@@ -96,7 +93,6 @@ public class IntroActivity extends AppCompatActivity implements IntroView {
 
     @Override
     public void onBackPressed() {
-
     }
 
 }

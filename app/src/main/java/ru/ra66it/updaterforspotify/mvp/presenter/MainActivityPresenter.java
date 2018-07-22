@@ -27,8 +27,8 @@ public class MainActivityPresenter {
     }
 
     public void startNotification() {
-        if (queryPreferences.getNotificationOrigin()) {
-            PollService.setServiceAlarm(queryPreferences.getNotificationOrigin());
+        if (queryPreferences.getNotifications()) {
+            PollService.setServiceAlarm(queryPreferences.getNotifications());
         } else {
             PollService.setServiceAlarm(false);
         }

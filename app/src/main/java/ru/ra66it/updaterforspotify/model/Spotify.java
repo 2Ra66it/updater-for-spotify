@@ -9,51 +9,18 @@ import java.io.Serializable;
  * Created by 2Rabbit on 22.09.2017.
  */
 
-public class Spotify implements Serializable{
+public class Spotify implements Serializable {
 
-    @SerializedName("name")
+    @SerializedName("data")
     @Expose
-    private String name;
-    @SerializedName("fields")
-    @Expose
-    private Fields fields;
-    @SerializedName("createTime")
-    @Expose
-    private String createTime;
-    @SerializedName("updateTime")
-    @Expose
-    private String updateTime;
+    private Data data;
 
-    public String getName() {
-        return name;
+    public Data getData() {
+        return data;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Fields getFields() {
-        return fields;
-    }
-
-    public void setFields(Fields fields) {
-        this.fields = fields;
-    }
-
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
+    public void setData(Data data) {
+        this.data = data;
     }
 
 }
