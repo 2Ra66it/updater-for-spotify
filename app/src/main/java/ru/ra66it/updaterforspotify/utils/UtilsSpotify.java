@@ -3,7 +3,7 @@ package ru.ra66it.updaterforspotify.utils;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-import ru.ra66it.updaterforspotify.MyApplication;
+import ru.ra66it.updaterforspotify.UpdaterApp;
 
 /**
  * Created by 2Rabbit on 20.09.2017.
@@ -17,7 +17,7 @@ public class UtilsSpotify {
         boolean res;
 
         try {
-            MyApplication.getContext().getPackageManager().getPackageInfo("com.spotify.music", 0);
+            UpdaterApp.getContext().getPackageManager().getPackageInfo("com.spotify.music", 0);
             res = true;
         } catch (PackageManager.NameNotFoundException e) {
             res = false;
@@ -30,7 +30,7 @@ public class UtilsSpotify {
         String version = "0";
 
         try {
-            version = MyApplication.getContext().getPackageManager().getPackageInfo("com.spotify.music", 0).versionName;
+            version = UpdaterApp.getContext().getPackageManager().getPackageInfo("com.spotify.music", 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
             Log.i(TAG, "Spotify not installed");
         }

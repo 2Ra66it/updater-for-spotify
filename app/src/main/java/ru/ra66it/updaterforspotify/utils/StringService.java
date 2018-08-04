@@ -1,6 +1,6 @@
 package ru.ra66it.updaterforspotify.utils;
 
-import ru.ra66it.updaterforspotify.MyApplication;
+import ru.ra66it.updaterforspotify.UpdaterApp;
 
 /**
  * Created by 2Rabbit on 08.03.2018.
@@ -9,8 +9,8 @@ import ru.ra66it.updaterforspotify.MyApplication;
 public class StringService {
 
     public static String getById(int id) {
-        if (MyApplication.getContext() != null) {
-            return MyApplication.getContext().getResources().getString(id);
+        if (UpdaterApp.getContext() != null) {
+            return UpdaterApp.getContext().getResources().getString(id);
         } else {
             throw new NullPointerException();
         }

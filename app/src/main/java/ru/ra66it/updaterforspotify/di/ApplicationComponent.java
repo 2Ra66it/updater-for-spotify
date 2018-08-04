@@ -3,19 +3,20 @@ package ru.ra66it.updaterforspotify.di;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import ru.ra66it.updaterforspotify.ui.fragment.SpotifyFragment;
-import ru.ra66it.updaterforspotify.notification.PollService;
-import ru.ra66it.updaterforspotify.ui.activity.IntroActivity;
-import ru.ra66it.updaterforspotify.ui.activity.MainActivity;
-import ru.ra66it.updaterforspotify.ui.fragment.SettingsFragment;
-import ru.ra66it.updaterforspotify.ui.fragment.intro.IntroChooseFragment;
+import ru.ra66it.updaterforspotify.presentation.service.PollService;
+import ru.ra66it.updaterforspotify.presentation.ui.activity.IntroActivity;
+import ru.ra66it.updaterforspotify.presentation.ui.activity.MainActivity;
+import ru.ra66it.updaterforspotify.presentation.ui.fragment.SettingsFragment;
+import ru.ra66it.updaterforspotify.presentation.ui.fragment.SpotifyFragment;
+import ru.ra66it.updaterforspotify.presentation.ui.fragment.intro.IntroChooseFragment;
+
 
 /**
  * Created by 2Rabbit on 04.12.2017.
  */
 
 @Singleton
-@Component(modules = {RestModule.class, SharedPreferencesModule.class})
+@Component(modules = {ApplicationModule.class, NetworkModule.class, PresenterModule.class})
 public interface ApplicationComponent {
 
     void inject(SpotifyFragment fragment);

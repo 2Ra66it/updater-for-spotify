@@ -6,8 +6,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.widget.Toast;
 
-import ru.ra66it.updaterforspotify.MyApplication;
 import ru.ra66it.updaterforspotify.R;
+import ru.ra66it.updaterforspotify.UpdaterApp;
 
 
 /**
@@ -27,10 +27,10 @@ public class UtilsDownloadSpotify {
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
                 fullName + ".apk");
 
-        DownloadManager manager = (DownloadManager) MyApplication.getContext()
+        DownloadManager manager = (DownloadManager) UpdaterApp.getContext()
                 .getSystemService(Context.DOWNLOAD_SERVICE);
         manager.enqueue(request);
 
-        Toast.makeText(MyApplication.getContext(), name + " is downloading", Toast.LENGTH_SHORT).show();
+        Toast.makeText(UpdaterApp.getContext(), name + " is downloading", Toast.LENGTH_SHORT).show();
     }
 }
