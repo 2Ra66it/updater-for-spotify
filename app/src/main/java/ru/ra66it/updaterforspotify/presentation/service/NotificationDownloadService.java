@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
-import ru.ra66it.updaterforspotify.utils.UtilsDownloadSpotify;
+import ru.ra66it.updaterforspotify.presentation.utils.UtilsDownloadSpotify;
 
 
 /**

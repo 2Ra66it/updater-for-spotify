@@ -8,9 +8,9 @@ import ru.ra66it.updaterforspotify.data.network.NetworkChecker;
 import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor;
 import ru.ra66it.updaterforspotify.domain.models.FullSpotifyModel;
 import ru.ra66it.updaterforspotify.presentation.mvp.view.SpotifyView;
-import ru.ra66it.updaterforspotify.utils.StringService;
-import ru.ra66it.updaterforspotify.utils.UtilsDownloadSpotify;
-import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
+import ru.ra66it.updaterforspotify.presentation.utils.StringService;
+import ru.ra66it.updaterforspotify.presentation.utils.UtilsDownloadSpotify;
+import ru.ra66it.updaterforspotify.presentation.utils.UtilsSpotify;
 
 /**
  * Created by 2Rabbit on 11.11.2017.

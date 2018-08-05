@@ -14,7 +14,7 @@ import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.presentation.mvp.presenter.MainActivityPresenter;
 import ru.ra66it.updaterforspotify.presentation.mvp.view.MainBaseView;
 import ru.ra66it.updaterforspotify.presentation.ui.fragment.SpotifyFragment;
-import ru.ra66it.updaterforspotify.utils.ActivityUtils;
+import ru.ra66it.updaterforspotify.presentation.utils.ActivityUtils;
 
 
 public class MainActivity extends AppCompatActivity implements MainBaseView {

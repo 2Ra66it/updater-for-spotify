@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ru.ra66it.updaterforspotify.utils;
+package ru.ra66it.updaterforspotify.presentation.utils;
 
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;

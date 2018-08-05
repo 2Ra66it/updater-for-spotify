@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 
 
 import ru.ra66it.updaterforspotify.presentation.ui.fragment.SettingsFragment;
-import ru.ra66it.updaterforspotify.utils.ActivityUtils;
+import ru.ra66it.updaterforspotify.presentation.utils.ActivityUtils;
 
 
 /**

@@ -30,7 +30,7 @@ import ru.ra66it.updaterforspotify.data.storage.QueryPreferences;
 import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor;
 import ru.ra66it.updaterforspotify.domain.models.FullSpotifyModel;
 import ru.ra66it.updaterforspotify.presentation.ui.activity.MainActivity;
-import ru.ra66it.updaterforspotify.utils.UtilsSpotify;
+import ru.ra66it.updaterforspotify.presentation.utils.UtilsSpotify;
 
 /**
  * Created by 2Rabbit on 07.01.2018.

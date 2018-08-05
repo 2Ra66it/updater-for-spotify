@@ -1,4 +1,4 @@
-package ru.ra66it.updaterforspotify.utils;
+package ru.ra66it.updaterforspotify.presentation.utils;
 
 import android.content.pm.PackageManager;
 import android.util.Log;
