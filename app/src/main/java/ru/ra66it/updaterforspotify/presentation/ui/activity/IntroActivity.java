@@ -1,99 +1,57 @@
 package ru.ra66it.updaterforspotify.presentation.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.widget.Button;
-
-import com.pixelcan.inkpageindicator.InkPageIndicator;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import ru.ra66it.updaterforspotify.UpdaterApp;
+import agency.tango.materialintroscreen.MaterialIntroActivity;
+import agency.tango.materialintroscreen.MessageButtonBehaviour;
+import agency.tango.materialintroscreen.SlideFragmentBuilder;
 import ru.ra66it.updaterforspotify.R;
-import ru.ra66it.updaterforspotify.presentation.adapter.IntroPagerAdapter;
-import ru.ra66it.updaterforspotify.presentation.mvp.presenter.IntroActivityPresenter;
-import ru.ra66it.updaterforspotify.presentation.mvp.view.IntroView;
+import ru.ra66it.updaterforspotify.UpdaterApp;
+import ru.ra66it.updaterforspotify.data.storage.QueryPreferences;
+import ru.ra66it.updaterforspotify.presentation.ui.fragment.intro.IntroNotificationFragment;
 
 /**
  * Created by 2Rabbit on 17.11.2017.
  */
 
-public class IntroActivity extends AppCompatActivity implements IntroView {
-
-    @BindView(R.id.intro_view_pager)
-    ViewPager viewPager;
-    @BindView(R.id.pageIndicator)
-    InkPageIndicator indicator;
-    @BindView(R.id.btn_next)
-    Button buttonNext;
-    private int localPos;
+public class IntroActivity extends MaterialIntroActivity {
 
     @Inject
-    IntroActivityPresenter mPresenter;
+    QueryPreferences queryPreferences;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_intro);
         UpdaterApp.getApplicationComponent().inject(this);
-        ButterKnife.bind(this);
-        getSupportActionBar().hide();
+        enableLastSlideAlphaExitTransition(true);
 
-        mPresenter.setView(this);
+        addSlide(new SlideFragmentBuilder()
+                        .backgroundColor(R.color.colorPrimaryDark)
+                        .buttonsColor(R.color.colorAccent)
+                        .title(getString(R.string.intro_welcome_message))
+                        .build());
 
-        initViewPager();
-    }
+        IntroNotificationFragment notificationFragment = new IntroNotificationFragment();
+        notificationFragment.setSharedPreferences(queryPreferences);
+        addSlide(notificationFragment);
 
-    public void initViewPager() {
-        viewPager.setAdapter(new IntroPagerAdapter(getSupportFragmentManager()));
-        indicator.setViewPager(viewPager);
-
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                localPos = position;
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
-
-        buttonNext.setOnClickListener(view -> {
-            switch (localPos) {
-                case 0:
-                    viewPager.setCurrentItem(1);
-                    break;
-                case 1:
-                    viewPager.setCurrentItem(2);
-                    break;
-                case 2:
-                    mPresenter.checkPermission();
-                    break;
-                default:
-                    break;
-            }
-
-        });
+        addSlide(new SlideFragmentBuilder()
+                        .backgroundColor(R.color.colorPrimaryDark)
+                        .buttonsColor(R.color.colorAccent)
+                        .neededPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE})
+                        .image(R.drawable.art_material_metaphor)
+                        .description(getString(R.string.intro_permission_text))
+                        .build(),
+                new MessageButtonBehaviour(v -> showMessage("Permission Granted"), "Granted"));
     }
 
     @Override
-    public void getPermission() {
-        ActivityCompat.requestPermissions(this,
-                new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+    public void onFinish() {
+        super.onFinish();
+        queryPreferences.setFirstLaunch(false);
     }
-
-    @Override
-    public void onBackPressed() {
-    }
-
 }

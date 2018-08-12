@@ -15,9 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".presentation.ui.activity.MainActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+
+        <activity android:name=".presentation.ui.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,18 +24,18 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".presentation.ui.activity.IntroActivity" />
+        <activity
+            android:name=".presentation.ui.activity.IntroActivity"
+            android:theme="@style/Theme.Intro" />
 
         <activity
             android:name=".presentation.ui.activity.SettingsActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/action_settings"
             android:theme="@style/PreferencesTheme">
 
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
             </intent-filter>
-
         </activity>
 
         <!--               Notification               -->

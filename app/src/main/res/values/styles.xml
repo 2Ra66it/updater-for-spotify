@@ -8,19 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-
     <style name="CardViewStyle" parent="CardView">
         <item name="cardCornerRadius">4dp</item>
         <item name="cardElevation">4dp</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="AppTheme.TransparentText" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@android:color/transparent</item>
-    </style>
 
     <style name="PreferencesTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -32,10 +24,5 @@
         <item name="android:textColorSecondary">@android:color/darker_gray</item>
         <item name="android:listDivider">@null</item>
     </style>
-
-    <style name="AlertTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:textColor">@color/colorAccent</item>
-    </style>
-
 
 </resources>

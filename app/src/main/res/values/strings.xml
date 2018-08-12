@@ -42,11 +42,9 @@
 
 
     <!--                Intro                  -->
-    <string name="disable_notifications">Disable notifications</string>
-    <string name="intro_choose_question">Do you want to receive notifications of a new version?</string>
+    <string name="intro_choose_question">Do you want to be notified when a new version appears?</string>
     <string name="intro_welcome_message">Welcome to the Updater for Spotify</string>
-    <string name="intro_permission_label">This app needs the storage permission</string>
-    <string name="intro_permission_text">This is required only for downloading the Spotify to your device</string>
+    <string name="intro_permission_text">To download Spotify, the Updater for Spotify requires a storage permission</string>
     <string name="info">Info</string>
     <string name="spotify_origin_is_available">Spotify (not Beta) is available</string>
     <string name="spotify_beta_available">Spotify Beta is available</string>

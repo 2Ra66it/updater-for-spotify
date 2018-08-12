@@ -5,9 +5,11 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import ru.ra66it.updaterforspotify.R;
 import ru.ra66it.updaterforspotify.data.network.NetworkChecker;
+import ru.ra66it.updaterforspotify.data.storage.QueryPreferences;
 import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor;
 import ru.ra66it.updaterforspotify.domain.models.FullSpotifyModel;
 import ru.ra66it.updaterforspotify.presentation.mvp.view.SpotifyView;
+import ru.ra66it.updaterforspotify.presentation.service.PollService;
 import ru.ra66it.updaterforspotify.presentation.utils.StringService;
 import ru.ra66it.updaterforspotify.presentation.utils.UtilsDownloadSpotify;
 import ru.ra66it.updaterforspotify.presentation.utils.UtilsSpotify;
@@ -21,10 +23,12 @@ public class SpotifyPresenter {
     private SpotifyView mView;
     private FullSpotifyModel fullSpotifyModel;
     private SpotifyInteractor spotifyInteractor;
+    private QueryPreferences queryPreferences;
     private CompositeDisposable compositeDisposable;
 
-    public SpotifyPresenter(SpotifyInteractor spotifyInteractor) {
+    public SpotifyPresenter(SpotifyInteractor spotifyInteractor, QueryPreferences queryPreferences) {
         this.spotifyInteractor = spotifyInteractor;
+        this.queryPreferences = queryPreferences;
         this.compositeDisposable = new CompositeDisposable();
     }
 
@@ -92,6 +96,14 @@ public class SpotifyPresenter {
         }
     }
 
+    public void startNotification() {
+        if (queryPreferences.isEnableNotification()) {
+            PollService.setServiceAlarm(queryPreferences.isEnableNotification());
+        } else {
+            PollService.setServiceAlarm(false);
+        }
+    }
+
     private void errorLayout(boolean bool) {
         if (bool) {
             mView.hideLayoutCards();
@@ -103,10 +115,17 @@ public class SpotifyPresenter {
     }
 
     public void subscribe() {
+        startNotification();
         getLatestVersionSpotify();
     }
 
     public void unsubscribe() {
         compositeDisposable.clear();
+    }
+
+    public void showIntro() {
+        if (queryPreferences.isFirstLaunch()) {
+            mView.showIntro();
+        }
     }
 }

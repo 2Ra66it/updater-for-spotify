@@ -7,8 +7,6 @@ import ru.ra66it.updaterforspotify.presentation.service.PollService;
 import ru.ra66it.updaterforspotify.presentation.ui.activity.IntroActivity;
 import ru.ra66it.updaterforspotify.presentation.ui.activity.MainActivity;
 import ru.ra66it.updaterforspotify.presentation.ui.fragment.SettingsFragment;
-import ru.ra66it.updaterforspotify.presentation.ui.fragment.SpotifyFragment;
-import ru.ra66it.updaterforspotify.presentation.ui.fragment.intro.IntroChooseFragment;
 
 
 /**
@@ -19,8 +17,6 @@ import ru.ra66it.updaterforspotify.presentation.ui.fragment.intro.IntroChooseFra
 @Component(modules = {ApplicationModule.class, NetworkModule.class, PresenterModule.class})
 public interface ApplicationComponent {
 
-    void inject(SpotifyFragment fragment);
-
     void inject(SettingsFragment fragment);
 
     void inject(IntroActivity activity);
@@ -29,5 +25,4 @@ public interface ApplicationComponent {
 
     void inject(PollService service);
 
-    void inject(IntroChooseFragment fragment);
 }

@@ -24,8 +24,8 @@ import javax.inject.Inject;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
-import ru.ra66it.updaterforspotify.UpdaterApp;
 import ru.ra66it.updaterforspotify.R;
+import ru.ra66it.updaterforspotify.UpdaterApp;
 import ru.ra66it.updaterforspotify.data.storage.QueryPreferences;
 import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor;
 import ru.ra66it.updaterforspotify.domain.models.FullSpotifyModel;
@@ -138,7 +138,7 @@ public class PollService extends JobService {
 
 
         //Notification
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANEL)
                 .setTicker(resources.getString(R.string.app_name))
                 .setSmallIcon(R.mipmap.ic_notification)
                 .setContentTitle(getString(R.string.update_available))

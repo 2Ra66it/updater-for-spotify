@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
 
 android {
@@ -8,8 +9,8 @@ android {
         applicationId "ru.ra66it.updaterforspotify"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 3
-        versionName "1.2"
+        versionCode 4
+        versionName "1.21"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "SPOTIFY_BASE_URL", "\"https://ws75.aptoide.com/\""
@@ -26,6 +27,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+}
+
+repositories {
+    mavenCentral()
 }
 
 dependencies {
@@ -46,7 +51,6 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 
-
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.6'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
@@ -54,5 +58,7 @@ dependencies {
     implementation 'com.google.dagger:dagger:2.13'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.13'
 
-    implementation 'com.pacioianu.david:ink-page-indicator:1.2.0'
+    implementation 'agency.tango.android:material-intro-screen:0.0.5'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
