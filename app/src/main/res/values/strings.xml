@@ -1,21 +1,13 @@
 <resources>
     <string name="app_name">Updater for Spotify</string>
     <string name="action_settings">Settings</string>
-    <string name="settings_category_preferences">Preferences</string>
     <string name="installed_version">Installed Version</string>
     <string name="latest_version">Latest Version</string>
-    <string name="install_new">Install new version:</string>
-    <string name="install">Install</string>
-    <string name="have_last_version">You have the latest version available</string>
     <string name="spotify_not_installed">Spotify is not Installed</string>
     <string name="error">Error, something went wrong :(</string>
     <string name="no_internet_connection">Connection error, try again later</string>
-    <string name="now">now!</string>
-    <string name="toast_choose_version">Please select the version you require</string>
     <string name="up_to_date">Latest version is installed</string>
 
-    <string name="spotify_beta">Spotify Beta</string>
-    <string name="spotify">Spotify</string>
     <string name="accept">Accept</string>
 
     <!--                Notification                  -->
@@ -46,7 +38,4 @@
     <string name="intro_welcome_message">Welcome to the Updater for Spotify</string>
     <string name="intro_permission_text">To download Spotify, the Updater for Spotify requires a storage permission</string>
     <string name="info">Info</string>
-    <string name="spotify_origin_is_available">Spotify (not Beta) is available</string>
-    <string name="spotify_beta_available">Spotify Beta is available</string>
-
 </resources>

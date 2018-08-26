@@ -1,49 +1,19 @@
 package ru.ra66it.updaterforspotify.domain.models
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-import java.io.Serializable
-
-class Data : Serializable {
-
-    @SerializedName("id")
-    @Expose
-    var id: Int = 0
-    @SerializedName("name")
-    @Expose
-    var name: String? = null
-    @SerializedName("package")
-    @Expose
-    var _package: String? = null
-    @SerializedName("uname")
-    @Expose
-    var uname: String? = null
-    @SerializedName("size")
-    @Expose
-    var size: Int = 0
-    @SerializedName("icon")
-    @Expose
-    var icon: String? = null
-    @SerializedName("graphic")
-    @Expose
-    var graphic: String? = null
-    @SerializedName("added")
-    @Expose
-    var added: String? = null
-    @SerializedName("modified")
-    @Expose
-    var modified: String? = null
-    @SerializedName("updated")
-    @Expose
-    var updated: String? = null
-    @SerializedName("main_package")
-    @Expose
-    var mainPackage: Any? = null
-    @SerializedName("developer")
-    @Expose
-    var developer: Developer? = null
-    @SerializedName("file")
-    @Expose
-    var file: File? = null
-}
+data class Data (
+    @SerializedName("id") val id: Int,
+    @SerializedName("name") var name: String,
+    @SerializedName("package") var _package: String,
+    @SerializedName("uname") var uname: String,
+    @SerializedName("size") var size: Int,
+    @SerializedName("icon") var icon: String,
+    @SerializedName("graphic") var graphic: String,
+    @SerializedName("added") var added: String,
+    @SerializedName("modified") var modified: String,
+    @SerializedName("updated") var updated: String,
+    @SerializedName("main_package") var mainPackage: Any,
+    @SerializedName("developer") var developer: Developer,
+    @SerializedName("file") var file: File
+)

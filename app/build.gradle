@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 26
@@ -9,12 +10,12 @@ android {
         applicationId "ru.ra66it.updaterforspotify"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 4
-        versionName "1.21"
+        versionCode 5
+        versionName "1.22"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "SPOTIFY_BASE_URL", "\"https://ws75.aptoide.com/\""
-        buildConfigField "String", "SPOTIFY_API", "\"api/7/app/getMeta/package_name=com.spotify.music\""
+        buildConfigField "String", "SPOTIFY_BASE_URL", "\"https://ws75.aptoide.com\""
+        buildConfigField "String", "SPOTIFY_API", "\"/api/7/app/getMeta/package_name=com.spotify.music\""
     }
     buildTypes {
         release {
@@ -29,22 +30,18 @@ android {
     }
 }
 
-repositories {
-    mavenCentral()
+kapt {
+    generateStubs = true
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'com.android.support:cardview-v7:26.1.0'
     implementation 'com.android.support:design:26.1.0'
-
-    implementation 'com.jakewharton:butterknife:8.8.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation "com.squareup.okhttp3:logging-interceptor:3.10.0"
@@ -56,7 +53,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
 
     implementation 'com.google.dagger:dagger:2.13'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.13'
+    kapt 'com.google.dagger:dagger-compiler:2.13'
 
     implementation 'agency.tango.android:material-intro-screen:0.0.5'
 

@@ -6,8 +6,8 @@ package ru.ra66it.updaterforspotify.domain.models
 
 class FullSpotifyModel(spotify: Spotify) {
 
-    val latestLink: String = spotify.data?.file?.path!!
-    val latestVersionName: String = spotify.data?.name + " " + spotify.data?.file?.vername
-    val latestVersionNumber: String = spotify.data?.file?.vername!!
+    val latestLink: String = spotify.data.file.path
+    val latestVersionName: String = spotify.data.name + " " + spotify.data.file.vername
+    val latestVersionNumber: String = spotify.data.file.vername
 
 }
