@@ -15,7 +15,7 @@ or via the [Release section](https://github.com/2Ra66it/updater-for-spotify/rele
 
 ## Screenshots
 
-<img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1520452854.png" width="270"> <img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1508176076.png" width="270"> <img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1520453120.png" width="270">
+<img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1520452854.png" width="270"> <img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1508176076.png" width="270"> <img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1536497920.png" width="270">
 
 ## Architecture
 MVP
