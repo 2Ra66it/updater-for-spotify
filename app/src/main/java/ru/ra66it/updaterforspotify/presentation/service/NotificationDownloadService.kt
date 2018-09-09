@@ -19,7 +19,7 @@ class NotificationDownloadService : IntentService(TAG) {
         val link = intent.getStringExtra(PollService.LATEST_LINK)
         val name = intent.getStringExtra(PollService.LATEST_VERSION_NAME)
         val id = intent.getIntExtra(PollService.NOTIFICATION_ID, 0)
-        if (ACTION_DOWNLOAD == action) {
+        if (actionDownload == action) {
             //Hide Notification
             val manager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.cancel(id)
@@ -29,6 +29,6 @@ class NotificationDownloadService : IntentService(TAG) {
 
     companion object {
         private const val TAG = "NotificationDownloadService"
-        const val ACTION_DOWNLOAD = "ACTION_DOWNLOAD"
+        const val actionDownload = "actionDownload"
     }
 }

@@ -9,8 +9,6 @@ import ru.ra66it.updaterforspotify.UpdaterApp
 
 object UtilsSpotify {
 
-    private val TAG = UtilsSpotify::class.java.simpleName
-
     val isSpotifyInstalled: Boolean
         get() {
             return try {
@@ -26,14 +24,17 @@ object UtilsSpotify {
             return try {
                 UpdaterApp.instance.packageManager.getPackageInfo("com.spotify.music", 0).versionName
             } catch (e: PackageManager.NameNotFoundException) {
-               "0"
+                ""
             }
         }
 
+    fun isSpotifyUpdateAvailable(installVersion: String, lastVersion: String): Boolean {
+        val installedVersion = convertVersionToInt(installVersion)
+        val latestVersion = convertVersionToInt(lastVersion)
+        return installedVersion < latestVersion
+    }
 
-    fun isSpotifyUpdateAvailable(installedVersion: String, latestedVersion: String): Boolean {
-        val installVersion = Integer.parseInt(installedVersion.replace("[^0-9]".toRegex(), "").replace("\\s+".toRegex(), ""))
-        val latestVersion = Integer.parseInt(latestedVersion.replace("[.]".toRegex(), "").replace("\\s+".toRegex(), ""))
-        return installVersion < latestVersion
+    fun convertVersionToInt(version: String): Int {
+        return Integer.parseInt(version.replace("[^0-9]".toRegex(), ""))
     }
 }

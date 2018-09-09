@@ -16,6 +16,8 @@ import ru.ra66it.updaterforspotify.UpdaterApp
 
 object UtilsDownloadSpotify {
 
+    var apkPath: Uri? = null
+
     fun downloadSpotify(url: String, name: String) {
         val fullName = name.replace(" ", "_").replace("\\.".toRegex(), "_")
 
@@ -25,14 +27,12 @@ object UtilsDownloadSpotify {
         request.setNotificationVisibility(DownloadManager.Request
                 .VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
 
-        uri = Uri.parse("file://" + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/$fullName.apk")
-        request.setDestinationUri(uri)
+        apkPath = Uri.parse("file://" + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/$fullName.apk")
+        request.setDestinationUri(apkPath)
 
         val manager = UpdaterApp.instance.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         manager.enqueue(request)
 
         Toast.makeText(UpdaterApp.instance, "$name is downloading", Toast.LENGTH_SHORT).show()
     }
-
-    lateinit var uri: Uri
 }

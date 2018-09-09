@@ -12,7 +12,6 @@ import ru.ra66it.updaterforspotify.di.NetworkModule
 
 class UpdaterApp : Application() {
 
-
     override fun onCreate() {
         super.onCreate()
         initComponent()

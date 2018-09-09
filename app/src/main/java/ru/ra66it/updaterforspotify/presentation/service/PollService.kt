@@ -23,7 +23,7 @@ import ru.ra66it.updaterforspotify.R
 import ru.ra66it.updaterforspotify.UpdaterApp
 import ru.ra66it.updaterforspotify.data.storage.QueryPreferences
 import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor
-import ru.ra66it.updaterforspotify.domain.models.FullSpotifyModel
+import ru.ra66it.updaterforspotify.domain.model.FullSpotifyModel
 import ru.ra66it.updaterforspotify.presentation.ui.activity.MainActivity
 import ru.ra66it.updaterforspotify.presentation.utils.UtilsSpotify
 import java.util.concurrent.TimeUnit
@@ -35,23 +35,22 @@ import javax.inject.Inject
 
 
 class PollService : JobService() {
+    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    private lateinit var compositeDisposable: CompositeDisposable
-    private lateinit var fullSpotifyModel: FullSpotifyModel
-
-    @Inject lateinit var spotifyInteractor: SpotifyInteractor
-    @Inject lateinit var queryPreferences: QueryPreferences
+    @Inject
+    lateinit var spotifyInteractor: SpotifyInteractor
+    @Inject
+    lateinit var queryPreferences: QueryPreferences
 
     override fun onCreate() {
         super.onCreate()
         UpdaterApp.applicationComponent.inject(this)
         Log.i(TAG, "Received an JobService")
-        compositeDisposable = CompositeDisposable()
     }
 
     override fun onStartJob(jobParameters: JobParameters): Boolean {
         if (queryPreferences.isEnableNotification) {
-            notificationsSpotify(jobParameters)
+            notificationSpotify(jobParameters)
         }
         return true
     }
@@ -60,16 +59,16 @@ class PollService : JobService() {
         return true
     }
 
-    private fun notificationsSpotify(jobParameters: JobParameters) {
+    private fun notificationSpotify(jobParameters: JobParameters) {
         compositeDisposable.add(spotifyInteractor.latestSpotify()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { disposable -> compositeDisposable.add(disposable) }
-                .doOnComplete {
-                    makeNotification(1, fullSpotifyModel)
+                .subscribe({ spotify ->
+                    makeNotification(1, FullSpotifyModel(spotify))
                     jobFinished(jobParameters, false)
-                }
-                .subscribe({ spotify -> fullSpotifyModel = FullSpotifyModel(spotify) }, { throwable -> Log.i(TAG, throwable.message) }))
+                }, { throwable ->
+                    Log.i(TAG, throwable.message)
+                }))
     }
 
     private fun makeNotification(notificationId: Int, fullSpotifyModel: FullSpotifyModel) {
@@ -81,7 +80,7 @@ class PollService : JobService() {
 
         //Download spotify
         val intentDownload = Intent(this, NotificationDownloadService::class.java)
-        intentDownload.action = NotificationDownloadService.ACTION_DOWNLOAD
+        intentDownload.action = NotificationDownloadService.actionDownload
         intentDownload.putExtra(LATEST_LINK, fullSpotifyModel.latestLink)
         intentDownload.putExtra(LATEST_VERSION_NAME, fullSpotifyModel.latestVersionName)
         intentDownload.putExtra(NOTIFICATION_ID, notificationId)
@@ -108,14 +107,15 @@ class PollService : JobService() {
 
         makeNotificationChanel(notificationManager, builder)
 
-        showNotification(notificationId, notificationManager, builder.build())
-
+        showNotification(fullSpotifyModel.latestVersionNumber, notificationId, notificationManager, builder.build())
     }
 
-    private fun makeNotificationChanel(notificationManager: NotificationManager, builder: NotificationCompat.Builder) {
+    private fun makeNotificationChanel(notificationManager: NotificationManager,
+                                       builder: NotificationCompat.Builder) {
         //Show notification on Android O
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(NOTIFICATION_CHANEL, getString(R.string.notificaion_chanel_name), NotificationManager.IMPORTANCE_HIGH)
+            val channel = NotificationChannel(NOTIFICATION_CHANEL,
+                    getString(R.string.notificaion_chanel_name), NotificationManager.IMPORTANCE_HIGH)
             channel.enableLights(true)
             channel.enableVibration(true)
             channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
@@ -124,10 +124,10 @@ class PollService : JobService() {
         }
     }
 
-    private fun showNotification(notificationId: Int, notificationManager: NotificationManager, notification: Notification) {
-        if (UtilsSpotify.isSpotifyUpdateAvailable(
-                        UtilsSpotify.installedSpotifyVersion, fullSpotifyModel.latestVersionNumber)) {
-
+    private fun showNotification(latestVersion: String, notificationId: Int,
+                                 notificationManager: NotificationManager, notification: Notification) {
+        if (!UtilsSpotify.isSpotifyInstalled || UtilsSpotify.isSpotifyUpdateAvailable(
+                        UtilsSpotify.installedSpotifyVersion, latestVersion)) {
             notificationManager.notify(notificationId, notification)
         }
     }
@@ -144,9 +144,8 @@ class PollService : JobService() {
         private val POLL_INTERVAL = TimeUnit.DAYS.toMillis(1)
         private const val JOB_ID = 123
         const val NOTIFICATION_ID = "notification_id"
-        const val NOTIFICATION_CHANEL = "UFS_CHANEL_ID"
+        const val NOTIFICATION_CHANEL = "ufs_chanel_id"
         const val LATEST_LINK = "latest_link"
-        const val LATEST_VERSION = "latest_version"
         const val LATEST_VERSION_NAME = "latest_version_name"
 
         fun setServiceAlarm(isOn: Boolean) {
@@ -168,7 +167,6 @@ class PollService : JobService() {
             } else {
                 jobScheduler.cancelAll()
             }
-
         }
     }
 }

@@ -7,7 +7,7 @@ import ru.ra66it.updaterforspotify.R
 import ru.ra66it.updaterforspotify.data.network.NetworkChecker
 import ru.ra66it.updaterforspotify.data.storage.QueryPreferences
 import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor
-import ru.ra66it.updaterforspotify.domain.models.FullSpotifyModel
+import ru.ra66it.updaterforspotify.domain.model.FullSpotifyModel
 import ru.ra66it.updaterforspotify.presentation.mvp.view.SpotifyView
 import ru.ra66it.updaterforspotify.presentation.service.PollService
 import ru.ra66it.updaterforspotify.presentation.utils.StringService
@@ -18,7 +18,8 @@ import ru.ra66it.updaterforspotify.presentation.utils.UtilsSpotify
  * Created by 2Rabbit on 11.11.2017.
  */
 
-class SpotifyPresenter(private val spotifyInteractor: SpotifyInteractor, private val queryPreferences: QueryPreferences) {
+class SpotifyPresenter(private val spotifyInteractor: SpotifyInteractor,
+                       private val queryPreferences: QueryPreferences) {
 
     private lateinit var view: SpotifyView
     private var fullSpotifyModel: FullSpotifyModel? = null
@@ -30,6 +31,8 @@ class SpotifyPresenter(private val spotifyInteractor: SpotifyInteractor, private
 
     fun getLatestVersionSpotify() {
         if (NetworkChecker.isNetworkAvailable) {
+            errorLayout(false)
+            view.hideNoInternetLayout()
             loadData()
         } else {
             errorLayout(true)
@@ -41,10 +44,7 @@ class SpotifyPresenter(private val spotifyInteractor: SpotifyInteractor, private
         compositeDisposable.add(spotifyInteractor.latestSpotify()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { d ->
-                    compositeDisposable.add(d)
-                    errorLayout(false)
-                    view.hideNoInternetLayout()
+                .doOnSubscribe { _ ->
                     view.showProgress()
                 }
                 .doOnComplete {
@@ -52,7 +52,9 @@ class SpotifyPresenter(private val spotifyInteractor: SpotifyInteractor, private
                     view.hideProgress()
                     view.showLayoutCards()
                 }
-                .subscribe({ spotify -> fullSpotifyModel = FullSpotifyModel(spotify) }, {
+                .subscribe({ spotify ->
+                    fullSpotifyModel = FullSpotifyModel(spotify)
+                }, {
                     errorLayout(true)
                     view.hideProgress()
                     view.showErrorSnackbar(R.string.error)
@@ -60,7 +62,9 @@ class SpotifyPresenter(private val spotifyInteractor: SpotifyInteractor, private
     }
 
     fun downloadLatestVersion() {
-        UtilsDownloadSpotify.downloadSpotify(fullSpotifyModel!!.latestLink, fullSpotifyModel!!.latestVersionName)
+        fullSpotifyModel?.let {
+            UtilsDownloadSpotify.downloadSpotify(it.latestLink, it.latestVersionName)
+        }
     }
 
     fun updateUI() {
@@ -68,8 +72,9 @@ class SpotifyPresenter(private val spotifyInteractor: SpotifyInteractor, private
             val isSpotifyInstalled = UtilsSpotify.isSpotifyInstalled
             val installedVersion = UtilsSpotify.installedSpotifyVersion
 
-            view.setLatestVersionAvailable(fullSpotifyModel!!.latestVersionName)
-            if (isSpotifyInstalled && UtilsSpotify.isSpotifyUpdateAvailable(installedVersion, fullSpotifyModel!!.latestVersionNumber)) {
+            view.setLatestVersionAvailable(it.latestVersionName)
+            if (isSpotifyInstalled && UtilsSpotify.isSpotifyUpdateAvailable(installedVersion,
+                            it.latestVersionNumber)) {
                 // Update Spotify
                 view.showCardView()
                 view.showFAB()
@@ -77,20 +82,20 @@ class SpotifyPresenter(private val spotifyInteractor: SpotifyInteractor, private
                 view.setInstalledVersion(installedVersion)
             } else if (!isSpotifyInstalled) {
                 // Install spotify now
-                view.setInstallImageFAB()
-                view.showFAB()
                 view.showCardView()
+                view.showFAB()
+                view.setInstallImageFAB()
                 view.setInstalledVersion(StringService.getById(R.string.spotify_not_installed))
             } else {
                 //have latest version
-                view.hideFAB()
                 view.hideCardView()
+                view.hideFAB()
                 view.setInstalledVersion(StringService.getById(R.string.up_to_date))
             }
         }
     }
 
-    private fun startNotification() {
+    fun startNotification() {
         if (queryPreferences.isEnableNotification) {
             PollService.setServiceAlarm(queryPreferences.isEnableNotification)
         } else {
@@ -98,8 +103,8 @@ class SpotifyPresenter(private val spotifyInteractor: SpotifyInteractor, private
         }
     }
 
-    private fun errorLayout(bool: Boolean) {
-        if (bool) {
+    private fun errorLayout(error: Boolean) {
+        if (error) {
             view.hideLayoutCards()
             view.hideFAB()
         } else {
@@ -110,12 +115,13 @@ class SpotifyPresenter(private val spotifyInteractor: SpotifyInteractor, private
 
 
     fun onCreate() {
-        startNotification()
         getLatestVersionSpotify()
     }
 
     fun onDestroy() {
-        compositeDisposable.clear()
+        if (!compositeDisposable.isDisposed) {
+            compositeDisposable.clear()
+        }
     }
 
     fun showIntro() {

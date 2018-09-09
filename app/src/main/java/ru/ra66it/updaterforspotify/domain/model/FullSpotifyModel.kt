@@ -1,4 +1,4 @@
-package ru.ra66it.updaterforspotify.domain.models
+package ru.ra66it.updaterforspotify.domain.model
 
 /**
  * Created by 2Rabbit on 14.01.2018.

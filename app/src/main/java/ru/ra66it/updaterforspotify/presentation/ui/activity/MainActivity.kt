@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity(), SpotifyView {
     override fun onResume() {
         super.onResume()
         presenter.updateUI()
+        presenter.startNotification()
     }
 
     public override fun onDestroy() {

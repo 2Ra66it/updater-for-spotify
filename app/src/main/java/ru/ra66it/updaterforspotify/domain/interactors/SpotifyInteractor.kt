@@ -1,7 +1,7 @@
 package ru.ra66it.updaterforspotify.domain.interactors
 
 import io.reactivex.Observable
-import ru.ra66it.updaterforspotify.domain.models.Spotify
+import ru.ra66it.updaterforspotify.domain.model.Spotify
 import ru.ra66it.updaterforspotify.domain.repositories.SpotifyRepository
 import javax.inject.Inject
 

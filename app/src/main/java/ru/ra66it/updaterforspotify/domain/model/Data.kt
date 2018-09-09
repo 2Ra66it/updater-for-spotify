@@ -1,4 +1,4 @@
-package ru.ra66it.updaterforspotify.domain.models
+package ru.ra66it.updaterforspotify.domain.model
 
 import com.google.gson.annotations.SerializedName
 

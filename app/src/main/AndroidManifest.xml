@@ -50,7 +50,7 @@
             android:name=".presentation.service.NotificationDownloadService"
             android:exported="false" />
 
-        <receiver android:name=".presentation.service.DownloadReceiver" android:exported="true">
+        <receiver android:name=".presentation.service.DownloadCompleteReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
             </intent-filter>
