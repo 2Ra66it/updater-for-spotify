@@ -22,10 +22,11 @@ MVP
 
 ## Libraries
 * [Dagger](https://github.com/google/dagger)
-* [Butterknife](https://github.com/JakeWharton/butterknife)
 * [RxJava](https://github.com/ReactiveX/RxJava)
 * [RxAndroid](https://github.com/ReactiveX/RxAndroid)
+* [OkHttp](https://github.com/square/okhttp)
 * [Retrofit](https://github.com/square/retrofit)
+* [Android Material Intro Screen](https://github.com/TangoAgency/material-intro-screen)
 
 # License
 
