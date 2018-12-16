@@ -19,7 +19,7 @@ class SettingsActivity : AppCompatActivity() {
             it.setDisplayHomeAsUpEnabled(true)
         }
 
-        val transaction = fragmentManager.beginTransaction()
+        val transaction = supportFragmentManager.beginTransaction()
         transaction.add(android.R.id.content, SettingsFragment.newInstance())
         transaction.commit()
     }

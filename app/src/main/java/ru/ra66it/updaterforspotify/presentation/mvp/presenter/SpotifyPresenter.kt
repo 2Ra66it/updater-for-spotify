@@ -1,11 +1,10 @@
 package ru.ra66it.updaterforspotify.presentation.mvp.presenter
 
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.*
 import ru.ra66it.updaterforspotify.R
 import ru.ra66it.updaterforspotify.data.network.NetworkChecker
 import ru.ra66it.updaterforspotify.data.storage.QueryPreferences
+import ru.ra66it.updaterforspotify.domain.Result
 import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor
 import ru.ra66it.updaterforspotify.domain.model.FullSpotifyModel
 import ru.ra66it.updaterforspotify.presentation.mvp.view.SpotifyView
@@ -23,7 +22,7 @@ class SpotifyPresenter(private val spotifyInteractor: SpotifyInteractor,
 
     private lateinit var view: SpotifyView
     private var fullSpotifyModel: FullSpotifyModel? = null
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private var job: Job? = null
 
     fun setView(mView: SpotifyView) {
         this.view = mView
@@ -41,24 +40,25 @@ class SpotifyPresenter(private val spotifyInteractor: SpotifyInteractor,
     }
 
     private fun loadData() {
-        compositeDisposable.add(spotifyInteractor.latestSpotify()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { _ ->
-                    view.showProgress()
+        view.showProgress()
+        job = CoroutineScope(Dispatchers.IO).launch {
+            val result = spotifyInteractor.getSpotify()
+            withContext(Dispatchers.Main) {
+                when (result) {
+                    is Result.Success -> {
+                        fullSpotifyModel = FullSpotifyModel(result.data)
+                        updateUI()
+                        view.hideProgress()
+                        view.showLayoutCards()
+                    }
+                    is Result.Error -> {
+                        errorLayout(true)
+                        view.hideProgress()
+                        view.showErrorSnackbar(result.exception.message!!)
+                    }
                 }
-                .doOnComplete {
-                    updateUI()
-                    view.hideProgress()
-                    view.showLayoutCards()
-                }
-                .subscribe({ spotify ->
-                    fullSpotifyModel = FullSpotifyModel(spotify)
-                }, {
-                    errorLayout(true)
-                    view.hideProgress()
-                    view.showErrorSnackbar(R.string.error)
-                }))
+            }
+        }
     }
 
     fun downloadLatestVersion() {
@@ -119,9 +119,7 @@ class SpotifyPresenter(private val spotifyInteractor: SpotifyInteractor,
     }
 
     fun onDestroy() {
-        if (!compositeDisposable.isDisposed) {
-            compositeDisposable.clear()
-        }
+        job?.cancel()
     }
 
     fun showIntro() {

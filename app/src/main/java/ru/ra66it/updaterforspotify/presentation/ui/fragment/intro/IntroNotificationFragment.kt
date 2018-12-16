@@ -21,7 +21,7 @@ class IntroNotificationFragment : SlideFragment() {
         return inflater.inflate(R.layout.intro_choose_fragment, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         switch_notif.setOnCheckedChangeListener { _, _ ->  queryPreferences.isEnableNotification = switch_notif.isChecked}
     }

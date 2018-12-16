@@ -14,7 +14,7 @@
     <string name="notificaion_chanel_name">Jesus Christ, That\'s Jason Bourne!</string>
     <string name="update_available">Update Available</string>
     <string name="new_version">New version of</string>
-    <string name="available">available!</string>
+    <string name="available">is available</string>
     <string name="install_now">Install Now</string>
     <string name="downloading_in">in /Download/</string>
     <string name="downloading">Downloading</string>
@@ -31,7 +31,6 @@
     <string name="latest_version_original">Latest Version of Spotify</string>
     <string name="xml_enable_notification">Enable Notifications</string>
     <string name="xml_notification_text_origin">You will receive a notification for every new version of Spotify</string>
-
 
     <!--                Intro                  -->
     <string name="intro_choose_question">Do you want to be notified when a new version appears?</string>

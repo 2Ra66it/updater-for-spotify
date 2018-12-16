@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.View.GONE
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.ra66it.updaterforspotify.R
 import ru.ra66it.updaterforspotify.UpdaterApp
@@ -64,37 +63,37 @@ class MainActivity : AppCompatActivity(), SpotifyView {
 
 
     override fun showProgress() {
-        cardsContainer.visibility = GONE
-        progressBar.visibility = View.VISIBLE
+        setViewVisibility(cardsContainer, View.GONE)
+        setViewVisibility(progressBar, View.VISIBLE)
     }
 
     override fun hideProgress() {
-        progressBar.visibility = View.GONE
+        setViewVisibility(progressBar, View.GONE)
     }
 
-    override fun showErrorSnackbar(stringId: Int) {
-        Snackbar.make(findViewById(android.R.id.content), getString(stringId), Snackbar.LENGTH_SHORT).show()
+    override fun showErrorSnackbar(message: String) {
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun showNoInternetLayout() {
-        containerNoInternet.visibility = View.VISIBLE
+        setViewVisibility(containerNoInternet, View.VISIBLE)
     }
 
     override fun hideNoInternetLayout() {
-        containerNoInternet.visibility = View.GONE
+        setViewVisibility(containerNoInternet, View.GONE)
     }
 
 
     override fun hideCardView() {
-        cardLatest.visibility = View.GONE
+        setViewVisibility(cardLatest, View.GONE)
     }
 
     override fun showCardView() {
-        cardLatest.visibility = View.VISIBLE
+        setViewVisibility(cardLatest, View.VISIBLE)
     }
 
     override fun hideFAB() {
-        fab_orig.visibility = View.GONE
+        setViewVisibility(fab_orig, View.GONE)
     }
 
     override fun setUpdateImageFAB() {
@@ -106,7 +105,7 @@ class MainActivity : AppCompatActivity(), SpotifyView {
     }
 
     override fun showFAB() {
-        fab_orig.visibility = View.VISIBLE
+        setViewVisibility(fab_orig, View.VISIBLE)
     }
 
     override fun setInstalledVersion(installedVersion: String) {
@@ -114,13 +113,18 @@ class MainActivity : AppCompatActivity(), SpotifyView {
     }
 
     override fun showLayoutCards() {
-        cardsContainer.visibility = View.VISIBLE
+        setViewVisibility(cardsContainer, View.VISIBLE)
     }
 
     override fun hideLayoutCards() {
-        cardsContainer.visibility = View.GONE
+        setViewVisibility(cardsContainer, View.GONE)
     }
 
+    private fun setViewVisibility(view: View, visibility: Int) {
+        if (view.visibility != visibility) {
+            view.visibility = visibility
+        }
+    }
 
     override fun setLatestVersionAvailable(latestVersion: String) {
         tvLatestVersion.text = latestVersion

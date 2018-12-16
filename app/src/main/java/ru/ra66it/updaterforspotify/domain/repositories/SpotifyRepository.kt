@@ -1,9 +1,9 @@
 package ru.ra66it.updaterforspotify.domain.repositories
 
-import io.reactivex.Observable
+import ru.ra66it.updaterforspotify.domain.Result
 import ru.ra66it.updaterforspotify.domain.model.Spotify
 
 interface SpotifyRepository {
 
-    fun latestSpotify(): Observable<Spotify>
+    suspend fun getSpotify(): Result<Spotify>
 }

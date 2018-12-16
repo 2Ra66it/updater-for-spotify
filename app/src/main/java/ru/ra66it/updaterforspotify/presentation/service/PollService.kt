@@ -16,12 +16,11 @@ import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.*
 import ru.ra66it.updaterforspotify.R
 import ru.ra66it.updaterforspotify.UpdaterApp
 import ru.ra66it.updaterforspotify.data.storage.QueryPreferences
+import ru.ra66it.updaterforspotify.domain.Result
 import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor
 import ru.ra66it.updaterforspotify.domain.model.FullSpotifyModel
 import ru.ra66it.updaterforspotify.presentation.ui.activity.MainActivity
@@ -35,7 +34,7 @@ import javax.inject.Inject
 
 
 class PollService : JobService() {
-    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private var job: Job? = null
 
     @Inject
     lateinit var spotifyInteractor: SpotifyInteractor
@@ -45,7 +44,7 @@ class PollService : JobService() {
     override fun onCreate() {
         super.onCreate()
         UpdaterApp.applicationComponent.inject(this)
-        Log.i(TAG, "Received an JobService")
+        Log.d(TAG, "Received an JobService")
     }
 
     override fun onStartJob(jobParameters: JobParameters): Boolean {
@@ -60,15 +59,20 @@ class PollService : JobService() {
     }
 
     private fun notificationSpotify(jobParameters: JobParameters) {
-        compositeDisposable.add(spotifyInteractor.latestSpotify()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ spotify ->
-                    makeNotification(1, FullSpotifyModel(spotify))
-                    jobFinished(jobParameters, false)
-                }, { throwable ->
-                    Log.i(TAG, throwable.message)
-                }))
+        job = CoroutineScope(Dispatchers.IO).launch {
+            val result = spotifyInteractor.getSpotify()
+            withContext(Dispatchers.Main) {
+                when(result) {
+                    is Result.Success -> {
+                        makeNotification(1, FullSpotifyModel(result.data))
+                        jobFinished(jobParameters, false)
+                    }
+                    is Result.Error -> {
+                        Log.d(TAG, result.exception.message)
+                    }
+                }
+            }
+        }
     }
 
     private fun makeNotification(notificationId: Int, fullSpotifyModel: FullSpotifyModel) {
@@ -134,9 +138,7 @@ class PollService : JobService() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!compositeDisposable.isDisposed) {
-            compositeDisposable.dispose()
-        }
+        job?.cancel()
     }
 
     companion object {

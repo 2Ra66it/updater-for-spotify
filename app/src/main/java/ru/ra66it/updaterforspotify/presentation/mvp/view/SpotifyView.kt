@@ -11,7 +11,7 @@ interface SpotifyView {
 
     fun hideProgress()
 
-    fun showErrorSnackbar(stringId: Int)
+    fun showErrorSnackbar(message: String)
 
     fun showNoInternetLayout()
 

@@ -2,10 +2,10 @@ package ru.ra66it.updaterforspotify.presentation.ui.fragment
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.CheckBoxPreference
-import android.preference.Preference
-import android.preference.PreferenceFragment
 import android.preference.PreferenceManager
+import android.support.v7.preference.CheckBoxPreference
+import android.support.v7.preference.Preference
+import android.support.v7.preference.PreferenceFragmentCompat
 import ru.ra66it.updaterforspotify.BuildConfig
 import ru.ra66it.updaterforspotify.R
 import ru.ra66it.updaterforspotify.UpdaterApp
@@ -16,16 +16,15 @@ import javax.inject.Inject
  * Created by 2Rabbit on 29.09.2017.
  */
 
-class SettingsFragment : PreferenceFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
+class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    lateinit var prefEnableNotificationsOrigin: CheckBoxPreference
-    lateinit var prefAppInfo: Preference
+    private lateinit var prefEnableNotificationsOrigin: CheckBoxPreference
+    private lateinit var prefAppInfo: Preference
     lateinit var prefs: SharedPreferences
 
     @Inject lateinit var queryPreferences: QueryPreferences
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreatePreferences(p0: Bundle?, p1: String?) {
         UpdaterApp.applicationComponent.inject(this)
         addPreferencesFromResource(R.xml.settings)
 
@@ -34,9 +33,8 @@ class SettingsFragment : PreferenceFragment(), SharedPreferences.OnSharedPrefere
         prefEnableNotificationsOrigin = findPreference("autoOrigin") as CheckBoxPreference
         prefEnableNotificationsOrigin.isChecked = queryPreferences.isEnableNotification
 
-        prefAppInfo = findPreference("verPref")
+        prefAppInfo = findPreference("verPref") as Preference
         prefAppInfo.summary = BuildConfig.VERSION_NAME
-
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, s: String) {
