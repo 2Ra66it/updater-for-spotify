@@ -21,11 +21,11 @@ or via the [Release section](https://github.com/2Ra66it/updater-for-spotify/rele
 MVP
 
 ## Libraries
-* [Dagger](https://github.com/google/dagger)
-* [RxJava](https://github.com/ReactiveX/RxJava)
-* [RxAndroid](https://github.com/ReactiveX/RxAndroid)
+* [Dagger 2](https://github.com/google/dagger)
+* [Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
+* [Kotlin Coroutines Adapter](https://github.com/JakeWharton/retrofit2-kotlin-coroutines-adapter)
 * [OkHttp](https://github.com/square/okhttp)
-* [Retrofit](https://github.com/square/retrofit)
+* [Retrofit 2](https://github.com/square/retrofit)
 * [Android Material Intro Screen](https://github.com/TangoAgency/material-intro-screen)
 
 # License
