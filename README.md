@@ -26,7 +26,6 @@ MVP
 * [Kotlin Coroutines Adapter](https://github.com/JakeWharton/retrofit2-kotlin-coroutines-adapter)
 * [OkHttp](https://github.com/square/okhttp)
 * [Retrofit 2](https://github.com/square/retrofit)
-* [Android Material Intro Screen](https://github.com/TangoAgency/material-intro-screen)
 
 # License
 
