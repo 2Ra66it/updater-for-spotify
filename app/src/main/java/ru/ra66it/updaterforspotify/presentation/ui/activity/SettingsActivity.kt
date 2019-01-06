@@ -1,7 +1,7 @@
 package ru.ra66it.updaterforspotify.presentation.ui.activity
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import ru.ra66it.updaterforspotify.presentation.ui.fragment.SettingsFragment
 
 

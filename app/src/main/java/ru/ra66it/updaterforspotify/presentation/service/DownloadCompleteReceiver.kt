@@ -5,7 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.support.v4.content.FileProvider
+import androidx.core.content.FileProvider
 import ru.ra66it.updaterforspotify.presentation.utils.UtilsDownloadSpotify.apkPath
 import java.io.File
 
@@ -20,7 +20,8 @@ class DownloadCompleteReceiver : BroadcastReceiver() {
                     install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     install.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    val content = FileProvider.getUriForFile(context, context.packageName + ".provider",  spotify)
+                    val content = FileProvider.getUriForFile(context,
+                            context.packageName + ".provider",  spotify)
                     install.data = content
                     context.startActivity(install)
                 } else {
