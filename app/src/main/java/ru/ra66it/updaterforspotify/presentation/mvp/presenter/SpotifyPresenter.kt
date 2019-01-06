@@ -62,8 +62,12 @@ class SpotifyPresenter(private val spotifyInteractor: SpotifyInteractor,
     }
 
     fun downloadLatestVersion() {
-        fullSpotifyModel?.let {
-            UtilsDownloadSpotify.downloadSpotify(it.latestLink, it.latestVersionName)
+        if (view.haveSaveFilePermission()) {
+            fullSpotifyModel?.let {
+                UtilsDownloadSpotify.downloadSpotify(it.latestLink, it.latestVersionName)
+            }
+        } else {
+            view.requestPermission()
         }
     }
 
@@ -113,18 +117,11 @@ class SpotifyPresenter(private val spotifyInteractor: SpotifyInteractor,
         }
     }
 
-
     fun onCreate() {
         getLatestVersionSpotify()
     }
 
     fun onDestroy() {
         job?.cancel()
-    }
-
-    fun showIntro() {
-        if (queryPreferences.isFirstLaunch) {
-            view.showIntro()
-        }
     }
 }

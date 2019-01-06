@@ -1,11 +1,15 @@
 package ru.ra66it.updaterforspotify.presentation.ui.activity
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.ra66it.updaterforspotify.R
@@ -32,8 +36,6 @@ class MainActivity : AppCompatActivity(), SpotifyView {
         }
 
         fab_orig.setOnClickListener { presenter.downloadLatestVersion() }
-
-        presenter.showIntro()
 
         presenter.onCreate()
     }
@@ -130,7 +132,14 @@ class MainActivity : AppCompatActivity(), SpotifyView {
         tvLatestVersion.text = latestVersion
     }
 
-    override fun showIntro() {
-        startActivity(Intent(this, IntroActivity::class.java))
+    override fun requestPermission() {
+        ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                1)
+    }
+
+    override fun haveSaveFilePermission(): Boolean {
+        return ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
     }
 }

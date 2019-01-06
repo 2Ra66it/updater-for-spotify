@@ -10,8 +10,8 @@ android {
         applicationId "ru.ra66it.updaterforspotify"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 7
-        versionName "1.24"
+        versionCode 8
+        versionName "1.25"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "SPOTIFY_BASE_URL", "\"https://ws75.aptoide.com\""
@@ -55,8 +55,6 @@ dependencies {
 
     implementation 'com.google.dagger:dagger:2.16'
     kapt 'com.google.dagger:dagger-compiler:2.16'
-
-    implementation 'agency.tango.android:material-intro-screen:0.0.5'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

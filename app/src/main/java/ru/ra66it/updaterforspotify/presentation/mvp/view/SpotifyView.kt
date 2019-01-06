@@ -37,5 +37,7 @@ interface SpotifyView {
 
     fun setLatestVersionAvailable(latestVersion: String)
 
-    fun showIntro()
+    fun requestPermission()
+
+    fun haveSaveFilePermission(): Boolean
 }

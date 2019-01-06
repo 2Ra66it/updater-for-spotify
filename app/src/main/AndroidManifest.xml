@@ -27,10 +27,6 @@
         </activity>
 
         <activity
-            android:name=".presentation.ui.activity.IntroActivity"
-            android:theme="@style/Theme.Intro" />
-
-        <activity
             android:name=".presentation.ui.activity.SettingsActivity"
             android:label="@string/action_settings"
             android:theme="@style/PreferencesTheme">

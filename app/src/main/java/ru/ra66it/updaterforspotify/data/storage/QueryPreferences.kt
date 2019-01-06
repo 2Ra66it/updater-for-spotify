@@ -11,13 +11,8 @@ import javax.inject.Inject
 class QueryPreferences @Inject constructor(private val sharedPreferences: SharedPreferences) {
 
     private val prefNotification = "pref_notification"
-    private val prefIsFirst = "pref_is_first"
 
     var isEnableNotification: Boolean
-        get() = sharedPreferences.getBoolean(prefNotification, false)
+        get() = sharedPreferences.getBoolean(prefNotification, true)
         set(isOn) = sharedPreferences.edit().putBoolean(prefNotification, isOn).apply()
-
-    var isFirstLaunch: Boolean
-        get() = sharedPreferences.getBoolean(prefIsFirst, true)
-        set(isOn) = sharedPreferences.edit().putBoolean(prefIsFirst, isOn).apply()
 }
