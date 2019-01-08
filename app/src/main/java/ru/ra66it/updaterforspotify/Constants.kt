@@ -14,7 +14,7 @@ const val notificationId = 228
 const val sharedPreferencesName = "ufsPreferences"
 const val actionDownload = "actionDownload"
 
-val poolInterval = TimeUnit.MINUTES.toMillis(17)
+val poolInterval = TimeUnit.DAYS.toMillis(1)
 val uriPath = "file://" + Environment.getExternalStoragePublicDirectory(
         Environment.DIRECTORY_DOWNLOADS).toString() + "/" + StringService.getById(R.string.spotify) + ".apk"
 
