@@ -17,21 +17,18 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.*
-import ru.ra66it.updaterforspotify.R
-import ru.ra66it.updaterforspotify.UpdaterApp
+import ru.ra66it.updaterforspotify.*
 import ru.ra66it.updaterforspotify.data.storage.QueryPreferences
 import ru.ra66it.updaterforspotify.domain.Result
 import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor
 import ru.ra66it.updaterforspotify.domain.model.FullSpotifyModel
 import ru.ra66it.updaterforspotify.presentation.ui.activity.MainActivity
 import ru.ra66it.updaterforspotify.presentation.utils.UtilsSpotify
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
  * Created by 2Rabbit on 07.01.2018.
  */
-
 
 class PollService : JobService() {
     private var job: Job? = null
@@ -44,7 +41,6 @@ class PollService : JobService() {
     override fun onCreate() {
         super.onCreate()
         UpdaterApp.applicationComponent.inject(this)
-        Log.d(TAG, "Received an JobService")
     }
 
     override fun onStartJob(jobParameters: JobParameters): Boolean {
@@ -64,18 +60,20 @@ class PollService : JobService() {
             withContext(Dispatchers.Main) {
                 when(result) {
                     is Result.Success -> {
-                        makeNotification(1, FullSpotifyModel(result.data))
+                        makeNotification(FullSpotifyModel(result.data))
                         jobFinished(jobParameters, false)
                     }
                     is Result.Error -> {
-                        Log.d(TAG, result.exception.message)
+                        if(BuildConfig.DEBUG) {
+                            Log.d(TAG, result.exception.message)
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun makeNotification(notificationId: Int, fullSpotifyModel: FullSpotifyModel) {
+    private fun makeNotification(fullSpotifyModel: FullSpotifyModel) {
         //Launch app
         val resources = UpdaterApp.instance.resources
         val i = Intent(this, MainActivity::class.java)
@@ -84,25 +82,26 @@ class PollService : JobService() {
 
         //Download spotify
         val intentDownload = Intent(this, NotificationDownloadService::class.java)
-        intentDownload.action = NotificationDownloadService.actionDownload
-        intentDownload.putExtra(LATEST_LINK, fullSpotifyModel.latestLink)
-        intentDownload.putExtra(LATEST_VERSION_NAME, fullSpotifyModel.latestVersionName)
-        intentDownload.putExtra(NOTIFICATION_ID, notificationId)
-        val piDownload = PendingIntent.getService(this, notificationId, intentDownload,
+        intentDownload.action = actionDownload
+        intentDownload.putExtra(latestLinkKey, fullSpotifyModel.latestLink)
+        intentDownload.putExtra(notificationIdKey, notificationIdKey)
+        val piDownload = PendingIntent.getService(this, 0, intentDownload,
                 PendingIntent.FLAG_UPDATE_CURRENT)
 
         //Notification
-        val builder = NotificationCompat.Builder(this)
+        val contentText = getString(R.string.new_version) + " " +
+                fullSpotifyModel.latestVersionName + " " + getString(R.string.available)
+
+        val builder = NotificationCompat.Builder(this, notificationChanelId)
                 .setTicker(resources.getString(R.string.app_name))
                 .setSmallIcon(R.mipmap.ic_notification)
                 .setContentTitle(getString(R.string.update_available))
-                .setContentText(getString(R.string.new_version) + " "
-                        + fullSpotifyModel.latestVersionName + " " + getString(R.string.available))
+                .setContentText(contentText)
                 .setContentIntent(pi)
                 .setAutoCancel(true)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setPriority(Notification.PRIORITY_HIGH)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setColor(ContextCompat.getColor(this, R.color.colorAccent))
                 .addAction(R.drawable.ic_file_download_black_24dp,
                         getString(R.string.install_now), piDownload)
@@ -111,25 +110,24 @@ class PollService : JobService() {
 
         makeNotificationChanel(notificationManager, builder)
 
-        showNotification(fullSpotifyModel.latestVersionNumber, notificationId, notificationManager, builder.build())
+        showNotification(fullSpotifyModel.latestVersionNumber, notificationManager, builder.build())
     }
 
     private fun makeNotificationChanel(notificationManager: NotificationManager,
                                        builder: NotificationCompat.Builder) {
         //Show notification on Android O
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(NOTIFICATION_CHANEL,
+            val channel = NotificationChannel(notificationChanelId,
                     getString(R.string.notificaion_chanel_name), NotificationManager.IMPORTANCE_HIGH)
             channel.enableLights(true)
             channel.enableVibration(true)
             channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-            builder.setChannelId(NOTIFICATION_CHANEL)
+            builder.setChannelId(notificationChanelId)
             notificationManager.createNotificationChannel(channel)
         }
     }
 
-    private fun showNotification(latestVersion: String, notificationId: Int,
-                                 notificationManager: NotificationManager, notification: Notification) {
+    private fun showNotification(latestVersion: String, notificationManager: NotificationManager, notification: Notification) {
         if (!UtilsSpotify.isSpotifyInstalled || UtilsSpotify.isSpotifyUpdateAvailable(
                         UtilsSpotify.installedSpotifyVersion, latestVersion)) {
             notificationManager.notify(notificationId, notification)
@@ -143,19 +141,13 @@ class PollService : JobService() {
 
     companion object {
         private val TAG = PollService::class.java.simpleName
-        private val POLL_INTERVAL = TimeUnit.DAYS.toMillis(1)
-        private const val JOB_ID = 123
-        const val NOTIFICATION_ID = "notification_id"
-        const val NOTIFICATION_CHANEL = "ufs_chanel_id"
-        const val LATEST_LINK = "latest_link"
-        const val LATEST_VERSION_NAME = "latest_version_name"
 
         fun setServiceAlarm(isOn: Boolean) {
             val component = ComponentName(UpdaterApp.instance, PollService::class.java)
             val builder: JobInfo
 
-            builder = JobInfo.Builder(JOB_ID, component)
-                    .setPeriodic(POLL_INTERVAL)
+            builder = JobInfo.Builder(jobId, component)
+                    .setPeriodic(poolInterval)
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                     .setPersisted(true)
                     .build()

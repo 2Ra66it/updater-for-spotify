@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import ru.ra66it.updaterforspotify.presentation.ui.fragment.SettingsFragment
 
-
 /**
  * Created by 2Rabbit on 25.09.2017.
  */

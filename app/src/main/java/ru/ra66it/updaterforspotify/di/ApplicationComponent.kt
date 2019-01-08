@@ -6,7 +6,6 @@ import ru.ra66it.updaterforspotify.presentation.ui.activity.MainActivity
 import ru.ra66it.updaterforspotify.presentation.ui.fragment.SettingsFragment
 import javax.inject.Singleton
 
-
 /**
  * Created by 2Rabbit on 04.12.2017.
  */

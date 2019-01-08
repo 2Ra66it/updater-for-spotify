@@ -7,8 +7,7 @@
     <string name="error">Error, something went wrong :(</string>
     <string name="no_internet_connection">Connection error, try again later</string>
     <string name="up_to_date">Latest version is installed</string>
-
-    <string name="accept">Accept</string>
+    <string name="spotify">Spotify</string>
 
     <!--                Notification                  -->
     <string name="notificaion_chanel_name">Jesus Christ, That\'s Jason Bourne!</string>
@@ -18,6 +17,7 @@
     <string name="install_now">Install Now</string>
     <string name="downloading_in">in /Download/</string>
     <string name="downloading">Downloading</string>
+    <string name="spotify_is_downloading">Spotify is downloading</string>
 
     <!--                Settings                  -->
     <string name="general">General</string>
@@ -31,10 +31,6 @@
     <string name="latest_version_original">Latest Version of Spotify</string>
     <string name="xml_enable_notification">Enable Notifications</string>
     <string name="xml_notification_text_origin">You will receive a notification for every new version of Spotify</string>
-
-    <!--                Intro                  -->
-    <string name="intro_choose_question">Do you want to be notified when a new version appears?</string>
-    <string name="intro_welcome_message">Welcome to the Updater for Spotify</string>
-    <string name="intro_permission_text">To download Spotify, the Updater for Spotify requires a storage permission</string>
     <string name="info">Info</string>
+
 </resources>

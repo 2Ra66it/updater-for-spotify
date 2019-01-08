@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class QueryPreferences @Inject constructor(private val sharedPreferences: SharedPreferences) {
 
-    private val prefNotification = "pref_notification"
+    private val prefNotification = "prefNotification"
 
     var isEnableNotification: Boolean
         get() = sharedPreferences.getBoolean(prefNotification, true)

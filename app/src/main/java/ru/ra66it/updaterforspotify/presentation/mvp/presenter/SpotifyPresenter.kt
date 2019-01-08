@@ -54,7 +54,7 @@ class SpotifyPresenter(private val spotifyInteractor: SpotifyInteractor,
                     is Result.Error -> {
                         errorLayout(true)
                         view.hideProgress()
-                        view.showErrorSnackbar(result.exception.message!!)
+                        view.showSnackbar(result.exception.message!!)
                     }
                 }
             }
@@ -64,7 +64,8 @@ class SpotifyPresenter(private val spotifyInteractor: SpotifyInteractor,
     fun downloadLatestVersion() {
         if (view.haveSaveFilePermission()) {
             fullSpotifyModel?.let {
-                UtilsDownloadSpotify.downloadSpotify(it.latestLink, it.latestVersionName)
+                UtilsDownloadSpotify.downloadSpotify(it.latestLink)
+                view.showSnackbar(StringService.getById(R.string.spotify_is_downloading))
             }
         } else {
             view.requestPermission()

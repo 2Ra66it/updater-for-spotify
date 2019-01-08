@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), SpotifyView {
             presenter.getLatestVersionSpotify()
         }
 
-        fab_orig.setOnClickListener { presenter.downloadLatestVersion() }
+        fab.setOnClickListener { presenter.downloadLatestVersion() }
 
         presenter.onCreate()
     }
@@ -73,8 +73,8 @@ class MainActivity : AppCompatActivity(), SpotifyView {
         setViewVisibility(progressBar, View.GONE)
     }
 
-    override fun showErrorSnackbar(message: String) {
-        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show()
+    override fun showSnackbar(message: String) {
+        Snackbar.make(fab, message, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun showNoInternetLayout() {
@@ -95,19 +95,19 @@ class MainActivity : AppCompatActivity(), SpotifyView {
     }
 
     override fun hideFAB() {
-        setViewVisibility(fab_orig, View.GONE)
+        setViewVisibility(fab, View.GONE)
     }
 
     override fun setUpdateImageFAB() {
-        fab_orig.setImageResource(R.drawable.ic_autorenew_black_24dp)
+        fab.setImageResource(R.drawable.ic_autorenew_black_24dp)
     }
 
     override fun setInstallImageFAB() {
-        fab_orig.setImageResource(R.drawable.ic_file_download_black_24dp)
+        fab.setImageResource(R.drawable.ic_file_download_black_24dp)
     }
 
     override fun showFAB() {
-        setViewVisibility(fab_orig, View.VISIBLE)
+        setViewVisibility(fab, View.VISIBLE)
     }
 
     override fun setInstalledVersion(installedVersion: String) {

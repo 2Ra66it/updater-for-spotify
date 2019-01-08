@@ -7,6 +7,7 @@ import dagger.Provides
 import ru.ra66it.updaterforspotify.data.storage.QueryPreferences
 import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor
 import ru.ra66it.updaterforspotify.presentation.mvp.presenter.SpotifyPresenter
+import ru.ra66it.updaterforspotify.sharedPreferencesName
 import javax.inject.Singleton
 
 @Module
@@ -23,7 +24,7 @@ class ApplicationModule(context: Context) {
     @Provides
     @Singleton
     internal fun provideSharedPreferences(): SharedPreferences {
-        return context.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE)
+        return context.getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE)
     }
 
     @Provides
