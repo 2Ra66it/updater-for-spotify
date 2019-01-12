@@ -1,6 +1,6 @@
 package ru.ra66it.updaterforspotify.domain.interactors
 
-import ru.ra66it.updaterforspotify.domain.Result
+import ru.ra66it.updaterforspotify.domain.model.Result
 import ru.ra66it.updaterforspotify.domain.model.Spotify
 import ru.ra66it.updaterforspotify.domain.repositories.SpotifyRepository
 import javax.inject.Inject

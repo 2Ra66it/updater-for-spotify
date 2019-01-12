@@ -10,34 +10,59 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import ru.ra66it.updaterforspotify.R
-import ru.ra66it.updaterforspotify.UpdaterApp
-import ru.ra66it.updaterforspotify.presentation.mvp.presenter.SpotifyPresenter
-import ru.ra66it.updaterforspotify.presentation.mvp.view.SpotifyView
+import ru.ra66it.updaterforspotify.*
+import ru.ra66it.updaterforspotify.domain.model.StatusState
+import ru.ra66it.updaterforspotify.presentation.utils.StringService
+import ru.ra66it.updaterforspotify.presentation.viewmodel.SpotifyViewModel
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), SpotifyView {
+class MainActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var presenter: SpotifyPresenter
+    lateinit var viewModel: SpotifyViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         UpdaterApp.applicationComponent.inject(this)
         setContentView(R.layout.activity_main)
 
-        presenter.setView(this)
-
         swipeLayout.setOnRefreshListener {
             swipeLayout.isRefreshing = false
-            presenter.getLatestVersionSpotify()
+            viewModel.getLatestSpotify()
         }
 
-        fab.setOnClickListener { presenter.downloadLatestVersion() }
+        fab.setOnClickListener { downloadSpotify() }
 
-        presenter.onCreate()
+        viewModel.spotifyLiveData.observe(this, Observer {
+            progressBar.visibility = View.GONE
+            when (it) {
+                is StatusState.Error -> {
+                    showError(it.exception.localizedMessage)
+                }
+                is StatusState.Loading -> {
+                    showLoading()
+                }
+                is StatusState.Data -> {
+                    val data = it.spotify
+                    when (data.spotifyState) {
+                        spotifyNotInstalled -> {
+                            showInstallNow(data.installedVersion, data.latestVersionName)
+                        }
+                        spotifyHaveUpdate -> {
+                            showHaveUpdate(data.installedVersion, data.latestVersionName)
+                        }
+                        spotifyIsLatest -> {
+                            showHaveLatestVersion()
+                        }
+                    }
+                }
+            }
+        })
+
+        viewModel.getLatestSpotify()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -54,92 +79,67 @@ class MainActivity : AppCompatActivity(), SpotifyView {
 
     override fun onResume() {
         super.onResume()
-        presenter.updateUI()
-        presenter.startNotification()
+        viewModel.updateUI()
+        viewModel.startNotification()
     }
 
     public override fun onDestroy() {
         super.onDestroy()
-        presenter.onDestroy()
     }
 
-
-    override fun showProgress() {
-        setViewVisibility(cardsContainer, View.GONE)
-        setViewVisibility(progressBar, View.VISIBLE)
+    private fun showHaveLatestVersion() {
+        cardsContainer.visibility = View.VISIBLE
+        cardLatest.visibility = View.GONE
+        fab.visibility = View.GONE
+        tvInstalledVersion.text = StringService.getById(R.string.up_to_date)
     }
 
-    override fun hideProgress() {
-        setViewVisibility(progressBar, View.GONE)
-    }
-
-    override fun showSnackbar(message: String) {
-        Snackbar.make(fab, message, Snackbar.LENGTH_SHORT).show()
-    }
-
-    override fun showNoInternetLayout() {
-        setViewVisibility(containerNoInternet, View.VISIBLE)
-    }
-
-    override fun hideNoInternetLayout() {
-        setViewVisibility(containerNoInternet, View.GONE)
-    }
-
-
-    override fun hideCardView() {
-        setViewVisibility(cardLatest, View.GONE)
-    }
-
-    override fun showCardView() {
-        setViewVisibility(cardLatest, View.VISIBLE)
-    }
-
-    override fun hideFAB() {
-        setViewVisibility(fab, View.GONE)
-    }
-
-    override fun setUpdateImageFAB() {
+    private fun showHaveUpdate(installedVersion: String, latestVersionName: String) {
+        cardsContainer.visibility = View.VISIBLE
+        cardLatest.visibility = View.VISIBLE
+        fab.visibility = View.VISIBLE
         fab.setImageResource(R.drawable.ic_autorenew_black_24dp)
-    }
-
-    override fun setInstallImageFAB() {
-        fab.setImageResource(R.drawable.ic_file_download_black_24dp)
-    }
-
-    override fun showFAB() {
-        setViewVisibility(fab, View.VISIBLE)
-    }
-
-    override fun setInstalledVersion(installedVersion: String) {
         tvInstalledVersion.text = installedVersion
+        tvLatestVersion.text = latestVersionName
     }
 
-    override fun showLayoutCards() {
-        setViewVisibility(cardsContainer, View.VISIBLE)
+    private fun showInstallNow(installedVersion: String, latestVersionName: String) {
+        cardsContainer.visibility = View.VISIBLE
+        cardLatest.visibility = View.VISIBLE
+        fab.visibility = View.VISIBLE
+        fab.setImageResource(R.drawable.ic_file_download_black_24dp)
+        tvInstalledVersion.text = installedVersion
+        tvLatestVersion.text = latestVersionName
     }
 
-    override fun hideLayoutCards() {
-        setViewVisibility(cardsContainer, View.GONE)
+    private fun showError(message: String) {
+        cardsContainer.visibility = View.GONE
+        fab.visibility = View.GONE
+        showSnackbar(message)
     }
 
-    private fun setViewVisibility(view: View, visibility: Int) {
-        if (view.visibility != visibility) {
-            view.visibility = visibility
+    private fun showLoading() {
+        cardsContainer.visibility = View.GONE
+        fab.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
+    }
+
+    private fun showSnackbar(message: String) {
+        Snackbar.make(fab, message, Snackbar.LENGTH_LONG).show()
+    }
+
+    private fun downloadSpotify() {
+        val havePermission = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+
+        if (havePermission) {
+            viewModel.downloadSpotify()
+            showSnackbar(getString(R.string.spotify_is_downloading))
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    1)
         }
     }
 
-    override fun setLatestVersionAvailable(latestVersion: String) {
-        tvLatestVersion.text = latestVersion
-    }
-
-    override fun requestPermission() {
-        ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                1)
-    }
-
-    override fun haveSaveFilePermission(): Boolean {
-        return ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-    }
 }

@@ -9,7 +9,7 @@ import androidx.preference.PreferenceFragmentCompat
 import ru.ra66it.updaterforspotify.BuildConfig
 import ru.ra66it.updaterforspotify.R
 import ru.ra66it.updaterforspotify.UpdaterApp
-import ru.ra66it.updaterforspotify.data.storage.QueryPreferences
+import ru.ra66it.updaterforspotify.data.storage.SharedPreferencesHelper
 import javax.inject.Inject
 
 /**
@@ -22,7 +22,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private lateinit var prefAppInfo: Preference
     lateinit var prefs: SharedPreferences
 
-    @Inject lateinit var queryPreferences: QueryPreferences
+    @Inject lateinit var sharedPreferencesHelper: SharedPreferencesHelper
 
     override fun onCreatePreferences(p0: Bundle?, p1: String?) {
         UpdaterApp.applicationComponent.inject(this)
@@ -31,14 +31,14 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         prefs = PreferenceManager.getDefaultSharedPreferences(activity)
 
         prefEnableNotificationsOrigin = findPreference("autoOrigin") as CheckBoxPreference
-        prefEnableNotificationsOrigin.isChecked = queryPreferences.isEnableNotification
+        prefEnableNotificationsOrigin.isChecked = sharedPreferencesHelper.isEnableNotification
 
         prefAppInfo = findPreference("verPref") as Preference
         prefAppInfo.summary = BuildConfig.VERSION_NAME
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, s: String) {
-        queryPreferences.isEnableNotification = prefEnableNotificationsOrigin.isChecked
+        sharedPreferencesHelper.isEnableNotification = prefEnableNotificationsOrigin.isChecked
     }
 
     override fun onResume() {

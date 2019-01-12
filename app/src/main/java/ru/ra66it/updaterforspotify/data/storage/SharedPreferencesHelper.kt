@@ -8,7 +8,7 @@ import javax.inject.Inject
  * Created by 2Rabbit on 24.09.2017.
  */
 
-class QueryPreferences @Inject constructor(private val sharedPreferences: SharedPreferences) {
+class SharedPreferencesHelper @Inject constructor(private val sharedPreferences: SharedPreferences) {
 
     private val prefNotification = "prefNotification"
 

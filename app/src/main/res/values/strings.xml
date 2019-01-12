@@ -4,8 +4,7 @@
     <string name="installed_version">Installed Version</string>
     <string name="latest_version">Latest Version</string>
     <string name="spotify_not_installed">Spotify is not Installed</string>
-    <string name="error">Error, something went wrong :(</string>
-    <string name="no_internet_connection">Connection error, try again later</string>
+    <string name="no_internet_connection">No internet connection detected. Please connect to the internet and try again.</string>
     <string name="up_to_date">Latest version is installed</string>
     <string name="spotify">Spotify</string>
 
