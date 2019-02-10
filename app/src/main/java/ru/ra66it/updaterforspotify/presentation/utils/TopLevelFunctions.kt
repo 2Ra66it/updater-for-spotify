@@ -8,9 +8,9 @@ import java.net.ConnectException
 suspend fun <T : Any> safeApiCall(call: suspend () -> Result<T>): Result<T> = try {
     call.invoke()
 } catch (e: Exception) {
-    if (NetworkChecker.isNetworkAvailable) {
-        Result.Error(e)
-    } else {
+    if (!NetworkChecker.isNetworkAvailable) {
         Result.Error(ConnectException(StringService.getById(R.string.no_internet_connection)))
+    } else {
+        Result.Error(e)
     }
 }

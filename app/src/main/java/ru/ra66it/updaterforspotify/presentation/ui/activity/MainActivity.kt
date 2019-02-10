@@ -30,14 +30,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         swipeLayout.setOnRefreshListener {
-            swipeLayout.isRefreshing = false
             viewModel.getLatestSpotify()
         }
 
         fab.setOnClickListener { downloadSpotify() }
 
         viewModel.spotifyLiveData.observe(this, Observer {
-            progressBar.visibility = View.GONE
             when (it) {
                 is StatusState.Error -> {
                     showError(it.exception.localizedMessage)
@@ -95,6 +93,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showHaveUpdate(installedVersion: String, latestVersionName: String) {
+        swipeLayout.setRefreshing(false)
         cardsContainer.visibility = View.VISIBLE
         cardLatest.visibility = View.VISIBLE
         fab.visibility = View.VISIBLE
@@ -104,6 +103,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showInstallNow(installedVersion: String, latestVersionName: String) {
+        swipeLayout.setRefreshing(false)
         cardsContainer.visibility = View.VISIBLE
         cardLatest.visibility = View.VISIBLE
         fab.visibility = View.VISIBLE
@@ -113,15 +113,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showError(message: String) {
+        swipeLayout.setRefreshing(false)
         cardsContainer.visibility = View.GONE
         fab.visibility = View.GONE
         showSnackbar(message)
     }
 
     private fun showLoading() {
-        cardsContainer.visibility = View.GONE
-        fab.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
+        swipeLayout.setRefreshing(true)
     }
 
     private fun showSnackbar(message: String) {
