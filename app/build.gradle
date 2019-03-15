@@ -10,8 +10,8 @@ android {
         applicationId "ru.ra66it.updaterforspotify"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 10
-        versionName "1.27"
+        versionCode 11
+        versionName "1.28"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "SPOTIFY_BASE_URL", "\"https://ws75.aptoide.com\""
@@ -36,13 +36,14 @@ kapt {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.material:material:1.1.0-alpha02'
-    implementation 'androidx.preference:preference:1.1.0-alpha02'
+    implementation 'com.google.android.material:material:1.1.0-alpha03'
+    implementation 'androidx.preference:preference:1.1.0-alpha03'
     implementation 'android.arch.lifecycle:extensions:1.1.1'
 
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'

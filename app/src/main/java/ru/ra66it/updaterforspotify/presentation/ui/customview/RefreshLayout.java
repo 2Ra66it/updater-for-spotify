@@ -3,6 +3,7 @@ package ru.ra66it.updaterforspotify.presentation.ui.customview;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -20,6 +21,7 @@ import androidx.core.view.NestedScrollingChildHelper;
 import androidx.core.view.NestedScrollingParent;
 import androidx.core.view.NestedScrollingParentHelper;
 import androidx.core.view.ViewCompat;
+import ru.ra66it.updaterforspotify.BuildConfig;
 
 public class RefreshLayout extends ViewGroup
         implements NestedScrollingParent, NestedScrollingChild {
@@ -459,7 +461,7 @@ public class RefreshLayout extends ViewGroup
         final int dy = dyUnconsumed + parentOffsetInWindow[1];
         if (dy < 0) {
             totalUnconsumed += Math.abs(dy);
-           // RefreshLogger.i("nested scroll");
+            refreshLog("nested scroll");
             moveSpinner(totalUnconsumed);
         }
     }
@@ -546,7 +548,7 @@ public class RefreshLayout extends ViewGroup
         try {
             target.layout(targetLeft, targetTop, targetRight, targetBottom);
         } catch (Exception ignored) {
-           // RefreshLogger.e("error: ignored=" + ignored.toString() + " " + ignored.getStackTrace().toString());
+            refreshLog("error: ignored=" + ignored.toString() + " " + ignored.getStackTrace().toString());
         }
 
         int refreshViewLeft = (width - refreshView.getMeasuredWidth()) / 2;
@@ -556,7 +558,7 @@ public class RefreshLayout extends ViewGroup
 
         refreshView.layout(refreshViewLeft, refreshViewTop, refreshViewRight, refreshViewBottom);
 
-        //RefreshLogger.i("onLayout: " + left + " : " + top + " : " + right + " : " + bottom);
+        refreshLog("onLayout: " + left + " : " + top + " : " + right + " : " + bottom);
     }
 
     private int reviseTargetLayoutTop(int layoutTop) {
@@ -803,10 +805,10 @@ public class RefreshLayout extends ViewGroup
                     initialMotionY = activeMoveY;
                     initialScrollY = overScrollY;
 
-                    //RefreshLogger.i("animatetostart overscrolly " + overScrollY + " -- " + initialMotionY);
+                    refreshLog("animatetostart overscrollY " + overScrollY + " -- " + initialMotionY);
                 } else {
                     overScrollY = activeMoveY - initialMotionY + initialScrollY;
-                    //RefreshLogger.i("overscrolly " + overScrollY + " --" + initialMotionY + " -- " + initialScrollY);
+                    refreshLog("overscrollY " + overScrollY + " --" + initialMotionY + " -- " + initialScrollY);
                 }
 
                 if (isRefreshing) {
@@ -828,7 +830,7 @@ public class RefreshLayout extends ViewGroup
                             target.dispatchTouchEvent(obtain);
                         }
                     }
-                    //RefreshLogger.i("moveSpinner refreshing -- " + initialScrollY + " -- " + (activeMoveY - initialMotionY));
+                    refreshLog("moveSpinner refreshing -- " + initialScrollY + " -- " + (activeMoveY - initialMotionY));
                     moveSpinner(overScrollY);
                 } else {
                     if (isBeingDragged) {
@@ -971,7 +973,7 @@ public class RefreshLayout extends ViewGroup
     }
 
     private int computeAnimateToRefreshingDuration(float from) {
-        //RefreshLogger.i("from -- refreshing " + from);
+        refreshLog("from -- refreshing " + from);
 
         if (from < refreshInitialOffset) {
             return 0;
@@ -988,7 +990,7 @@ public class RefreshLayout extends ViewGroup
     }
 
     private int computeAnimateToStartDuration(float from) {
-        //RefreshLogger.i("from -- start " + from);
+        refreshLog("from -- start " + from);
 
         if (from < refreshInitialOffset) {
             return 0;
@@ -1050,8 +1052,8 @@ public class RefreshLayout extends ViewGroup
             }
         }
 
-        //RefreshLogger.i(targetOrRefreshViewOffsetY + " -- " + refreshTargetOffset + " -- "
-        //        + convertScrollOffset + " -- " + targetOrRefreshViewOffsetY + " -- " + refreshTargetOffset);
+        refreshLog(targetOrRefreshViewOffsetY + " -- " + refreshTargetOffset + " -- "
+                + convertScrollOffset + " -- " + targetOrRefreshViewOffsetY + " -- " + refreshTargetOffset);
 
         setTargetOrRefreshViewOffsetY((int) (convertScrollOffset - this.targetOrRefreshViewOffsetY));
     }
@@ -1076,7 +1078,7 @@ public class RefreshLayout extends ViewGroup
 
         initialMotionY = getMotionEventY(ev, activePointerId) - currentTouchOffsetY;
 
-        //RefreshLogger.i(" onDown " + initialMotionY);
+        refreshLog(" onDown " + initialMotionY);
     }
 
     private void onSecondaryPointerUp(MotionEvent ev) {
@@ -1090,7 +1092,7 @@ public class RefreshLayout extends ViewGroup
 
         initialMotionY = getMotionEventY(ev, activePointerId) - currentTouchOffsetY;
 
-       // RefreshLogger.i(" onUp " + initialMotionY);
+        refreshLog(" onUp " + initialMotionY);
     }
 
     private void setTargetOrRefreshViewOffsetY(int offsetY) {
@@ -1114,7 +1116,7 @@ public class RefreshLayout extends ViewGroup
                 break;
         }
 
-        //RefreshLogger.i("current offset" + targetOrRefreshViewOffsetY);
+        refreshLog("current offset" + targetOrRefreshViewOffsetY);
 
         switch (refreshStyle) {
             case FLOAT:
@@ -1274,5 +1276,11 @@ public class RefreshLayout extends ViewGroup
     @Override
     protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
+    }
+
+    private void refreshLog(String message) {
+        if (BuildConfig.DEBUG) {
+            Log.i(RefreshLayout.class.getSimpleName(), message);
+        }
     }
 }

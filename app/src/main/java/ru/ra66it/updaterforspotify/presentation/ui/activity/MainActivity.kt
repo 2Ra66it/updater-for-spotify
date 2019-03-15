@@ -86,6 +86,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showHaveLatestVersion() {
+        swipeLayout.setRefreshing(false)
         cardsContainer.visibility = View.VISIBLE
         cardLatest.visibility = View.GONE
         fab.visibility = View.GONE

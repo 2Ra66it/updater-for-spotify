@@ -16,13 +16,13 @@
             android:layout_height="match_parent">
 
             <LinearLayout
-                tools:visibility="visible"
-                android:visibility="gone"
                 android:id="@+id/cardsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="40dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
