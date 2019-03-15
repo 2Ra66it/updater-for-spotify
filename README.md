@@ -18,7 +18,7 @@ or via the [Release section](https://github.com/2Ra66it/updater-for-spotify/rele
 <img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1520452854.png" width="270"> <img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1508176076.png" width="270"> <img src="https://github.com/2Ra66it/updater-for-spotify/raw/master/screenshots/Screenshot_1536497920.png" width="270">
 
 ## Architecture
-MVP
+MVVM
 
 ## Libraries
 * [Dagger 2](https://github.com/google/dagger)
@@ -26,6 +26,7 @@ MVP
 * [Kotlin Coroutines Adapter](https://github.com/JakeWharton/retrofit2-kotlin-coroutines-adapter)
 * [OkHttp](https://github.com/square/okhttp)
 * [Retrofit 2](https://github.com/square/retrofit)
+* [ViewModel and LiveData](https://developer.android.com/topic/libraries/architecture/)
 
 # License
 
