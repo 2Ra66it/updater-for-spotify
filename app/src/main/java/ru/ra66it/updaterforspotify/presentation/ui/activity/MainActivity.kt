@@ -13,15 +13,12 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import ru.ra66it.updaterforspotify.R
 import org.koin.android.viewmodel.ext.android.viewModel
+import ru.ra66it.updaterforspotify.*
 import ru.ra66it.updaterforspotify.domain.model.StatusState
 import ru.ra66it.updaterforspotify.presentation.ui.customview.RefreshLayout
 import ru.ra66it.updaterforspotify.presentation.utils.StringService
 import ru.ra66it.updaterforspotify.presentation.viewmodel.SpotifyViewModel
-import ru.ra66it.updaterforspotify.spotifyHaveUpdate
-import ru.ra66it.updaterforspotify.spotifyIsLatest
-import ru.ra66it.updaterforspotify.spotifyNotInstalled
 
 class MainActivity : AppCompatActivity() {
 
@@ -137,13 +134,29 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
         if (havePermission) {
-            spotifyViewModel.downloadSpotify()
-            showSnackbar(getString(R.string.spotify_is_downloading))
+            downloadFile()
         } else {
             ActivityCompat.requestPermissions(this,
                     arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    1)
+                    saveFilePermissionCodeRequest)
         }
     }
 
+    private fun downloadFile() {
+        spotifyViewModel.downloadSpotify()
+        showSnackbar(getString(R.string.spotify_is_downloading))
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            saveFilePermissionCodeRequest -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    downloadFile()
+                }
+                return
+            }
+            else -> {
+            }
+        }
+    }
 }
