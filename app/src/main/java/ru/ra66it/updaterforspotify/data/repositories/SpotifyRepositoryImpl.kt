@@ -13,7 +13,7 @@ class SpotifyRepositoryImpl (private val spotifyApi: SpotifyApi) : SpotifyReposi
     )
 
     private suspend fun latestSpotify(): Result<Spotify> {
-        val response = spotifyApi.latestSpotify().await()
+        val response = spotifyApi.latestSpotifyAsync().await()
         return if (response.isSuccessful) {
             val body = checkNotNull(response.body())
             Result.Success(body)

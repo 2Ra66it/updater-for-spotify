@@ -123,11 +123,9 @@ class RefreshView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     }
 
     override fun refreshComplete() {
-
     }
 
     override fun pullToRefresh() {
-
     }
 
     override fun releaseToRefresh() {}

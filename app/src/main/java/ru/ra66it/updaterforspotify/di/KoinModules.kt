@@ -1,21 +1,39 @@
 package ru.ra66it.updaterforspotify.di
 
+import android.app.Application
+import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidApplication
+import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.ra66it.updaterforspotify.BuildConfig
 import ru.ra66it.updaterforspotify.data.network.SpotifyApi
 import ru.ra66it.updaterforspotify.data.repositories.SpotifyRepositoryImpl
+import ru.ra66it.updaterforspotify.data.storage.SharedPreferencesHelper
 import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor
 import ru.ra66it.updaterforspotify.domain.repositories.SpotifyRepository
 import ru.ra66it.updaterforspotify.presentation.utils.SpotifyMapper
+import ru.ra66it.updaterforspotify.presentation.viewmodel.SpotifyViewModel
+import ru.ra66it.updaterforspotify.sharedPreferencesName
 
 /**
- * Created by 2Rabbit on 04.12.2017.
+ * Created by 2Rabbit on 24.03.2019.
  */
+
+val applicationModule = module {
+    single { createSharedPreferences(androidApplication()) }
+    viewModel { SpotifyViewModel(get(), get(), get()) }
+}
+
+fun createSharedPreferences(androidApplication: Application): SharedPreferencesHelper {
+    val sharedPreferences = androidApplication.getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE)
+    return SharedPreferencesHelper(sharedPreferences)
+}
+
 
 val networkModule = module {
     single { createOkHttpClient() }
@@ -47,4 +65,3 @@ fun createRetrofit(httpClient: OkHttpClient): Retrofit {
 fun createApi(retrofit: Retrofit): SpotifyApi {
     return retrofit.create(SpotifyApi::class.java)
 }
-

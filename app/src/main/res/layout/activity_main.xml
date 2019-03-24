@@ -19,7 +19,9 @@
                 android:id="@+id/cardsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="40dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
                 android:orientation="vertical"
                 android:visibility="gone"
                 tools:visibility="visible">
@@ -59,9 +61,7 @@
                             android:singleLine="true"
                             android:textColor="@android:color/black"
                             tools:text="0.0.0.0" />
-
                     </LinearLayout>
-
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
@@ -101,15 +101,10 @@
                             android:textColor="@android:color/black"
                             tools:text="0.0.0.0" />
 
-
                     </LinearLayout>
-
                 </androidx.cardview.widget.CardView>
-
             </LinearLayout>
-
         </androidx.core.widget.NestedScrollView>
-
     </ru.ra66it.updaterforspotify.presentation.ui.customview.RefreshLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

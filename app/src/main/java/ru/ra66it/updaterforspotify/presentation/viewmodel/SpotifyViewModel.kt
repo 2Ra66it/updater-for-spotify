@@ -16,7 +16,8 @@ import kotlin.coroutines.CoroutineContext
 class SpotifyViewModel(
         private val spotifyInteractor: SpotifyInteractor,
         private val sharedPreferencesHelper: SharedPreferencesHelper,
-        private val spotifyMapper: SpotifyMapper) : ViewModel(), CoroutineScope {
+        private val spotifyMapper: SpotifyMapper
+) : ViewModel(), CoroutineScope {
 
     private val job = Job()
     val spotifyLiveData: MutableLiveData<StatusState> = MutableLiveData()

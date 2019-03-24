@@ -13,5 +13,5 @@ import ru.ra66it.updaterforspotify.domain.model.Spotify
 interface SpotifyApi {
 
     @GET(BuildConfig.SPOTIFY_API)
-    fun latestSpotify(): Deferred<Response<Spotify>>
+    fun latestSpotifyAsync(): Deferred<Response<Spotify>>
 }

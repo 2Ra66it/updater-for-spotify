@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import ru.ra66it.updaterforspotify.R
 import org.koin.android.viewmodel.ext.android.viewModel
 import ru.ra66it.updaterforspotify.domain.model.StatusState
+import ru.ra66it.updaterforspotify.presentation.ui.customview.RefreshLayout
 import ru.ra66it.updaterforspotify.presentation.utils.StringService
 import ru.ra66it.updaterforspotify.presentation.viewmodel.SpotifyViewModel
 import ru.ra66it.updaterforspotify.spotifyHaveUpdate
@@ -30,9 +31,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        swipeLayout.setOnRefreshListener {
-            spotifyViewModel.getLatestSpotify()
-        }
+        swipeLayout.setOnRefreshListener(object : RefreshLayout.OnRefreshListener {
+            override fun onRefresh() {
+                spotifyViewModel.getLatestSpotify()
+            }
+        })
 
         fab.setOnClickListener { downloadSpotify() }
 
