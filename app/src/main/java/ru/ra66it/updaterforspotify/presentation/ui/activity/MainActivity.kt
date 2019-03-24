@@ -13,29 +13,30 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import ru.ra66it.updaterforspotify.*
+import ru.ra66it.updaterforspotify.R
+import org.koin.android.viewmodel.ext.android.viewModel
 import ru.ra66it.updaterforspotify.domain.model.StatusState
 import ru.ra66it.updaterforspotify.presentation.utils.StringService
 import ru.ra66it.updaterforspotify.presentation.viewmodel.SpotifyViewModel
-import javax.inject.Inject
+import ru.ra66it.updaterforspotify.spotifyHaveUpdate
+import ru.ra66it.updaterforspotify.spotifyIsLatest
+import ru.ra66it.updaterforspotify.spotifyNotInstalled
 
 class MainActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var viewModel: SpotifyViewModel
+    private val spotifyViewModel: SpotifyViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        UpdaterApp.applicationComponent.inject(this)
         setContentView(R.layout.activity_main)
 
         swipeLayout.setOnRefreshListener {
-            viewModel.getLatestSpotify()
+            spotifyViewModel.getLatestSpotify()
         }
 
         fab.setOnClickListener { downloadSpotify() }
 
-        viewModel.spotifyLiveData.observe(this, Observer {
+        spotifyViewModel.spotifyLiveData.observe(this, Observer {
             when (it) {
                 is StatusState.Error -> {
                     showError(it.exception.localizedMessage)
@@ -60,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.getLatestSpotify()
+        spotifyViewModel.getLatestSpotify()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -77,8 +78,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.updateUI()
-        viewModel.startNotification()
+        spotifyViewModel.updateUI()
+        spotifyViewModel.startNotification()
     }
 
     public override fun onDestroy() {
@@ -133,7 +134,7 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
         if (havePermission) {
-            viewModel.downloadSpotify()
+            spotifyViewModel.downloadSpotify()
             showSnackbar(getString(R.string.spotify_is_downloading))
         } else {
             ActivityCompat.requestPermissions(this,

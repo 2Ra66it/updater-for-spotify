@@ -19,6 +19,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.*
+import org.koin.android.ext.android.inject
 import ru.ra66it.updaterforspotify.*
 import ru.ra66it.updaterforspotify.data.storage.SharedPreferencesHelper
 import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor
@@ -28,7 +29,6 @@ import ru.ra66it.updaterforspotify.presentation.ui.activity.MainActivity
 import ru.ra66it.updaterforspotify.presentation.utils.SpotifyMapper
 import ru.ra66it.updaterforspotify.presentation.utils.UtilsSpotify
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 /**
  * Created by 2Rabbit on 07.01.2018.
@@ -37,17 +37,11 @@ import javax.inject.Inject
 class PollService : JobService() {
     private var job: Job? = null
 
-    @Inject
-    lateinit var spotifyInteractor: SpotifyInteractor
-    @Inject
-    lateinit var sharedPreferencesHelper: SharedPreferencesHelper
-    @Inject
-    lateinit var spotifyMapper: SpotifyMapper
+    private val spotifyInteractor: SpotifyInteractor by inject()
 
-    override fun onCreate() {
-        super.onCreate()
-        UpdaterApp.applicationComponent.inject(this)
-    }
+    private val sharedPreferencesHelper: SharedPreferencesHelper by inject()
+
+    private val spotifyMapper: SpotifyMapper by inject()
 
     override fun onStartJob(jobParameters: JobParameters): Boolean {
         if (sharedPreferencesHelper.isEnableNotification) {

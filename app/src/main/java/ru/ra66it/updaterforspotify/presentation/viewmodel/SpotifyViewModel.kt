@@ -10,12 +10,13 @@ import ru.ra66it.updaterforspotify.domain.model.StatusState
 import ru.ra66it.updaterforspotify.presentation.service.PollService
 import ru.ra66it.updaterforspotify.presentation.utils.SpotifyMapper
 import ru.ra66it.updaterforspotify.presentation.utils.UtilsDownloadSpotify
-import javax.inject.Inject
+
 import kotlin.coroutines.CoroutineContext
 
-class SpotifyViewModel @Inject constructor(private val spotifyInteractor: SpotifyInteractor,
-                                           private val sharedPreferencesHelper: SharedPreferencesHelper,
-                                           private val spotifyMapper: SpotifyMapper) : ViewModel(), CoroutineScope {
+class SpotifyViewModel(
+        private val spotifyInteractor: SpotifyInteractor,
+        private val sharedPreferencesHelper: SharedPreferencesHelper,
+        private val spotifyMapper: SpotifyMapper) : ViewModel(), CoroutineScope {
 
     private val job = Job()
     val spotifyLiveData: MutableLiveData<StatusState> = MutableLiveData()
