@@ -21,7 +21,7 @@ or via the [Release section](https://github.com/2Ra66it/updater-for-spotify/rele
 MVVM
 
 ## Libraries
-* [Dagger 2](https://github.com/google/dagger)
+* [Koin](https://github.com/InsertKoinIO/koin)
 * [Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
 * [Kotlin Coroutines Adapter](https://github.com/JakeWharton/retrofit2-kotlin-coroutines-adapter)
 * [OkHttp](https://github.com/square/okhttp)
