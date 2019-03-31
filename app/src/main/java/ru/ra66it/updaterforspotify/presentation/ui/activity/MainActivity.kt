@@ -14,11 +14,15 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.viewmodel.ext.android.viewModel
-import ru.ra66it.updaterforspotify.*
 import ru.ra66it.updaterforspotify.domain.model.StatusState
 import ru.ra66it.updaterforspotify.presentation.ui.customview.RefreshLayout
 import ru.ra66it.updaterforspotify.presentation.utils.StringService
 import ru.ra66it.updaterforspotify.presentation.viewmodel.SpotifyViewModel
+import ru.ra66it.updaterforspotify.R
+import ru.ra66it.updaterforspotify.saveFilePermissionCodeRequest
+import ru.ra66it.updaterforspotify.spotifyHaveUpdate
+import ru.ra66it.updaterforspotify.spotifyIsLatest
+import ru.ra66it.updaterforspotify.spotifyNotInstalled
 
 class MainActivity : AppCompatActivity() {
 
@@ -59,6 +63,11 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        })
+
+        spotifyViewModel.snackbarMessageLiveData.observe(this, Observer {
+            val message = getString(it)
+            showSnackbar(message)
         })
 
         spotifyViewModel.getLatestSpotify()
@@ -144,7 +153,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun downloadFile() {
         spotifyViewModel.downloadSpotify()
-        showSnackbar(getString(R.string.spotify_is_downloading))
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

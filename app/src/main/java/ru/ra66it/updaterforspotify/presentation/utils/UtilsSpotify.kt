@@ -45,13 +45,24 @@ object UtilsSpotify {
         }
 
     fun isSpotifyUpdateAvailable(installVersion: String, lastVersion: String): Boolean {
-        val installedVersion = convertVersionToInt(installVersion)
-        val latestVersion = convertVersionToInt(lastVersion)
-        return installedVersion < latestVersion
+        return compareVersion(installVersion, lastVersion) == 1
     }
 
-    fun convertVersionToInt(version: String): Int {
-        return Integer.parseInt(version.replace("[^0-9]".toRegex(), ""))
+    fun compareVersion(installVersion: String, lastVersion: String): Int {
+        val firstVersion = installVersion.split("\\.".toRegex())
+        val secondVersion = lastVersion.split("\\.".toRegex())
+        val length = Math.max(firstVersion.size, secondVersion.size)
+
+        for (i in 0 until length) {
+            val firstPart = if (i < firstVersion.size) firstVersion[i].toInt() else 0
+            val secondPart = if (i < secondVersion.size) secondVersion[i].toInt() else 0
+            when {
+                firstPart > secondPart -> return -1
+                firstPart < secondPart -> return 1
+            }
+        }
+
+        return 0
     }
 }
 

@@ -1,8 +1,9 @@
 package ru.ra66it.updaterforspotify
 
-import org.junit.Assert.assertTrue
+import org.junit.Assert.assertEquals
 import org.junit.Test
-import ru.ra66it.updaterforspotify.presentation.utils.UtilsSpotify.convertVersionToInt
+import ru.ra66it.updaterforspotify.presentation.utils.UtilsSpotify
+
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -11,12 +12,12 @@ import ru.ra66it.updaterforspotify.presentation.utils.UtilsSpotify.convertVersio
  */
 class ExampleUnitTest {
 
-    @Test()
-    fun isSpotifyUpdateAvailableTest()  {
-        val installedVersion = convertVersionToInt("8.4.70.654")
-        val latestVersion = convertVersionToInt("Spotify Music 8.4.70.657")
-
-        assertTrue(installedVersion < latestVersion)
+    @Test
+    @Throws(Exception::class)
+    fun testVersionCompare()  {
+        assertEquals(-1, UtilsSpotify.compareVersion("8.5.99.614", "8.4.99.614"))
+        assertEquals(0,  UtilsSpotify.compareVersion("8.4.99.614", "8.4.99.614"))
+        assertEquals(1,  UtilsSpotify.compareVersion("8.4.99.614", "8.5.0.339"))
     }
 
 }
