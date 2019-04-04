@@ -34,7 +34,6 @@ fun createSharedPreferences(androidApplication: Application): SharedPreferencesH
     return SharedPreferencesHelper(sharedPreferences)
 }
 
-
 val networkModule = module {
     single { createOkHttpClient() }
     single { createRetrofit(get()) }
@@ -45,12 +44,15 @@ val networkModule = module {
 }
 
 fun createOkHttpClient(): OkHttpClient {
-    val loggingInterceptor = HttpLoggingInterceptor()
-    loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+    val builder = OkHttpClient.Builder()
 
-    return OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .build()
+    if(BuildConfig.DEBUG) {
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        builder.addInterceptor(loggingInterceptor)
+    }
+
+    return builder.build()
 }
 
 fun createRetrofit(httpClient: OkHttpClient): Retrofit {
