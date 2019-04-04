@@ -3,7 +3,6 @@ package ru.ra66it.updaterforspotify.presentation.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
-import ru.ra66it.updaterforspotify.data.network.NetworkChecker
 import ru.ra66it.updaterforspotify.data.storage.SharedPreferencesHelper
 import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor
 import ru.ra66it.updaterforspotify.domain.model.Result
@@ -22,7 +21,6 @@ class SpotifyViewModel(
 
     private val job = Job()
     val spotifyLiveData: MutableLiveData<StatusState> = MutableLiveData()
-    val snackbarMessageLiveData: MutableLiveData<Int> = MutableLiveData()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -54,13 +52,8 @@ class SpotifyViewModel(
     }
 
     fun downloadSpotify() {
-        if (NetworkChecker.isNetworkAvailable) {
-            val data = (spotifyLiveData.value as StatusState.Data).spotify
-            UtilsDownloadSpotify.downloadSpotify(data.latestLink, data.latestVersionNumber)
-            snackbarMessageLiveData.postValue(R.string.spotify_is_downloading)
-        } else {
-            snackbarMessageLiveData.postValue(R.string.no_internet_connection)
-        }
+        val data = (spotifyLiveData.value as StatusState.Data).spotify
+        UtilsDownloadSpotify.downloadSpotify(data.latestLink, data.latestVersionNumber)
     }
 
     fun startNotification() {

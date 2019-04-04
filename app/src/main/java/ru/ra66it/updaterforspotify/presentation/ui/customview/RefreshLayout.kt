@@ -877,8 +877,6 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
         clearAnimation()
 
         if (computeAnimateToRefreshingDuration(from.toFloat()) <= 0) {
-            listener.onAnimationStart(null)
-            listener.onAnimationEnd(null)
             return
         }
 

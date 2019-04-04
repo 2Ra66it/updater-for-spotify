@@ -19,6 +19,7 @@ import ru.ra66it.updaterforspotify.presentation.ui.customview.RefreshLayout
 import ru.ra66it.updaterforspotify.presentation.utils.StringService
 import ru.ra66it.updaterforspotify.presentation.viewmodel.SpotifyViewModel
 import ru.ra66it.updaterforspotify.R
+import ru.ra66it.updaterforspotify.data.network.NetworkChecker
 import ru.ra66it.updaterforspotify.saveFilePermissionCodeRequest
 import ru.ra66it.updaterforspotify.spotifyHaveUpdate
 import ru.ra66it.updaterforspotify.spotifyIsLatest
@@ -28,49 +29,50 @@ class MainActivity : AppCompatActivity() {
 
     private val spotifyViewModel: SpotifyViewModel by viewModel()
 
+    private val refreshListener = object : RefreshLayout.OnRefreshListener {
+        override fun onRefresh() {
+            spotifyViewModel.getLatestSpotify()
+        }
+    }
+
+    private val liveDataObserver = Observer<StatusState> {
+        when (it) {
+            is StatusState.Error -> {
+                showError(it.exception.localizedMessage)
+            }
+            is StatusState.Loading -> {
+                showLoading()
+            }
+            is StatusState.Data -> {
+                val data = it.spotify
+                when (data.spotifyState) {
+                    spotifyNotInstalled -> {
+                        showInstallNow(data.installedVersion, data.latestVersionName)
+                    }
+                    spotifyHaveUpdate -> {
+                        showHaveUpdate(data.installedVersion, data.latestVersionName)
+                    }
+                    spotifyIsLatest -> {
+                        showHaveLatestVersion()
+                    }
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        swipeLayout.setOnRefreshListener(object : RefreshLayout.OnRefreshListener {
-            override fun onRefresh() {
-                spotifyViewModel.getLatestSpotify()
-            }
-        })
+        swipeLayout.setOnRefreshListener(refreshListener)
 
         fab.setOnClickListener { downloadSpotify() }
 
-        spotifyViewModel.spotifyLiveData.observe(this, Observer {
-            when (it) {
-                is StatusState.Error -> {
-                    showError(it.exception.localizedMessage)
-                }
-                is StatusState.Loading -> {
-                    showLoading()
-                }
-                is StatusState.Data -> {
-                    val data = it.spotify
-                    when (data.spotifyState) {
-                        spotifyNotInstalled -> {
-                            showInstallNow(data.installedVersion, data.latestVersionName)
-                        }
-                        spotifyHaveUpdate -> {
-                            showHaveUpdate(data.installedVersion, data.latestVersionName)
-                        }
-                        spotifyIsLatest -> {
-                            showHaveLatestVersion()
-                        }
-                    }
-                }
-            }
-        })
+        spotifyViewModel.spotifyLiveData.observe(this, liveDataObserver)
 
-        spotifyViewModel.snackbarMessageLiveData.observe(this, Observer {
-            val message = getString(it)
-            showSnackbar(message)
-        })
-
-        spotifyViewModel.getLatestSpotify()
+        if(spotifyViewModel.spotifyLiveData.value == null) {
+            spotifyViewModel.getLatestSpotify()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -152,7 +154,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun downloadFile() {
-        spotifyViewModel.downloadSpotify()
+        if (NetworkChecker.isNetworkAvailable) {
+            showSnackbar(getString(R.string.spotify_is_downloading))
+            spotifyViewModel.downloadSpotify()
+        } else {
+            showSnackbar(getString(R.string.no_internet_connection))
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
