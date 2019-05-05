@@ -13,9 +13,22 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/colorPrimaryDark</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@drawable/text_color_state</item>
         <item name="android:textColorSecondary">@android:color/darker_gray</item>
+        <item name="alertDialogTheme">@style/DialogListStyle</item>
         <item name="android:listDivider">@null</item>
+    </style>
+
+    <style name="DialogListStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:background">@color/colorPrimaryDark</item>
+        <item name="textColorAlertDialogListItem">@android:color/white</item>
+        <item name="colorControlNormal">@android:color/darker_gray</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/colorAccent</item>
     </style>
 
 </resources>

@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.preference.CheckBoxPreference
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import org.koin.android.ext.android.inject
@@ -18,8 +19,9 @@ import ru.ra66it.updaterforspotify.data.storage.SharedPreferencesHelper
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     private lateinit var prefEnableNotificationsOrigin: CheckBoxPreference
+    private lateinit var prefCheckInterval: ListPreference
     private lateinit var prefAppInfo: Preference
-    lateinit var prefs: SharedPreferences
+    private lateinit var prefs: SharedPreferences
 
     private val sharedPreferencesHelper: SharedPreferencesHelper by inject()
 
@@ -28,8 +30,11 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
         prefs = PreferenceManager.getDefaultSharedPreferences(activity)
 
-        prefEnableNotificationsOrigin = findPreference("autoOrigin") as CheckBoxPreference
+        prefEnableNotificationsOrigin = findPreference("updateCheckBox") as CheckBoxPreference
         prefEnableNotificationsOrigin.isChecked = sharedPreferencesHelper.isEnableNotification
+
+        prefCheckInterval = findPreference("updateInterval") as ListPreference
+        prefCheckInterval.value = sharedPreferencesHelper.checkIntervalDay.toString()
 
         prefAppInfo = findPreference("verPref") as Preference
         prefAppInfo.summary = BuildConfig.VERSION_NAME
@@ -37,6 +42,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, s: String) {
         sharedPreferencesHelper.isEnableNotification = prefEnableNotificationsOrigin.isChecked
+        sharedPreferencesHelper.checkIntervalDay = prefCheckInterval.value.toLong()
     }
 
     override fun onResume() {

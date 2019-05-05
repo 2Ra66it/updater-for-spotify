@@ -2,38 +2,43 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="@string/general">
-
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="autoOrigin"
-            android:summary="@string/xml_notification_text_origin"
-            android:title="@string/xml_enable_notification" />
+            android:key="updateCheckBox"
+            android:summary="@string/notification_text_origin"
+            android:title="@string/enable_notification" />
 
+        <ListPreference
+            android:dependency="updateCheckBox"
+            android:key="updateInterval"
+            android:title="@string/update_check_interval"
+            android:entries="@array/update_interval_days_entries"
+            android:entryValues="@array/update_interval_days_values"
+            android:summary="%s"
+            android:defaultValue="1" />
     </PreferenceCategory>
-
 
     <PreferenceCategory android:title="@string/info">
         <Preference
             android:icon="@drawable/ic_paypal"
             android:key="donatePref"
-            android:summary="@string/xml_donate_paypal"
+            android:summary="@string/donate_paypal"
             android:title="@string/donate">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="@string/xml_paypal_link" />
+                android:data="@string/paypal_link" />
         </Preference>
 
         <Preference
             android:icon="@drawable/ic_github"
             android:key="githubPref"
-            android:summary="@string/xml_see_on_github"
+            android:summary="@string/see_on_github"
             android:title="@string/github">
 
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="@string/xml_github_link" />
+                android:data="@string/github_link" />
         </Preference>
-
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/about">

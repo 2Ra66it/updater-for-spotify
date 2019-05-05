@@ -57,11 +57,8 @@ class SpotifyViewModel(
     }
 
     fun startNotification() {
-        if (sharedPreferencesHelper.isEnableNotification) {
-            PollService.setServiceAlarm(sharedPreferencesHelper.isEnableNotification)
-        } else {
-            PollService.setServiceAlarm(false)
-        }
+        PollService.setServiceAlarm(sharedPreferencesHelper.isEnableNotification,
+                sharedPreferencesHelper.checkIntervalDay)
     }
 
     override fun onCleared() {

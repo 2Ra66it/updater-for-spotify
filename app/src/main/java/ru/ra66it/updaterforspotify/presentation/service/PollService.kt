@@ -58,14 +58,14 @@ class PollService : JobService() {
         job = CoroutineScope(Dispatchers.IO).launch {
             val result = spotifyInteractor.getSpotify()
             withContext(Dispatchers.Main) {
-                when(result) {
+                when (result) {
                     is Result.Success -> {
                         val data = spotifyMapper.map(result.data)
                         makeNotification(data)
                         jobFinished(jobParameters, false)
                     }
                     is Result.Error -> {
-                        if(BuildConfig.DEBUG) {
+                        if (BuildConfig.DEBUG) {
                             Log.d(TAG, result.exception.message)
                         }
                     }
@@ -149,25 +149,27 @@ class PollService : JobService() {
     companion object {
         private val TAG = PollService::class.java.simpleName
 
-        fun setServiceAlarm(isOn: Boolean) {
-            val component = ComponentName(UpdaterApp.instance, PollService::class.java)
-            val builder: JobInfo
-            val poolInterval = TimeUnit.DAYS.toMillis(1)
-
-            builder = JobInfo.Builder(jobId, component)
-                    .setPeriodic(poolInterval)
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setPersisted(true)
-                    .build()
-
-            val jobScheduler = UpdaterApp.instance.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        fun setServiceAlarm(isOn: Boolean, checkInterval: Long) {
+            val context = UpdaterApp.instance
+            val jobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+            val poolInterval = TimeUnit.DAYS.toMillis(checkInterval)
 
             if (isOn) {
-                if (jobScheduler.allPendingJobs.size == 0) {
+                val needSchedule = jobScheduler.allPendingJobs.firstOrNull()?.intervalMillis != poolInterval
+                if (needSchedule) {
+                    val component = ComponentName(context, PollService::class.java)
+                    val builder = JobInfo.Builder(jobId, component)
+                            .setPeriodic(poolInterval)
+                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                            .setPersisted(true)
+                            .build()
+
                     jobScheduler.schedule(builder)
                 }
             } else {
-                jobScheduler.cancelAll()
+                if (jobScheduler.allPendingJobs.size != 0) {
+                    jobScheduler.cancelAll()
+                }
             }
         }
     }
