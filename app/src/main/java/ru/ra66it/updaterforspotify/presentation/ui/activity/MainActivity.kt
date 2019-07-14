@@ -67,10 +67,6 @@ class MainActivity : AppCompatActivity() {
         fab.setOnClickListener { downloadSpotify() }
 
         spotifyViewModel.spotifyLiveData.observe(this, liveDataObserver)
-
-        if(spotifyViewModel.spotifyLiveData.value == null) {
-            spotifyViewModel.getLatestSpotify()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -168,8 +164,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 return
             }
-            else -> {
-            }
+            else -> { }
         }
     }
 }

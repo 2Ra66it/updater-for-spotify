@@ -23,6 +23,10 @@ class SpotifyViewModel @Inject constructor(
     private val job = Job()
     val spotifyLiveData: MutableLiveData<StatusState> = MutableLiveData()
 
+    init {
+        getLatestSpotify()
+    }
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
