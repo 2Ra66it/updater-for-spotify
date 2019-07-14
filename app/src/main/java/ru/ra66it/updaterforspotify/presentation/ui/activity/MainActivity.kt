@@ -13,21 +13,18 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import ru.ra66it.updaterforspotify.*
 import ru.ra66it.updaterforspotify.domain.model.StatusState
 import ru.ra66it.updaterforspotify.presentation.ui.customview.RefreshLayout
 import ru.ra66it.updaterforspotify.presentation.utils.StringService
 import ru.ra66it.updaterforspotify.presentation.viewmodel.SpotifyViewModel
-import ru.ra66it.updaterforspotify.R
 import ru.ra66it.updaterforspotify.data.network.NetworkChecker
-import ru.ra66it.updaterforspotify.saveFilePermissionCodeRequest
-import ru.ra66it.updaterforspotify.spotifyHaveUpdate
-import ru.ra66it.updaterforspotify.spotifyIsLatest
-import ru.ra66it.updaterforspotify.spotifyNotInstalled
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
-    private val spotifyViewModel: SpotifyViewModel by viewModel()
+    @Inject
+    lateinit var spotifyViewModel: SpotifyViewModel
 
     private val refreshListener = object : RefreshLayout.OnRefreshListener {
         override fun onRefresh() {
@@ -63,6 +60,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        UpdaterApp.applicationComponent.inject(this)
 
         swipeLayout.setOnRefreshListener(refreshListener)
 

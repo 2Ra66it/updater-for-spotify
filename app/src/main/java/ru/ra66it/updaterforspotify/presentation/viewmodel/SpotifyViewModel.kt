@@ -11,9 +11,10 @@ import ru.ra66it.updaterforspotify.presentation.service.PollService
 import ru.ra66it.updaterforspotify.presentation.utils.SpotifyMapper
 import ru.ra66it.updaterforspotify.presentation.utils.UtilsDownloadSpotify
 import ru.ra66it.updaterforspotify.R
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class SpotifyViewModel(
+class SpotifyViewModel @Inject constructor(
         private val spotifyInteractor: SpotifyInteractor,
         private val sharedPreferencesHelper: SharedPreferencesHelper,
         private val spotifyMapper: SpotifyMapper

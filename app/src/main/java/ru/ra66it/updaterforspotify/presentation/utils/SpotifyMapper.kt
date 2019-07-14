@@ -2,8 +2,9 @@ package ru.ra66it.updaterforspotify.presentation.utils
 
 import ru.ra66it.updaterforspotify.domain.model.Spotify
 import ru.ra66it.updaterforspotify.domain.model.SpotifyData
+import javax.inject.Inject
 
-class SpotifyMapper {
+class SpotifyMapper @Inject constructor() {
 
     fun map(spotify: Spotify): SpotifyData {
         val latestLink: String = spotify.data.file.path

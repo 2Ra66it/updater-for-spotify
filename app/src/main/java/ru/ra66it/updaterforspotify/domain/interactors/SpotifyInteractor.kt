@@ -1,12 +1,15 @@
 package ru.ra66it.updaterforspotify.domain.interactors
 
+import ru.ra66it.updaterforspotify.data.repositories.SpotifyRepository
 import ru.ra66it.updaterforspotify.domain.model.Result
 import ru.ra66it.updaterforspotify.domain.model.Spotify
-import ru.ra66it.updaterforspotify.domain.repositories.SpotifyRepository
+import javax.inject.Inject
 
-class SpotifyInteractor(private val spotifyRepository: SpotifyRepository) {
+class SpotifyInteractor @Inject constructor(
+        private val spotifyRepository: SpotifyRepository
+) {
 
     suspend fun getSpotify(): Result<Spotify> {
-       return spotifyRepository.getSpotify()
+        return spotifyRepository.getSpotify()
     }
 }

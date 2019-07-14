@@ -7,10 +7,11 @@ import androidx.preference.CheckBoxPreference
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import org.koin.android.ext.android.inject
 import ru.ra66it.updaterforspotify.BuildConfig
 import ru.ra66it.updaterforspotify.R
+import ru.ra66it.updaterforspotify.UpdaterApp
 import ru.ra66it.updaterforspotify.data.storage.SharedPreferencesHelper
+import javax.inject.Inject
 
 /**
  * Created by 2Rabbit on 29.09.2017.
@@ -18,31 +19,37 @@ import ru.ra66it.updaterforspotify.data.storage.SharedPreferencesHelper
 
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private lateinit var prefEnableNotificationsOrigin: CheckBoxPreference
-    private lateinit var prefCheckInterval: ListPreference
-    private lateinit var prefAppInfo: Preference
+    private var prefEnableNotificationsOrigin: CheckBoxPreference? = null
+    private var prefCheckInterval: ListPreference? = null
+    private var prefAppInfo: Preference? = null
     private lateinit var prefs: SharedPreferences
 
-    private val sharedPreferencesHelper: SharedPreferencesHelper by inject()
+    @Inject
+    lateinit var sharedPreferencesHelper: SharedPreferencesHelper
 
     override fun onCreatePreferences(p0: Bundle?, p1: String?) {
         addPreferencesFromResource(R.xml.settings)
+        UpdaterApp.applicationComponent.inject(this)
 
         prefs = PreferenceManager.getDefaultSharedPreferences(activity)
 
-        prefEnableNotificationsOrigin = findPreference("updateCheckBox") as CheckBoxPreference
-        prefEnableNotificationsOrigin.isChecked = sharedPreferencesHelper.isEnableNotification
+        prefEnableNotificationsOrigin = findPreference("updateCheckBox")
+        prefEnableNotificationsOrigin?.isChecked = sharedPreferencesHelper.isEnableNotification
 
-        prefCheckInterval = findPreference("updateInterval") as ListPreference
-        prefCheckInterval.value = sharedPreferencesHelper.checkIntervalDay.toString()
+        prefCheckInterval = findPreference("updateInterval")
+        prefCheckInterval?.value = sharedPreferencesHelper.checkIntervalDay.toString()
 
-        prefAppInfo = findPreference("verPref") as Preference
-        prefAppInfo.summary = BuildConfig.VERSION_NAME
+        prefAppInfo = findPreference("verPref")
+        prefAppInfo?.summary = BuildConfig.VERSION_NAME
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, s: String) {
-        sharedPreferencesHelper.isEnableNotification = prefEnableNotificationsOrigin.isChecked
-        sharedPreferencesHelper.checkIntervalDay = prefCheckInterval.value.toLong()
+        prefEnableNotificationsOrigin?.let {
+            sharedPreferencesHelper.isEnableNotification = it.isChecked
+        }
+        prefCheckInterval?.let {
+            sharedPreferencesHelper.checkIntervalDay = it.value.toLong()
+        }
     }
 
     override fun onResume() {
