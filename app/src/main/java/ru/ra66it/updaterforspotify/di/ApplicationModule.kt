@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
+import ru.ra66it.updaterforspotify.data.repositories.DownloadFileRepository
 import ru.ra66it.updaterforspotify.data.storage.SharedPreferencesHelper
 import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor
 import ru.ra66it.updaterforspotify.presentation.utils.SpotifyMapper
@@ -33,11 +34,14 @@ class ApplicationModule(context: Context) {
     internal fun provideSpotifyViewModel(
             spotifyInteractor: SpotifyInteractor,
             sharedPreferencesHelper: SharedPreferencesHelper,
-            spotifyMapper: SpotifyMapper): SpotifyViewModel {
+            spotifyMapper: SpotifyMapper,
+            downloadFileRepository: DownloadFileRepository
+    ): SpotifyViewModel {
         return SpotifyViewModel(
                 spotifyInteractor,
                 sharedPreferencesHelper,
-                spotifyMapper
+                spotifyMapper,
+                downloadFileRepository
         )
     }
 

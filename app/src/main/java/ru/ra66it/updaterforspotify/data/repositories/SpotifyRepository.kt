@@ -5,7 +5,9 @@ import ru.ra66it.updaterforspotify.domain.model.Result
 import ru.ra66it.updaterforspotify.domain.model.Spotify
 import ru.ra66it.updaterforspotify.presentation.utils.safeApiCall
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class SpotifyRepository @Inject constructor(
         private val spotifyApi: SpotifyApi
 ) {

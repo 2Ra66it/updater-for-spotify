@@ -15,3 +15,8 @@ const val spotifyHaveUpdate = 1
 const val spotifyIsLatest = 2
 const val saveFilePermissionCodeRequest = 8800
 
+const val startDownload = 0
+const val progressDownload = 1
+const val completeDownload = 2
+const val errorDownload = 3
+

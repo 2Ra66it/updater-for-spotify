@@ -14,11 +14,12 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.ra66it.updaterforspotify.*
+import ru.ra66it.updaterforspotify.data.network.NetworkChecker
 import ru.ra66it.updaterforspotify.domain.model.StatusState
-import ru.ra66it.updaterforspotify.presentation.ui.customview.RefreshLayout
 import ru.ra66it.updaterforspotify.presentation.utils.StringService
 import ru.ra66it.updaterforspotify.presentation.viewmodel.SpotifyViewModel
-import ru.ra66it.updaterforspotify.data.network.NetworkChecker
+import ru.ra66it.updaterforspotify.presentation.ui.customview.snackbar.DownloadSnackbar
+import ru.ra66it.updaterforspotify.presentation.ui.customview.swiperefresh.RefreshLayout
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val liveDataObserver = Observer<StatusState> {
+    private val spotifyDataObserver = Observer<StatusState> {
         when (it) {
             is StatusState.Error -> {
                 showError(it.exception.localizedMessage)
@@ -57,6 +58,34 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val downloadDataObserver = Observer<Triple<String, Int, Int>> {
+        val name = it.first
+        val state = it.second
+        val progress = it.third
+        when (state) {
+            startDownload -> {
+                snackbar?.show(name)
+                fab.hide()
+            }
+            progressDownload -> {
+                snackbar?.updateProgress(progress)
+            }
+            errorDownload -> {
+                snackbar?.setError("Error")
+            }
+            else -> {
+                snackbar?.hide()
+                fab.show()
+            }
+        }
+    }
+
+    private var snackbar: DownloadSnackbar? = null
+
+    private var snackbarCloseListener: () -> Unit = {
+        spotifyViewModel.cancelDownloading()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -66,7 +95,10 @@ class MainActivity : AppCompatActivity() {
 
         fab.setOnClickListener { downloadSpotify() }
 
-        spotifyViewModel.spotifyLiveData.observe(this, liveDataObserver)
+        snackbar = DownloadSnackbar(container, Snackbar.LENGTH_INDEFINITE, snackbarCloseListener)
+
+        spotifyViewModel.spotifyLiveData.observe(this, spotifyDataObserver)
+        spotifyViewModel.downloadFileLiveData.observe(this, downloadDataObserver)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -149,7 +181,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun downloadFile() {
         if (NetworkChecker.isNetworkAvailable) {
-            showSnackbar(getString(R.string.spotify_is_downloading))
             spotifyViewModel.downloadSpotify()
         } else {
             showSnackbar(getString(R.string.no_internet_connection))
@@ -164,7 +195,8 @@ class MainActivity : AppCompatActivity() {
                 }
                 return
             }
-            else -> { }
+            else -> {
+            }
         }
     }
 }

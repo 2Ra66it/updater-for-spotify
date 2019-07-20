@@ -1,4 +1,4 @@
-package ru.ra66it.updaterforspotify.presentation.ui.customview
+package ru.ra66it.updaterforspotify.presentation.ui.customview.swiperefresh
 
 import android.animation.ValueAnimator
 import android.content.Context

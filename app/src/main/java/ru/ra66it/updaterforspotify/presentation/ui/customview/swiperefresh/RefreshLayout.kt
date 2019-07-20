@@ -1,4 +1,4 @@
-package ru.ra66it.updaterforspotify.presentation.ui.customview
+package ru.ra66it.updaterforspotify.presentation.ui.customview.swiperefresh
 
 import android.content.Context
 import android.util.AttributeSet
@@ -84,7 +84,7 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
     private val animateToRefreshingAnimation = object : Animation() {
         override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
             when (refreshStyle) {
-                RefreshLayout.RefreshStyle.FLOAT -> {
+                RefreshStyle.FLOAT -> {
                     val refreshTargetOffset = this@RefreshLayout.refreshTargetOffset + refreshInitialOffset
                     animateToTargetOffset(refreshTargetOffset, refreshView!!.top.toFloat(), interpolatedTime)
                 }
@@ -96,7 +96,7 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
     private val animateToStartAnimation = object : Animation() {
         override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
             when (refreshStyle) {
-                RefreshLayout.RefreshStyle.FLOAT -> animateToTargetOffset(refreshInitialOffset, refreshView!!.top.toFloat(), interpolatedTime)
+                RefreshStyle.FLOAT -> animateToTargetOffset(refreshInitialOffset, refreshView!!.top.toFloat(), interpolatedTime)
                 else -> animateToTargetOffset(0.0f, target!!.top.toFloat(), interpolatedTime)
             }
         }
@@ -135,7 +135,7 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
     private val targetOrRefreshViewTop: Int
         get() {
             return when (refreshStyle) {
-                RefreshLayout.RefreshStyle.FLOAT -> refreshView!!.top
+                RefreshStyle.FLOAT -> refreshView!!.top
                 else -> target!!.top
             }
         }
@@ -143,7 +143,7 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
     private val targetOrRefreshViewOffset: Int
         get() {
             return when (refreshStyle) {
-                RefreshLayout.RefreshStyle.FLOAT -> (refreshView!!.top - refreshInitialOffset).toInt()
+                RefreshStyle.FLOAT -> (refreshView!!.top - refreshInitialOffset).toInt()
                 else -> target!!.top
             }
         }
@@ -203,7 +203,7 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
 
     private fun setTargetOrRefreshViewToInitial() {
         when (refreshStyle) {
-            RefreshLayout.RefreshStyle.FLOAT -> setTargetOrRefreshViewOffsetY((refreshInitialOffset - targetOrRefreshViewOffsetY).toInt())
+            RefreshStyle.FLOAT -> setTargetOrRefreshViewOffsetY((refreshInitialOffset - targetOrRefreshViewOffsetY).toInt())
             else -> setTargetOrRefreshViewOffsetY((0 - targetOrRefreshViewOffsetY).toInt())
         }
     }
@@ -323,7 +323,7 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
 
     override fun getChildDrawingOrder(childCount: Int, i: Int): Int {
         return when (refreshStyle) {
-            RefreshLayout.RefreshStyle.FLOAT -> when {
+            RefreshStyle.FLOAT -> when {
                 refreshViewIndex < 0 -> i
                 i == childCount - 1 -> refreshViewIndex // Draw the selected child last
                 i >= refreshViewIndex -> i + 1 // Move the children after the selected child earlier one
@@ -352,7 +352,7 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
     // NestedScrollingParent
     override fun onStartNestedScroll(child: View, target: View, nestedScrollAxes: Int): Boolean {
         return when (refreshStyle) {
-            RefreshLayout.RefreshStyle.FLOAT -> (isEnabled && canChildScrollUp(this.target) && !isRefreshing
+            RefreshStyle.FLOAT -> (isEnabled && canChildScrollUp(this.target) && !isRefreshing
                     && nestedScrollAxes and ViewCompat.SCROLL_AXIS_VERTICAL != 0)
             else -> (isEnabled && canChildScrollUp(this.target)
                     && nestedScrollAxes and ViewCompat.SCROLL_AXIS_VERTICAL != 0)
@@ -513,8 +513,8 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
 
     private fun reviseTargetLayoutTop(layoutTop: Int): Int {
         return when (refreshStyle) {
-            RefreshLayout.RefreshStyle.FLOAT -> layoutTop
-            RefreshLayout.RefreshStyle.PINNED -> layoutTop + targetOrRefreshViewOffsetY.toInt()
+            RefreshStyle.FLOAT -> layoutTop
+            RefreshStyle.PINNED -> layoutTop + targetOrRefreshViewOffsetY.toInt()
             else ->
                 //not consider mRefreshResistanceRate < 1.0f
                 layoutTop + targetOrRefreshViewOffsetY.toInt()
@@ -523,8 +523,8 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
 
     private fun reviseRefreshViewLayoutTop(layoutTop: Int): Int {
         return when (refreshStyle) {
-            RefreshLayout.RefreshStyle.FLOAT -> layoutTop + targetOrRefreshViewOffsetY.toInt()
-            RefreshLayout.RefreshStyle.PINNED -> layoutTop
+            RefreshStyle.FLOAT -> layoutTop + targetOrRefreshViewOffsetY.toInt()
+            RefreshStyle.PINNED -> layoutTop
             else ->
                 //not consider mRefreshResistanceRate < 1.0f
                 layoutTop + targetOrRefreshViewOffsetY.toInt()
@@ -544,11 +544,11 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
 
         if (!refreshViewMeasured && !usingCustomRefreshInitialOffset) {
             when (refreshStyle) {
-                RefreshLayout.RefreshStyle.PINNED -> {
+                RefreshStyle.PINNED -> {
                     refreshInitialOffset = 0.0f
                     targetOrRefreshViewOffsetY = refreshInitialOffset
                 }
-                RefreshLayout.RefreshStyle.FLOAT -> {
+                RefreshStyle.FLOAT -> {
                     refreshInitialOffset = (-refreshView!!.measuredHeight).toFloat()
                     targetOrRefreshViewOffsetY = refreshInitialOffset
                 }
@@ -633,7 +633,7 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
         }
 
         when (refreshStyle) {
-            RefreshLayout.RefreshStyle.FLOAT -> if (!isEnabled || canChildScrollUp(target)
+            RefreshStyle.FLOAT -> if (!isEnabled || canChildScrollUp(target)
                     || isRefreshing || nestedScrollInProgress) {
                 // Fail fast if we're not in a state where a swipe is possible
                 return false
@@ -698,7 +698,7 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
         }
 
         when (refreshStyle) {
-            RefreshLayout.RefreshStyle.FLOAT -> if (!isEnabled || canChildScrollUp(target) || nestedScrollInProgress) {
+            RefreshStyle.FLOAT -> if (!isEnabled || canChildScrollUp(target) || nestedScrollInProgress) {
                 // Fail fast if we're not in a state where a swipe is possible
                 return false
             }
@@ -898,7 +898,7 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
         }
 
         return when (refreshStyle) {
-            RefreshLayout.RefreshStyle.FLOAT -> (Math.max(0.0f, Math.min(1.0f, Math.abs(from - refreshInitialOffset - refreshTargetOffset) / refreshTargetOffset)) * animateToRefreshDuration).toInt()
+            RefreshStyle.FLOAT -> (Math.max(0.0f, Math.min(1.0f, Math.abs(from - refreshInitialOffset - refreshTargetOffset) / refreshTargetOffset)) * animateToRefreshDuration).toInt()
             else -> (Math.max(0.0f, Math.min(1.0f, Math.abs(from - refreshTargetOffset) / refreshTargetOffset)) * animateToRefreshDuration).toInt()
         }
     }
@@ -911,7 +911,7 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
         }
 
         return when (refreshStyle) {
-            RefreshLayout.RefreshStyle.FLOAT -> (Math.max(0.0f, Math.min(1.0f, Math.abs(from - refreshInitialOffset) / refreshTargetOffset)) * animateToStartDuration).toInt()
+            RefreshStyle.FLOAT -> (Math.max(0.0f, Math.min(1.0f, Math.abs(from - refreshInitialOffset) / refreshTargetOffset)) * animateToStartDuration).toInt()
             else -> (Math.max(0.0f, Math.min(1.0f, Math.abs(from) / refreshTargetOffset)) * animateToStartDuration).toInt()
         }
     }
@@ -927,7 +927,7 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
         val refreshTargetOffset: Float
         if (!isRefreshing) {
             when (refreshStyle) {
-                RefreshLayout.RefreshStyle.FLOAT -> {
+                RefreshStyle.FLOAT -> {
                     convertScrollOffset = refreshInitialOffset + dragDistanceConverter!!.convert(targetOrRefreshViewOffsetY, this.refreshTargetOffset)
                     refreshTargetOffset = this.refreshTargetOffset
                 }
@@ -1010,11 +1010,11 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
         }
 
         targetOrRefreshViewOffsetY = when (refreshStyle) {
-            RefreshLayout.RefreshStyle.FLOAT -> {
+            RefreshStyle.FLOAT -> {
                 refreshView?.offsetTopAndBottom(offsetY)
                 refreshView!!.top.toFloat()
             }
-            RefreshLayout.RefreshStyle.PINNED -> {
+            RefreshStyle.PINNED -> {
                 target?.offsetTopAndBottom(offsetY)
                 target!!.top.toFloat()
             }
@@ -1028,7 +1028,7 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
         refreshLog("current offset $targetOrRefreshViewOffsetY")
 
         when (refreshStyle) {
-            RefreshLayout.RefreshStyle.FLOAT -> refreshStatus?.pullProgress(targetOrRefreshViewOffsetY,
+            RefreshStyle.FLOAT -> refreshStatus?.pullProgress(targetOrRefreshViewOffsetY,
                     (targetOrRefreshViewOffsetY - refreshInitialOffset) / refreshTargetOffset)
             else -> refreshStatus?.pullProgress(targetOrRefreshViewOffsetY, targetOrRefreshViewOffsetY / refreshTargetOffset)
         }
