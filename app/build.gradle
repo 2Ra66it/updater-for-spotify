@@ -10,8 +10,8 @@ android {
         applicationId "ru.ra66it.updaterforspotify"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 15
-        versionName "1.32"
+        versionCode 16
+        versionName "1.33"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "SPOTIFY_BASE_URL", "\"https://ws75.aptoide.com\""
