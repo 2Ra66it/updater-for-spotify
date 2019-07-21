@@ -15,11 +15,12 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.ra66it.updaterforspotify.*
 import ru.ra66it.updaterforspotify.data.network.NetworkChecker
-import ru.ra66it.updaterforspotify.domain.model.StatusState
-import ru.ra66it.updaterforspotify.presentation.utils.StringService
-import ru.ra66it.updaterforspotify.presentation.viewmodel.SpotifyViewModel
+import ru.ra66it.updaterforspotify.domain.model.DownloadStatusState
+import ru.ra66it.updaterforspotify.domain.model.SpotifyStatusState
 import ru.ra66it.updaterforspotify.presentation.ui.customview.snackbar.DownloadSnackbar
 import ru.ra66it.updaterforspotify.presentation.ui.customview.swiperefresh.RefreshLayout
+import ru.ra66it.updaterforspotify.presentation.utils.StringService
+import ru.ra66it.updaterforspotify.presentation.viewmodel.SpotifyViewModel
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -33,22 +34,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val spotifyDataObserver = Observer<StatusState> {
+    private val spotifyDataObserver = Observer<SpotifyStatusState> {
         when (it) {
-            is StatusState.Error -> {
+            is SpotifyStatusState.Error -> {
                 showError(it.exception.localizedMessage)
             }
-            is StatusState.Loading -> {
+            is SpotifyStatusState.Loading -> {
                 showLoading()
             }
-            is StatusState.Data -> {
+            is SpotifyStatusState.Data -> {
                 val data = it.spotify
                 when (data.spotifyState) {
                     spotifyNotInstalled -> {
-                        showInstallNow(data.installedVersion, data.latestVersionName)
+                        showInstallNow(data.installedVersion, data.latestVersionName, data.isDownloading)
                     }
                     spotifyHaveUpdate -> {
-                        showHaveUpdate(data.installedVersion, data.latestVersionName)
+                        showHaveUpdate(data.installedVersion, data.latestVersionName, data.isDownloading)
                     }
                     spotifyIsLatest -> {
                         showHaveLatestVersion()
@@ -58,24 +59,38 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val downloadDataObserver = Observer<Triple<String, Int, Int>> {
-        val name = it.first
-        val state = it.second
-        val progress = it.third
-        when (state) {
-            startDownload -> {
-                snackbar?.show(name)
+    private val downloadDataObserver = Observer<DownloadStatusState> {
+        when (it) {
+            is DownloadStatusState.Start -> {
+                snackbar?.show(it.name)
                 fab.hide()
             }
-            progressDownload -> {
-                snackbar?.updateProgress(progress)
+            is DownloadStatusState.Progress -> {
+                snackbar?.let { snackBar ->
+                    if (fab.isShown) {
+                        fab.hide()
+                    }
+                    if (!snackBar.isShown()) {
+                        snackBar.show(it.name)
+                    }
+                    snackBar.updateProgress(it.progress)
+                }
             }
-            errorDownload -> {
-                snackbar?.setError("Error")
-            }
-            else -> {
+            is DownloadStatusState.Cancel -> {
                 snackbar?.hide()
                 fab.show()
+            }
+            is DownloadStatusState.Complete -> {
+                snackbar?.hide()
+                fab.show()
+
+                /*val file = File(dir, "App.apk")
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive")
+                startActivity(intent)*/
+            }
+            is DownloadStatusState.Error -> {
+                snackbar?.setError(it.exception.localizedMessage)
             }
         }
     }
@@ -93,10 +108,15 @@ class MainActivity : AppCompatActivity() {
 
         swipeLayout.setOnRefreshListener(refreshListener)
 
-        fab.setOnClickListener { downloadSpotify() }
-
         snackbar = DownloadSnackbar(container, Snackbar.LENGTH_INDEFINITE, snackbarCloseListener)
 
+        fab.hide()
+        fab.setOnClickListener { downloadSpotify() }
+
+        initObservers()
+    }
+
+    private fun initObservers() {
         spotifyViewModel.spotifyLiveData.observe(this, spotifyDataObserver)
         spotifyViewModel.downloadFileLiveData.observe(this, downloadDataObserver)
     }
@@ -127,34 +147,38 @@ class MainActivity : AppCompatActivity() {
         swipeLayout.setRefreshing(false)
         cardsContainer.visibility = View.VISIBLE
         cardLatest.visibility = View.GONE
-        fab.visibility = View.GONE
+        fab.hide()
         tvInstalledVersion.text = StringService.getById(R.string.up_to_date)
     }
 
-    private fun showHaveUpdate(installedVersion: String, latestVersionName: String) {
+    private fun showHaveUpdate(installedVersion: String, latestVersionName: String, isDownloading: Boolean) {
         swipeLayout.setRefreshing(false)
         cardsContainer.visibility = View.VISIBLE
         cardLatest.visibility = View.VISIBLE
-        fab.visibility = View.VISIBLE
-        fab.setImageResource(R.drawable.ic_autorenew_black_24dp)
         tvInstalledVersion.text = installedVersion
         tvLatestVersion.text = latestVersionName
+        if (!isDownloading) {
+            fab.setImageResource(R.drawable.ic_autorenew_black_24dp)
+            fab.show()
+        }
     }
 
-    private fun showInstallNow(installedVersion: String, latestVersionName: String) {
+    private fun showInstallNow(installedVersion: String, latestVersionName: String, isDownloading: Boolean) {
         swipeLayout.setRefreshing(false)
         cardsContainer.visibility = View.VISIBLE
         cardLatest.visibility = View.VISIBLE
-        fab.visibility = View.VISIBLE
-        fab.setImageResource(R.drawable.ic_file_download_black_24dp)
         tvInstalledVersion.text = installedVersion
         tvLatestVersion.text = latestVersionName
+        if (!isDownloading) {
+            fab.setImageResource(R.drawable.ic_file_download_black_24dp)
+            fab.show()
+        }
     }
 
     private fun showError(message: String) {
         swipeLayout.setRefreshing(false)
         cardsContainer.visibility = View.GONE
-        fab.visibility = View.GONE
+        fab.hide()
         showSnackbar(message)
     }
 

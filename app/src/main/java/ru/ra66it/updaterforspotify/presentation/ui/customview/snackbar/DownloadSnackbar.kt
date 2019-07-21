@@ -63,6 +63,10 @@ class DownloadSnackbar(parent: ViewGroup, @BaseTransientBottomBar.Duration durat
         }
     }
 
+    fun isShown(): Boolean {
+        return snackbar.isShown
+    }
+
 }
 
 class CustomSnackbar(parent: ViewGroup, content: View) : BaseTransientBottomBar<CustomSnackbar>(parent, content, ContentViewCallback())

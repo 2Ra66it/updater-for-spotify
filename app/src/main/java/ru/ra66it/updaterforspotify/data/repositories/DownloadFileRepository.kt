@@ -2,12 +2,15 @@ package ru.ra66it.updaterforspotify.data.repositories
 
 import android.os.Environment
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import ru.ra66it.updaterforspotify.BuildConfig
 import ru.ra66it.updaterforspotify.R
 import ru.ra66it.updaterforspotify.UpdaterApp
+import ru.ra66it.updaterforspotify.domain.model.DownloadStatusState
 import java.io.*
-import java.lang.Exception
 import java.net.URL
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,19 +23,22 @@ class DownloadFileRepository @Inject constructor() : CoroutineScope {
         get() = Dispatchers.IO
 
     private var job = Job()
+    val downloadProgressLiveData: MutableLiveData<DownloadStatusState> = MutableLiveData()
+    var isDownloading: Boolean = false
 
-    val downloadProgressLiveData: MutableLiveData<Int> = MutableLiveData()
-
-    var path = ""
 
     fun download(stringUrl: String, version: String) {
         job = launch {
-            path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path + File.separator + UpdaterApp.instance.getString(R.string.spotify) + " $version.apk"
+            val name = UpdaterApp.instance.getString(R.string.spotify) + " $version.apk"
+            val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path + File.separator + name
             val url = URL(stringUrl)
             val connection = url.openConnection()
 
             var inputStream: InputStream? = null
             var outputStream: OutputStream? = null
+
+            isDownloading = true
+            downloadProgressLiveData.postValue(DownloadStatusState.Start(name))
 
             try {
                 var current = 0
@@ -45,12 +51,12 @@ class DownloadFileRepository @Inject constructor() : CoroutineScope {
 
                 inputStream = BufferedInputStream(connection.getInputStream())
 
-
                 while (job.isActive) {
                     val read = inputStream.read(fileReader)
 
                     if (read == -1) {
-                        downloadProgressLiveData.postValue(100)
+                        isDownloading = false
+                        downloadProgressLiveData.postValue(DownloadStatusState.Complete(path))
                         break
                     }
 
@@ -60,31 +66,31 @@ class DownloadFileRepository @Inject constructor() : CoroutineScope {
 
                     if (downloadPart >= total / 100f) { //send progress every 1%
                         val percentage = (current * 100f) / total
-                        downloadProgressLiveData.postValue(percentage.toInt())
+                        downloadProgressLiveData.postValue(DownloadStatusState.Progress(percentage.toInt(), name))
                         downloadPart = 0
                     }
-
                 }
 
                 outputStream.flush()
 
             } catch (e: Exception) {
+                isDownloading = false
+                job.cancel()
+                downloadProgressLiveData.postValue(DownloadStatusState.Error(e))
                 if (BuildConfig.DEBUG) {
                     e.printStackTrace()
                 }
-                downloadProgressLiveData.postValue(-1)
-                job.cancel()
             } finally {
                 inputStream?.close()
                 outputStream?.close()
             }
-
         }
-
     }
 
     fun cancel() {
+        isDownloading = false
         job.cancel()
+        downloadProgressLiveData.postValue(DownloadStatusState.Cancel)
     }
 
 }

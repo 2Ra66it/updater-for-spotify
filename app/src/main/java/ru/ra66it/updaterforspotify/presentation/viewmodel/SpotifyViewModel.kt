@@ -3,15 +3,14 @@ package ru.ra66it.updaterforspotify.presentation.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
-import ru.ra66it.updaterforspotify.*
+import ru.ra66it.updaterforspotify.data.repositories.DownloadFileRepository
 import ru.ra66it.updaterforspotify.data.storage.SharedPreferencesHelper
 import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor
+import ru.ra66it.updaterforspotify.domain.model.DownloadStatusState
 import ru.ra66it.updaterforspotify.domain.model.Result
-import ru.ra66it.updaterforspotify.domain.model.StatusState
+import ru.ra66it.updaterforspotify.domain.model.SpotifyStatusState
 import ru.ra66it.updaterforspotify.presentation.service.PollService
 import ru.ra66it.updaterforspotify.presentation.utils.SpotifyMapper
-import ru.ra66it.updaterforspotify.presentation.utils.UtilsDownloadSpotify
-import ru.ra66it.updaterforspotify.data.repositories.DownloadFileRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.CoroutineContext
@@ -24,44 +23,30 @@ class SpotifyViewModel @Inject constructor(
         private val downloadFileRepository: DownloadFileRepository
 ) : ViewModel(), CoroutineScope {
 
-    private val job = Job()
+    val job = Job()
 
-    val spotifyLiveData: MutableLiveData<StatusState> = MutableLiveData()
-    val downloadFileLiveData: MutableLiveData<Triple<String, Int, Int>> = MutableLiveData()
+    val spotifyLiveData: MutableLiveData<SpotifyStatusState> = MutableLiveData()
+    val downloadFileLiveData: MutableLiveData<DownloadStatusState> = downloadFileRepository.downloadProgressLiveData
 
     init {
         getLatestSpotify()
-
-        downloadFileRepository.downloadProgressLiveData.observeForever {
-            val data = (spotifyLiveData.value as StatusState.Data).spotify
-            when (it) {
-                100 -> {
-                    downloadFileLiveData.postValue(Triple(data.latestVersionName, completeDownload, it))
-                }
-                -1 -> {
-                    downloadFileLiveData.postValue(Triple(data.latestVersionName, errorDownload, it))
-                }
-                else -> {
-                    downloadFileLiveData.postValue(Triple(data.latestVersionName, progressDownload, it))
-                }
-            }
-        }
     }
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
     fun getLatestSpotify() {
-        spotifyLiveData.postValue(StatusState.Loading)
+        spotifyLiveData.postValue(SpotifyStatusState.Loading)
         launch {
             val response = withContext(Dispatchers.IO) { spotifyInteractor.getSpotify() }
             when (response) {
                 is Result.Success -> {
                     val data = spotifyMapper.map(response.data)
-                    spotifyLiveData.postValue(StatusState.Data(data))
+                    data.isDownloading = downloadFileRepository.isDownloading
+                    spotifyLiveData.postValue(SpotifyStatusState.Data(data))
                 }
                 is Result.Error -> {
-                    spotifyLiveData.postValue(StatusState.Error(response.exception))
+                    spotifyLiveData.postValue(SpotifyStatusState.Error(response.exception))
                 }
             }
         }
@@ -69,23 +54,23 @@ class SpotifyViewModel @Inject constructor(
 
     fun updateUI() {
         if (spotifyLiveData.value != null) {
-            if (spotifyLiveData.value is StatusState.Data) {
-                val value = (spotifyLiveData.value as StatusState.Data).spotify
+            if (spotifyLiveData.value is SpotifyStatusState.Data) {
+                val value = (spotifyLiveData.value as SpotifyStatusState.Data).spotify
                 val data = spotifyMapper.updateInstalledVersion(value)
-                spotifyLiveData.postValue(StatusState.Data(data))
+                spotifyLiveData.postValue(SpotifyStatusState.Data(data))
             }
         }
     }
 
     fun cancelDownloading() {
         downloadFileRepository.cancel()
-        downloadFileLiveData.postValue(Triple("", completeDownload, 0))
     }
 
     fun downloadSpotify() {
-        val data = (spotifyLiveData.value as StatusState.Data).spotify
-        downloadFileLiveData.postValue(Triple(data.latestVersionName, startDownload, 0))
-        downloadFileRepository.download(data.latestLink, data.latestVersionNumber)
+        if (spotifyLiveData.value is SpotifyStatusState.Data) {
+            val data = (spotifyLiveData.value as SpotifyStatusState.Data).spotify
+            downloadFileRepository.download(data.latestLink, data.latestVersionNumber)
+        }
         // UtilsDownloadSpotify.downloadSpotify(data.latestLink, data.latestVersionNumber)
     }
 

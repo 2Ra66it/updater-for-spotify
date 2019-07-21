@@ -11,4 +11,5 @@ data class SpotifyData(
 ) {
     var installedVersion: String = ""
     var spotifyState: Int = 0
+    var isDownloading: Boolean = false
 }
