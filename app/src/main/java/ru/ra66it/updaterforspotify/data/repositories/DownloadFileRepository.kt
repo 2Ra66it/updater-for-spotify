@@ -14,13 +14,9 @@ import java.io.*
 import java.net.URL
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.coroutines.CoroutineContext
 
 @Singleton
-class DownloadFileRepository @Inject constructor() : CoroutineScope {
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO
+class DownloadFileRepository @Inject constructor() {
 
     private var job = Job()
     val downloadProgressLiveData: MutableLiveData<DownloadStatusState> = MutableLiveData()
@@ -28,7 +24,7 @@ class DownloadFileRepository @Inject constructor() : CoroutineScope {
 
 
     fun download(stringUrl: String, version: String) {
-        job = launch {
+        job = CoroutineScope(Dispatchers.IO).launch {
             val name = UpdaterApp.instance.getString(R.string.spotify) + " $version.apk"
             val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path + File.separator + name
             val url = URL(stringUrl)

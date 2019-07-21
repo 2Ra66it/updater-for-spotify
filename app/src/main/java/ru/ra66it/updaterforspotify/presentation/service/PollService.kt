@@ -1,6 +1,5 @@
 package ru.ra66it.updaterforspotify.presentation.service
 
-import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -12,7 +11,6 @@ import android.app.job.JobService
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
@@ -35,7 +33,7 @@ import javax.inject.Inject
  */
 
 class PollService : JobService() {
-    private var job: Job? = null
+    private var job: Job = Job()
 
     @Inject
     lateinit var spotifyInteractor: SpotifyInteractor
@@ -85,16 +83,12 @@ class PollService : JobService() {
     private fun makeNotification(spotifyModel: SpotifyData) {
         //Launch app
         val resources = UpdaterApp.instance.resources
-        val i = Intent(this, MainActivity::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        val i = Intent(this, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val pi = PendingIntent.getActivity(this, 0, i, 0)
 
         //Notification
         val contentText = getString(R.string.new_version) + " " +
                 spotifyModel.latestVersionName + " " + getString(R.string.available)
-
-        val havePermission = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
         val builder = NotificationCompat.Builder(this, notificationChanelId)
                 .setTicker(resources.getString(R.string.app_name))
@@ -107,19 +101,6 @@ class PollService : JobService() {
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setColor(ContextCompat.getColor(this, R.color.colorAccent))
-
-        if (havePermission) {
-            //Download spotify
-            val intentDownload = Intent(this, NotificationDownloadService::class.java)
-            intentDownload.action = actionDownload
-            intentDownload.putExtra(latestLinkKey, spotifyModel.latestLink)
-            intentDownload.putExtra(latestVersionKey, spotifyModel.latestVersionNumber)
-            intentDownload.putExtra(notificationIdKey, notificationId)
-            val piDownload = PendingIntent.getService(this, 0, intentDownload,
-                    PendingIntent.FLAG_UPDATE_CURRENT)
-            builder.addAction(R.drawable.ic_file_download_black_24dp,
-                    getString(R.string.install_now), piDownload)
-        }
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -151,7 +132,7 @@ class PollService : JobService() {
 
     override fun onDestroy() {
         super.onDestroy()
-        job?.cancel()
+        job.cancel()
     }
 
     companion object {
