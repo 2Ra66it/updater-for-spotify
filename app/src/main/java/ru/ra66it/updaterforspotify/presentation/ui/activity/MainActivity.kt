@@ -3,6 +3,8 @@ package ru.ra66it.updaterforspotify.presentation.ui.activity
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -21,7 +23,9 @@ import ru.ra66it.updaterforspotify.presentation.ui.customview.snackbar.DownloadS
 import ru.ra66it.updaterforspotify.presentation.ui.customview.swiperefresh.RefreshLayout
 import ru.ra66it.updaterforspotify.presentation.utils.StringService
 import ru.ra66it.updaterforspotify.presentation.viewmodel.SpotifyViewModel
+import java.io.File
 import javax.inject.Inject
+import androidx.core.content.FileProvider
 
 class MainActivity : AppCompatActivity() {
 
@@ -84,14 +88,31 @@ class MainActivity : AppCompatActivity() {
                 snackbar?.hide()
                 fab.show()
 
-                /*val file = File(dir, "App.apk")
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive")
-                startActivity(intent)*/
+                openInstallApplicationActivity(it.path)
             }
             is DownloadStatusState.Error -> {
                 snackbar?.setError(it.exception.localizedMessage)
             }
+        }
+    }
+
+    private fun openInstallApplicationActivity(path: String) {
+        val file = File(path)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val install =  Intent(Intent.ACTION_INSTALL_PACKAGE)
+            install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            install.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            val uri = FileProvider.getUriForFile(this@MainActivity, this@MainActivity.packageName + ".provider",  file)
+            install.data = uri
+            this@MainActivity.startActivity(install)
+        } else {
+            val install = Intent(Intent.ACTION_VIEW)
+            val uri = Uri.fromFile(file)
+            install.setDataAndType(uri, "application/vnd.android.package-archive")
+            install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            this@MainActivity.startActivity(install)
         }
     }
 
