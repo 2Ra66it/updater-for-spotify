@@ -3,8 +3,10 @@ package ru.ra66it.updaterforspotify.presentation.ui.customview.snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import kotlinx.android.synthetic.main.snackbar_download_layout.view.*
 import ru.ra66it.updaterforspotify.R
@@ -22,8 +24,8 @@ class DownloadSnackbar(parent: ViewGroup, @BaseTransientBottomBar.Duration durat
         val content = inflater.inflate(R.layout.snackbar_download_layout, parent, false)
         snackbar = CustomSnackbar(parent, content)
         snackbar.view.setPadding(0, 0, 0, 0)
-        snackbar.duration = duration
 
+        snackbar.duration = duration
         progress = content.progress
         name = content.name
         progressText = content.progressText
@@ -34,11 +36,22 @@ class DownloadSnackbar(parent: ViewGroup, @BaseTransientBottomBar.Duration durat
         }
     }
 
+    private fun disableSwipeToDismiss() {
+        snackbar.view.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+            override fun onPreDraw(): Boolean {
+                snackbar.view.viewTreeObserver.removeOnPreDrawListener(this)
+                (snackbar.view.layoutParams as CoordinatorLayout.LayoutParams).behavior = null
+                return true
+            }
+        })
+    }
+
     fun show(downloadName: String) {
         progress?.isIndeterminate = true
         name?.text = downloadName
         progress?.progress = 0
         progressText?.text = ""
+        disableSwipeToDismiss()
         snackbar.show()
     }
 
