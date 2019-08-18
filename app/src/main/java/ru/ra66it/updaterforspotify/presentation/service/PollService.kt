@@ -92,7 +92,7 @@ class PollService : JobService() {
 
         val builder = NotificationCompat.Builder(this, notificationChanelId)
                 .setTicker(resources.getString(R.string.app_name))
-                .setSmallIcon(R.mipmap.ic_notification)
+                .setSmallIcon(R.drawable.ic_autorenew_black_24dp)
                 .setContentTitle(getString(R.string.update_available))
                 .setContentText(contentText)
                 .setContentIntent(pi)
