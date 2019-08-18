@@ -71,7 +71,6 @@ class SpotifyViewModel @Inject constructor(
             val data = (spotifyLiveData.value as SpotifyStatusState.Data).spotify
             downloadFileRepository.download(data.latestLink, data.latestVersionNumber)
         }
-        // UtilsDownloadSpotify.downloadSpotify(data.latestLink, data.latestVersionNumber)
     }
 
     fun startNotification() {
