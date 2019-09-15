@@ -36,12 +36,6 @@
             </intent-filter>
         </activity>
 
-        <!--               Notification               -->
-        <service
-            android:name=".presentation.service.PollService"
-            android:enabled="true"
-            android:exported="false"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="ru.ra66it.updaterforspotify.provider"

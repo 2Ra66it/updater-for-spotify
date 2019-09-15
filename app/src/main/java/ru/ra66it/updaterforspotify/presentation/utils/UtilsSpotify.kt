@@ -2,6 +2,7 @@ package ru.ra66it.updaterforspotify.presentation.utils
 
 import android.content.pm.PackageManager
 import ru.ra66it.updaterforspotify.*
+import kotlin.math.max
 
 /**
  * Created by 2Rabbit on 20.09.2017.
@@ -51,7 +52,7 @@ object UtilsSpotify {
     fun compareVersion(installVersion: String, lastVersion: String): Int {
         val firstVersion = installVersion.split("\\.".toRegex())
         val secondVersion = lastVersion.split("\\.".toRegex())
-        val length = Math.max(firstVersion.size, secondVersion.size)
+        val length = max(firstVersion.size, secondVersion.size)
 
         for (i in 0 until length) {
             val firstPart = if (i < firstVersion.size) firstVersion[i].toInt() else 0

@@ -22,7 +22,6 @@ class DownloadFileRepository @Inject constructor() {
     val downloadProgressLiveData: MutableLiveData<DownloadStatusState> = MutableLiveData()
     var isDownloading: Boolean = false
 
-
     fun download(stringUrl: String, version: String) {
         job = CoroutineScope(Dispatchers.IO).launch {
             val name = UpdaterApp.instance.getString(R.string.spotify) + " $version.apk"

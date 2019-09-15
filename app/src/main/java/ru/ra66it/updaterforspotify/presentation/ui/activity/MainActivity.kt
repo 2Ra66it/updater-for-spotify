@@ -12,6 +12,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
@@ -25,7 +26,6 @@ import ru.ra66it.updaterforspotify.presentation.utils.StringService
 import ru.ra66it.updaterforspotify.presentation.viewmodel.SpotifyViewModel
 import java.io.File
 import javax.inject.Inject
-import androidx.core.content.FileProvider
 
 class MainActivity : AppCompatActivity() {
 
@@ -41,7 +41,9 @@ class MainActivity : AppCompatActivity() {
     private val spotifyDataObserver = Observer<SpotifyStatusState> {
         when (it) {
             is SpotifyStatusState.Error -> {
-                showError(it.exception.localizedMessage)
+                it.exception.localizedMessage?.let {
+                    showError(it)
+                }
             }
             is SpotifyStatusState.Loading -> {
                 showLoading()
@@ -91,28 +93,10 @@ class MainActivity : AppCompatActivity() {
                 openInstallApplicationActivity(it.path)
             }
             is DownloadStatusState.Error -> {
-                snackbar?.setError(it.exception.localizedMessage)
+                it.exception.localizedMessage?.let {
+                    snackbar?.setError(it)
+                }
             }
-        }
-    }
-
-    private fun openInstallApplicationActivity(path: String) {
-        val file = File(path)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val install =  Intent(Intent.ACTION_INSTALL_PACKAGE)
-            install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            install.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            val uri = FileProvider.getUriForFile(this@MainActivity, this@MainActivity.packageName + ".provider",  file)
-            install.data = uri
-            this@MainActivity.startActivity(install)
-        } else {
-            val install = Intent(Intent.ACTION_VIEW)
-            val uri = Uri.fromFile(file)
-            install.setDataAndType(uri, "application/vnd.android.package-archive")
-            install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            this@MainActivity.startActivity(install)
         }
     }
 
@@ -137,6 +121,26 @@ class MainActivity : AppCompatActivity() {
         initObservers()
     }
 
+    private fun openInstallApplicationActivity(path: String) {
+        val file = File(path)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val install = Intent(Intent.ACTION_INSTALL_PACKAGE)
+            install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            install.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            val uri = FileProvider.getUriForFile(this@MainActivity, this@MainActivity.packageName + ".provider", file)
+            install.data = uri
+            this@MainActivity.startActivity(install)
+        } else {
+            val install = Intent(Intent.ACTION_VIEW)
+            val uri = Uri.fromFile(file)
+            install.setDataAndType(uri, "application/vnd.android.package-archive")
+            install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            this@MainActivity.startActivity(install)
+        }
+    }
+
     private fun initObservers() {
         spotifyViewModel.spotifyLiveData.observe(this, spotifyDataObserver)
         spotifyViewModel.downloadFileLiveData.observe(this, downloadDataObserver)
@@ -157,11 +161,6 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         spotifyViewModel.updateUI()
-        spotifyViewModel.startNotification()
-    }
-
-    public override fun onDestroy() {
-        super.onDestroy()
     }
 
     private fun showHaveLatestVersion() {

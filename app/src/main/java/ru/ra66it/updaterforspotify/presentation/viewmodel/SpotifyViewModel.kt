@@ -9,8 +9,8 @@ import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor
 import ru.ra66it.updaterforspotify.domain.model.DownloadStatusState
 import ru.ra66it.updaterforspotify.domain.model.Result
 import ru.ra66it.updaterforspotify.domain.model.SpotifyStatusState
-import ru.ra66it.updaterforspotify.presentation.service.PollService
 import ru.ra66it.updaterforspotify.presentation.utils.SpotifyMapper
+import ru.ra66it.updaterforspotify.presentation.workers.WorkersEnqueueManager
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.CoroutineContext
@@ -18,17 +18,22 @@ import kotlin.coroutines.CoroutineContext
 @Singleton
 class SpotifyViewModel @Inject constructor(
         private val spotifyInteractor: SpotifyInteractor,
-        private val sharedPreferencesHelper: SharedPreferencesHelper,
+        sharedPreferencesHelper: SharedPreferencesHelper,
         private val spotifyMapper: SpotifyMapper,
-        private val downloadFileRepository: DownloadFileRepository
+        private val downloadFileRepository: DownloadFileRepository,
+        workersEnqueueManager: WorkersEnqueueManager
 ) : ViewModel(), CoroutineScope {
 
-    val job = Job()
+    private val job = Job()
 
     val spotifyLiveData: MutableLiveData<SpotifyStatusState> = MutableLiveData()
     val downloadFileLiveData: MutableLiveData<DownloadStatusState> = downloadFileRepository.downloadProgressLiveData
 
     init {
+        if (sharedPreferencesHelper.isEnableNotification) {
+            workersEnqueueManager.enqueuePeriodicCheckingIfDontExist(sharedPreferencesHelper.checkIntervalDay)
+        }
+
         getLatestSpotify()
     }
 
@@ -38,8 +43,7 @@ class SpotifyViewModel @Inject constructor(
     fun getLatestSpotify() {
         spotifyLiveData.postValue(SpotifyStatusState.Loading)
         launch {
-            val response = withContext(Dispatchers.IO) { spotifyInteractor.getSpotify() }
-            when (response) {
+            when (val response = withContext(Dispatchers.IO) { spotifyInteractor.getSpotify() }) {
                 is Result.Success -> {
                     val data = spotifyMapper.map(response.data)
                     data.isDownloading = downloadFileRepository.isDownloading
@@ -53,9 +57,9 @@ class SpotifyViewModel @Inject constructor(
     }
 
     fun updateUI() {
-        if (spotifyLiveData.value != null) {
-            if (spotifyLiveData.value is SpotifyStatusState.Data) {
-                val value = (spotifyLiveData.value as SpotifyStatusState.Data).spotify
+        spotifyLiveData.value?.let {
+            if (it is SpotifyStatusState.Data) {
+                val value = it.spotify
                 val data = spotifyMapper.updateInstalledVersion(value)
                 spotifyLiveData.postValue(SpotifyStatusState.Data(data))
             }
@@ -67,15 +71,11 @@ class SpotifyViewModel @Inject constructor(
     }
 
     fun downloadSpotify() {
-        if (spotifyLiveData.value is SpotifyStatusState.Data) {
-            val data = (spotifyLiveData.value as SpotifyStatusState.Data).spotify
+        val value = spotifyLiveData.value
+        if (value is SpotifyStatusState.Data) {
+            val data = value.spotify
             downloadFileRepository.download(data.latestLink, data.latestVersionNumber)
         }
-    }
-
-    fun startNotification() {
-        PollService.setServiceAlarm(sharedPreferencesHelper.isEnableNotification,
-                sharedPreferencesHelper.checkIntervalDay)
     }
 
     override fun onCleared() {
