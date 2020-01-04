@@ -4,12 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
-import ru.ra66it.updaterforspotify.data.repositories.DownloadFileRepository
-import ru.ra66it.updaterforspotify.data.storage.SharedPreferencesHelper
-import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor
-import ru.ra66it.updaterforspotify.presentation.utils.SpotifyMapper
-import ru.ra66it.updaterforspotify.presentation.viewmodel.SpotifyViewModel
-import ru.ra66it.updaterforspotify.presentation.workers.WorkersEnqueueManager
 import ru.ra66it.updaterforspotify.sharedPreferencesName
 import javax.inject.Singleton
 
@@ -28,30 +22,6 @@ class ApplicationModule(context: Context) {
     @Singleton
     internal fun provideSharedPreferences(): SharedPreferences {
         return context.getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE)
-    }
-
-    @Provides
-    @Singleton
-    internal fun provideWorkersEnqueueManager(): WorkersEnqueueManager {
-        return WorkersEnqueueManager(context)
-    }
-
-    @Provides
-    @Singleton
-    internal fun provideSpotifyViewModel(
-            spotifyInteractor: SpotifyInteractor,
-            sharedPreferencesHelper: SharedPreferencesHelper,
-            spotifyMapper: SpotifyMapper,
-            downloadFileRepository: DownloadFileRepository,
-            workersManager: WorkersEnqueueManager
-    ): SpotifyViewModel {
-        return SpotifyViewModel(
-                spotifyInteractor,
-                sharedPreferencesHelper,
-                spotifyMapper,
-                downloadFileRepository,
-                workersManager
-        )
     }
 
 }

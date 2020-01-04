@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.work.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class WorkersEnqueueManager @Inject constructor(context: Context) {
 
     private val workManager: WorkManager = WorkManager.getInstance(context)
