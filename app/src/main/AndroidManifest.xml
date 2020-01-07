@@ -27,6 +27,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".presentation.ui.activity.SettingsActivity"
             android:label="@string/action_settings"
@@ -35,6 +36,10 @@
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".presentation.utils.NotificationDownloadService"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

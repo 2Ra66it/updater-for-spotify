@@ -1,11 +1,13 @@
 package ru.ra66it.updaterforspotify.presentation.workers
 
+import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
@@ -19,11 +21,12 @@ import ru.ra66it.updaterforspotify.*
 import ru.ra66it.updaterforspotify.domain.interactors.SpotifyInteractor
 import ru.ra66it.updaterforspotify.domain.model.SpotifyData
 import ru.ra66it.updaterforspotify.presentation.ui.activity.MainActivity
+import ru.ra66it.updaterforspotify.presentation.utils.NotificationDownloadService
 import ru.ra66it.updaterforspotify.presentation.utils.SpotifyMapper
 import ru.ra66it.updaterforspotify.presentation.utils.UtilsSpotify
 import javax.inject.Inject
 
-class CheckingWorker(context: Context, workerParams: WorkerParameters)
+class CheckingWorker(val context: Context, workerParams: WorkerParameters)
     : CoroutineWorker(context, workerParams) {
 
     @Inject
@@ -31,7 +34,7 @@ class CheckingWorker(context: Context, workerParams: WorkerParameters)
     @Inject
     lateinit var spotifyMapper: SpotifyMapper
 
-    private val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     init {
         UpdaterApp.applicationComponent.inject(this)
@@ -64,17 +67,20 @@ class CheckingWorker(context: Context, workerParams: WorkerParameters)
     private fun makeNotification(spotifyModel: SpotifyData): Notification {
         //Launch app
         val resources = UpdaterApp.instance.resources
-        val i = Intent(applicationContext, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        val pi = PendingIntent.getActivity(applicationContext, 0, i, 0)
+        val i = Intent(context, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        val pi = PendingIntent.getActivity(context, 0, i, 0)
+
+        val havePermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
         //Notification
-        val contentText = applicationContext.getString(R.string.new_version) + " " +
-                spotifyModel.latestVersionName + " " + applicationContext.getString(R.string.available)
+        val contentText = context.getString(R.string.new_version) + " " +
+                spotifyModel.latestVersionName + " " + context.getString(R.string.available)
 
-        val builder = NotificationCompat.Builder(applicationContext, notificationChanelId)
+        val builder = NotificationCompat.Builder(context, notificationChanelId)
                 .setTicker(resources.getString(R.string.app_name))
                 .setSmallIcon(R.drawable.ic_autorenew_black_24dp)
-                .setContentTitle(applicationContext.getString(R.string.update_available))
+                .setContentTitle(context.getString(R.string.update_available))
                 .setContentText(contentText)
                 .setContentIntent(pi)
                 .setAutoCancel(true)
@@ -82,7 +88,20 @@ class CheckingWorker(context: Context, workerParams: WorkerParameters)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setStyle(NotificationCompat.BigTextStyle())
-                .setColor(ContextCompat.getColor(applicationContext, R.color.colorAccent))
+                .setColor(ContextCompat.getColor(context, R.color.colorAccent))
+
+        if (havePermission) {
+            //Download spotify
+            val intentDownload = Intent(context, NotificationDownloadService::class.java)
+            intentDownload.action = actionDownload
+            intentDownload.putExtra(latestLinkKey, spotifyModel.latestLink)
+            intentDownload.putExtra(latestVersionKey, spotifyModel.latestVersionNumber)
+            intentDownload.putExtra(notificationIdKey, notificationId)
+            val piDownload = PendingIntent.getService(context, 0, intentDownload,
+                    PendingIntent.FLAG_UPDATE_CURRENT)
+            builder.addAction(R.drawable.ic_file_download_black_24dp,
+                    context.getString(R.string.download), piDownload)
+        }
 
         makeNotificationChanel(builder)
 
@@ -92,7 +111,7 @@ class CheckingWorker(context: Context, workerParams: WorkerParameters)
     private fun makeNotificationChanel(builder: NotificationCompat.Builder) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(notificationChanelId,
-                    applicationContext.getString(R.string.notificaion_chanel_name), NotificationManager.IMPORTANCE_HIGH)
+                    context.getString(R.string.notificaion_chanel_name), NotificationManager.IMPORTANCE_HIGH)
             channel.enableLights(true)
             channel.enableVibration(true)
             channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
