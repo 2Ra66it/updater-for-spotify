@@ -1,13 +1,11 @@
 package ru.ra66it.updaterforspotify.presentation.workers
 
-import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
@@ -70,9 +68,6 @@ class CheckingWorker(val context: Context, workerParams: WorkerParameters)
         val i = Intent(context, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val pi = PendingIntent.getActivity(context, 0, i, 0)
 
-        val havePermission = ContextCompat.checkSelfPermission(context,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-
         //Notification
         val contentText = context.getString(R.string.new_version) + " " +
                 spotifyModel.latestVersionName + " " + context.getString(R.string.available)
@@ -90,7 +85,7 @@ class CheckingWorker(val context: Context, workerParams: WorkerParameters)
                 .setStyle(NotificationCompat.BigTextStyle())
                 .setColor(ContextCompat.getColor(context, R.color.colorAccent))
 
-        if (havePermission) {
+        if (UtilsSpotify.haveStoragePermission(context)) {
             //Download spotify
             val intentDownload = Intent(context, NotificationDownloadService::class.java)
             intentDownload.action = actionDownload

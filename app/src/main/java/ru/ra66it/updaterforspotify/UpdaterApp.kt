@@ -1,7 +1,10 @@
 package ru.ra66it.updaterforspotify
 
 import android.app.Application
-import ru.ra66it.updaterforspotify.di.*
+import ru.ra66it.updaterforspotify.di.ApplicationComponent
+import ru.ra66it.updaterforspotify.di.ApplicationModule
+import ru.ra66it.updaterforspotify.di.DaggerApplicationComponent
+import ru.ra66it.updaterforspotify.di.NetworkModule
 
 /**
  * Created by 2Rabbit on 04.12.2017.
@@ -25,7 +28,6 @@ class UpdaterApp : Application() {
     companion object {
         lateinit var applicationComponent: ApplicationComponent
             private set
-
 
         lateinit var instance: UpdaterApp
             private set

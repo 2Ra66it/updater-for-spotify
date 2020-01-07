@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
@@ -18,6 +17,7 @@ import ru.ra66it.updaterforspotify.data.network.NetworkChecker
 import ru.ra66it.updaterforspotify.domain.model.SpotifyStatusState
 import ru.ra66it.updaterforspotify.presentation.ui.customview.swiperefresh.RefreshLayout
 import ru.ra66it.updaterforspotify.presentation.utils.StringService
+import ru.ra66it.updaterforspotify.presentation.utils.UtilsSpotify
 import ru.ra66it.updaterforspotify.presentation.viewmodel.SpotifyViewModel
 import javax.inject.Inject
 
@@ -138,10 +138,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun downloadSpotify() {
-        val havePermission = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-
-        if (havePermission) {
+        if (UtilsSpotify.haveStoragePermission(this)) {
             downloadFile()
         } else {
             ActivityCompat.requestPermissions(this,

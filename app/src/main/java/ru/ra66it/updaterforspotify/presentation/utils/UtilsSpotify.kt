@@ -1,6 +1,9 @@
 package ru.ra66it.updaterforspotify.presentation.utils
 
+import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
 import ru.ra66it.updaterforspotify.*
 import kotlin.math.max
 
@@ -64,6 +67,11 @@ object UtilsSpotify {
         }
 
         return 0
+    }
+
+    fun haveStoragePermission(context: Context): Boolean {
+        return ContextCompat.checkSelfPermission(context,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
     }
 }
 
