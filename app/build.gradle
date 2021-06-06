@@ -6,7 +6,6 @@ android {
     compileSdkVersion 30
     buildToolsVersion "28.0.3"
 
-
     defaultConfig {
         applicationId "ru.ra66it.updaterforspotify"
         minSdkVersion 21
@@ -19,12 +18,6 @@ android {
 
         buildConfigField "String", "SPOTIFY_BASE_URL", "\"https://ws75.aptoide.com\""
         buildConfigField "String", "SPOTIFY_API", "\"/api/7/app/getMeta/package_name=com.spotify.music\""
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments["dagger.hilt.disableModulesHaveInstallInCheck"] = "true"
-            }
-        }
     }
 
     buildFeatures {
