@@ -1125,7 +1125,7 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
 
     private fun refreshLog(message: String) {
         if (BuildConfig.DEBUG) {
-            Log.i(RefreshLayout::class.java.simpleName, message)
+            //Log.i(RefreshLayout::class.java.simpleName, message)
         }
     }
 }

@@ -16,7 +16,7 @@ class SettingsActivity : AppCompatActivity() {
 
         supportFragmentManager
             .beginTransaction()
-            .add(android.R.id.content, SettingsFragment.newInstance())
+            .replace(android.R.id.content, SettingsFragment.newInstance())
             .commit()
     }
 
