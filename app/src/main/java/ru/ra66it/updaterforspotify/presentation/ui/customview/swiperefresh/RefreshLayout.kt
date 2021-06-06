@@ -76,7 +76,7 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
     private var dragDistanceConverter: IDragDistanceConverter? = null
 
     private var refreshStatus: IRefreshStatus? = null
-    private var onRefreshListener: OnRefreshListener? = null
+    var onRefreshListener: (() -> Unit)? = null
 
     private var animateToStartInterpolator: Interpolator = DecelerateInterpolator(DECELERATE_INTERPOLATION_FACTOR)
     private var animateToRefreshInterpolator: Interpolator = DecelerateInterpolator(DECELERATE_INTERPOLATION_FACTOR)
@@ -112,7 +112,7 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
 
         override fun onAnimationEnd(animation: Animation) {
             if (notifyListener) {
-                onRefreshListener?.onRefresh()
+                onRefreshListener?.invoke()
             }
 
             isAnimatingToStart = false
@@ -1091,18 +1091,6 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
         NORMAL,
         PINNED,
         FLOAT
-    }
-
-    /**
-     * Set the listener to be notified when a refresh is triggered via the swipe
-     * gesture.
-     */
-    fun setOnRefreshListener(listener: OnRefreshListener) {
-        onRefreshListener = listener
-    }
-
-    interface OnRefreshListener {
-        fun onRefresh()
     }
 
     /**

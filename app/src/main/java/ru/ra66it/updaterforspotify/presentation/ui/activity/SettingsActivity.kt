@@ -4,10 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import ru.ra66it.updaterforspotify.presentation.ui.fragment.SettingsFragment
 
-/**
- * Created by 2Rabbit on 25.09.2017.
- */
-
 class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,9 +14,10 @@ class SettingsActivity : AppCompatActivity() {
             it.setDisplayHomeAsUpEnabled(true)
         }
 
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(android.R.id.content, SettingsFragment.newInstance())
-        transaction.commit()
+        supportFragmentManager
+            .beginTransaction()
+            .add(android.R.id.content, SettingsFragment.newInstance())
+            .commit()
     }
 
     override fun onSupportNavigateUp(): Boolean {

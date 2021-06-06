@@ -5,7 +5,8 @@ import java.util.concurrent.TimeUnit
 
 class WorkersEnqueueManager(private val workManager: WorkManager) {
 
-    fun enqueuePeriodicCheckingIfDontExist(days: Long) {
+    fun enqueuePeriodicCheckingIfDontExist(isEnableNotification: Boolean, days: Long) {
+        if (isEnableNotification.not()) return
         enqueuePeriodicChecking(days, ExistingPeriodicWorkPolicy.KEEP)
     }
 

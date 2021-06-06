@@ -2,7 +2,6 @@ package ru.ra66it.updaterforspotify
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import ru.ra66it.updaterforspotify.presentation.utils.UtilsSpotify
 
 
 /**
