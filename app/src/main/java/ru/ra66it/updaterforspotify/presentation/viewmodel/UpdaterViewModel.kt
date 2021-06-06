@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.ra66it.updaterforspotify.data.storage.SharedPreferencesHelper
-import ru.ra66it.updaterforspotify.domain.interactors.UpdaterUseCase
+import ru.ra66it.updaterforspotify.domain.usecase.UpdaterUseCase
 import ru.ra66it.updaterforspotify.domain.model.SpotifyStatusState
 import ru.ra66it.updaterforspotify.presentation.utils.UtilsDownloadSpotify
 import ru.ra66it.updaterforspotify.presentation.workers.WorkersEnqueueManager

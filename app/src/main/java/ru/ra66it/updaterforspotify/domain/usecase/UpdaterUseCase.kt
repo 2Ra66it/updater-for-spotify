@@ -1,4 +1,4 @@
-package ru.ra66it.updaterforspotify.domain.interactors
+package ru.ra66it.updaterforspotify.domain.usecase
 
 import android.content.pm.PackageManager
 import ru.ra66it.updaterforspotify.*

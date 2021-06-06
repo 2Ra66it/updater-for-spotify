@@ -16,7 +16,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.coroutineScope
 import ru.ra66it.updaterforspotify.*
-import ru.ra66it.updaterforspotify.domain.interactors.UpdaterUseCase
+import ru.ra66it.updaterforspotify.domain.usecase.UpdaterUseCase
 import ru.ra66it.updaterforspotify.domain.model.SpotifyData
 import ru.ra66it.updaterforspotify.presentation.ui.activity.MainActivity
 import ru.ra66it.updaterforspotify.presentation.utils.NotificationDownloadService
