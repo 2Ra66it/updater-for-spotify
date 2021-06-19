@@ -1,29 +1,29 @@
 package ru.ra66it.updaterforspotify.presentation.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import ru.ra66it.updaterforspotify.BuildConfig
 import ru.ra66it.updaterforspotify.data.storage.SharedPreferencesHelper
-import ru.ra66it.updaterforspotify.domain.usecase.UpdaterUseCase
 import ru.ra66it.updaterforspotify.domain.model.SpotifyStatusState
+import ru.ra66it.updaterforspotify.domain.usecase.UpdaterUseCase
 import ru.ra66it.updaterforspotify.presentation.utils.UtilsDownloadSpotify
 import ru.ra66it.updaterforspotify.presentation.workers.WorkersEnqueueManager
 import javax.inject.Inject
 
 class UpdaterViewModel @Inject constructor(
     private val interactor: UpdaterUseCase,
-    sharedPreferencesHelper: SharedPreferencesHelper,
+    preferences: SharedPreferencesHelper,
     workersEnqueueManager: WorkersEnqueueManager
 ) : ViewModel() {
 
-    val liveData = MutableLiveData<SpotifyStatusState>(SpotifyStatusState.Loading)
+    val stateFlow = MutableStateFlow<SpotifyStatusState>(SpotifyStatusState.Loading)
 
     init {
         workersEnqueueManager.enqueuePeriodicCheckingIfDontExist(
-            sharedPreferencesHelper.isEnableNotification,
-            sharedPreferencesHelper.checkIntervalDay
+            preferences.isEnableNotification, preferences.checkIntervalDay
         )
 
         getLatestSpotify()
@@ -31,32 +31,38 @@ class UpdaterViewModel @Inject constructor(
 
     fun getLatestSpotify() {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
+            stateFlow.emit(SpotifyStatusState.Loading)
+
+            val state = try {
                 val data = interactor.getSpotifyData()
-                liveData.postValue(SpotifyStatusState.Data(data))
+                SpotifyStatusState.Data(data)
             } catch (e: Exception) {
-                liveData.postValue(SpotifyStatusState.Error(e))
+                if (BuildConfig.DEBUG) e.printStackTrace()
+
+                SpotifyStatusState.Error(e)
             }
+
+            stateFlow.emit(state)
         }
     }
 
     fun updateUI() {
-        liveData.value?.let {
+        stateFlow.value.also {
             if (it is SpotifyStatusState.Data) {
-                val value = it.spotify
-                val data = interactor.updateInstalledVersion(value)
-                liveData.value = SpotifyStatusState.Data(data)
+                val data = interactor.updateInstalledVersion(it.spotify)
+                stateFlow.tryEmit(SpotifyStatusState.Data(data))
             }
         }
     }
 
     fun downloadSpotify() {
-        liveData.value?.let {
+        stateFlow.value.also {
             if (it is SpotifyStatusState.Data) {
                 val data = it.spotify
                 UtilsDownloadSpotify.downloadSpotify(data.latestLink, data.latestVersionNumber)
             }
         }
+
     }
 
 }

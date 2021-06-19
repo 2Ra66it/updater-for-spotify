@@ -10,7 +10,9 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.collect
 import ru.ra66it.updaterforspotify.*
 import ru.ra66it.updaterforspotify.data.network.NetworkChecker
 import ru.ra66it.updaterforspotify.databinding.ActivityMainBinding
@@ -31,51 +33,39 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
+
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         UpdaterApp.applicationComponent.inject(this)
 
         with(binding) {
             swipeLayout.onRefreshListener = { viewModel.getLatestSpotify() }
-            fab.hide()
-            binding.fab.setOnClickListener { downloadSpotify() }
+            fab.apply {
+                hide()
+                setOnClickListener { downloadSpotify() }
+            }
         }
 
-        viewModel.liveData.observe(this, {
-            when (it) {
-                is SpotifyStatusState.Error -> {
-                    showError(it.exception.localizedMessage ?: "")
-                }
-                is SpotifyStatusState.Loading -> {
-                    showLoading()
-                }
-                is SpotifyStatusState.Data -> {
-                    val data = it.spotify
-                    when (data.spotifyState) {
-                        spotifyNotInstalled -> showInstallNow(data)
-                        spotifyHaveUpdate -> showHaveUpdate(data)
-                        spotifyIsLatest -> showHaveLatestVersion()
+        lifecycleScope.launchWhenResumed {
+            viewModel.stateFlow.collect {
+                when (it) {
+                    is SpotifyStatusState.Error -> {
+                        showError(it.exception)
+                    }
+                    is SpotifyStatusState.Loading -> {
+                        showLoading()
+                    }
+                    is SpotifyStatusState.Data -> {
+                        val data = it.spotify
+                        when (data.spotifyState) {
+                            spotifyNotInstalled -> showInstallNow(data)
+                            spotifyHaveUpdate -> showHaveUpdate(data)
+                            spotifyIsLatest -> showHaveLatestVersion()
+                        }
                     }
                 }
             }
-        })
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.tool_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_item_settings -> startActivity(Intent(this, SettingsActivity::class.java))
         }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.updateUI()
     }
 
     private fun showHaveLatestVersion() {
@@ -112,13 +102,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showError(message: String) {
+    private fun showError(message: Exception) {
         with(binding) {
             swipeLayout.setRefreshing(false)
             cardsContainer.visibility = View.GONE
             fab.hide()
         }
-        showSnackbar(message)
+        showSnackbar(message.localizedMessage ?: "")
     }
 
     private fun showLoading() {
@@ -136,12 +126,16 @@ class MainActivity : AppCompatActivity() {
         ) {
             downloadFile()
         } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                saveFilePermissionCodeRequest
-            )
+            requestPermission()
         }
+    }
+
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            saveFilePermissionCodeRequest
+        )
     }
 
     private fun downloadFile() {
@@ -152,6 +146,23 @@ class MainActivity : AppCompatActivity() {
             R.string.no_internet_connection
         }
         showSnackbar(getString(messageId))
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.activity_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_item_settings -> startActivity(Intent(this, SettingsActivity::class.java))
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.updateUI()
     }
 
     override fun onRequestPermissionsResult(

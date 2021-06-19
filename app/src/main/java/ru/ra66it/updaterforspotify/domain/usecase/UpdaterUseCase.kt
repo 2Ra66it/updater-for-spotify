@@ -39,16 +39,8 @@ class UpdaterUseCase @Inject constructor(
 
     private fun getSpotifyState(latestVersion: String): Int {
         return if (isSpotifyInstalled) {
-            val installedVersion =
-                UpdaterApp.instance.packageManager.getPackageInfo(spotifyPackage, 0).versionName
-            val haveUpdate = isSpotifyUpdateAvailable(installedVersion, latestVersion)
-
-            if (haveUpdate) {
-                spotifyHaveUpdate
-            } else {
-                spotifyIsLatest
-            }
-
+            val haveUpdate = isSpotifyUpdateAvailable(installedSpotifyVersion, latestVersion)
+            if (haveUpdate) spotifyHaveUpdate else spotifyIsLatest
         } else {
             spotifyNotInstalled
         }
