@@ -17,3 +17,8 @@ class MaterialDragDistanceConverter : IDragDistanceConverter {
         return convertY.toFloat()
     }
 }
+
+interface IDragDistanceConverter {
+
+    fun convert(scrollDistance: Float, refreshDistance: Float): Float
+}

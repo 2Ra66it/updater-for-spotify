@@ -578,8 +578,8 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
     private fun measureTarget() {
-        target?.measure(View.MeasureSpec.makeMeasureSpec(measuredWidth - paddingLeft - paddingRight, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(measuredHeight - paddingTop - paddingBottom, View.MeasureSpec.EXACTLY))
+        target?.measure(MeasureSpec.makeMeasureSpec(measuredWidth - paddingLeft - paddingRight, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(measuredHeight - paddingTop - paddingBottom, MeasureSpec.EXACTLY))
     }
 
     private fun measureRefreshView(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -589,7 +589,7 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
         childWidthMeasureSpec = if (lp.width == ViewGroup.LayoutParams.MATCH_PARENT) {
             val width = Math.max(0, measuredWidth - paddingLeft - paddingRight
                     - lp.leftMargin - lp.rightMargin)
-            View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY)
+            MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY)
         } else {
             ViewGroup.getChildMeasureSpec(widthMeasureSpec,
                     paddingLeft + paddingRight + lp.leftMargin + lp.rightMargin,
@@ -601,8 +601,8 @@ class RefreshLayout @JvmOverloads constructor(context: Context, attrs: Attribute
             val height = Math.max(0, measuredHeight
                     - paddingTop - paddingBottom
                     - lp.topMargin - lp.bottomMargin)
-            View.MeasureSpec.makeMeasureSpec(
-                    height, View.MeasureSpec.EXACTLY)
+            MeasureSpec.makeMeasureSpec(
+                    height, MeasureSpec.EXACTLY)
         } else {
             ViewGroup.getChildMeasureSpec(heightMeasureSpec,
                     paddingTop + paddingBottom +

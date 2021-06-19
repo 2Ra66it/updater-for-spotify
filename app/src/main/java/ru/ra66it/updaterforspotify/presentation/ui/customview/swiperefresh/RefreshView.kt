@@ -16,8 +16,11 @@ const val ANIMATION_DURATION = 888
 const val DEFAULT_START_DEGREES = 285
 const val DEFAULT_STROKE_WIDTH = 3
 
-class RefreshView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : View(context, attrs, defStyleAttr), IRefreshStatus {
+class RefreshView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr), IRefreshStatus {
 
     private val rect = RectF()
     private val paint = Paint()
@@ -102,8 +105,10 @@ class RefreshView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         val centerX = w / 2.0f
         val centerY = h / 2.0f
 
-        rect.set(centerX - radius, centerY - radius,
-                centerX + radius, centerY + radius)
+        rect.set(
+            centerX - radius, centerY - radius,
+            centerX + radius, centerY + radius
+        )
         rect.inset(strokeWidth / 2.0f, strokeWidth / 2.0f)
     }
 
@@ -137,4 +142,19 @@ class RefreshView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         }
     }
 
+}
+
+interface IRefreshStatus {
+
+    fun reset()
+
+    fun refreshing()
+
+    fun refreshComplete()
+
+    fun pullToRefresh()
+
+    fun releaseToRefresh()
+
+    fun pullProgress(pullDistance: Float, pullProgress: Float)
 }
