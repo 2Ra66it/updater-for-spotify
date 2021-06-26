@@ -14,7 +14,7 @@ import ru.ra66it.updaterforspotify.presentation.workers.WorkersEnqueueManager
 import javax.inject.Inject
 
 class UpdaterViewModel @Inject constructor(
-    private val interactor: UpdaterUseCase,
+    private val useCase: UpdaterUseCase,
     preferences: SharedPreferencesHelper,
     workersEnqueueManager: WorkersEnqueueManager
 ) : ViewModel() {
@@ -34,7 +34,7 @@ class UpdaterViewModel @Inject constructor(
             stateFlow.emit(SpotifyStatusState.Loading)
 
             val state = try {
-                val data = interactor.getSpotifyData()
+                val data = useCase.getSpotifyData()
                 SpotifyStatusState.Data(data)
             } catch (e: Exception) {
                 if (BuildConfig.DEBUG) e.printStackTrace()
@@ -49,7 +49,7 @@ class UpdaterViewModel @Inject constructor(
     fun updateUI() {
         stateFlow.value.also {
             if (it is SpotifyStatusState.Data) {
-                val data = interactor.updateInstalledVersion(it.spotify)
+               val data = useCase.updateSpotifyData(it.spotify)
                 stateFlow.tryEmit(SpotifyStatusState.Data(data))
             }
         }

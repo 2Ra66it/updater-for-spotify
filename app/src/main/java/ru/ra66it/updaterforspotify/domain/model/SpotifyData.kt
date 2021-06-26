@@ -1,9 +1,11 @@
 package ru.ra66it.updaterforspotify.domain.model
 
+import ru.ra66it.updaterforspotify.spotifyNotInstalled
+
 data class SpotifyData(
     val latestLink: String = "",
     val latestVersionName: String = "",
     val latestVersionNumber: String = "",
-    var installedVersion: String = "",
-    var spotifyState: Int = 0
+    val installedVersion: String = "",
+    val spotifyState: Int = spotifyNotInstalled
 )
