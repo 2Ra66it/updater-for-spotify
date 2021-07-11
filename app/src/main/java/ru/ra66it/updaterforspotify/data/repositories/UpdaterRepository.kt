@@ -10,6 +10,6 @@ class UpdaterRepository @Inject constructor(
     private val updaterDataSource: UpdaterDataSource
 ) {
 
-    suspend fun getSpotify(): Spotify = updaterDataSource.latestSpotifyAsync().await()
+    suspend fun getSpotify(): Spotify = updaterDataSource.latestSpotifyAsync()
 
 }
