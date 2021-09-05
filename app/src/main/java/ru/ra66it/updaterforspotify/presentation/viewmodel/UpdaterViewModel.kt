@@ -3,10 +3,12 @@ package ru.ra66it.updaterforspotify.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import ru.ra66it.updaterforspotify.BuildConfig
 import ru.ra66it.updaterforspotify.data.storage.SharedPreferencesHelper
+import ru.ra66it.updaterforspotify.domain.model.SpotifyData
 import ru.ra66it.updaterforspotify.domain.model.SpotifyStatusState
 import ru.ra66it.updaterforspotify.domain.usecase.UpdaterUseCase
 import ru.ra66it.updaterforspotify.presentation.utils.UtilsDownloadSpotify
@@ -19,7 +21,8 @@ class UpdaterViewModel @Inject constructor(
     workersEnqueueManager: WorkersEnqueueManager
 ) : ViewModel() {
 
-    val stateFlow = MutableStateFlow<SpotifyStatusState>(SpotifyStatusState.Loading)
+    val stateFlow =
+        MutableStateFlow<SpotifyStatusState>(SpotifyStatusState.Loading(useCase.getSpotifyVersion()))
 
     init {
         workersEnqueueManager.enqueuePeriodicCheckingIfDontExist(
@@ -31,7 +34,8 @@ class UpdaterViewModel @Inject constructor(
 
     fun getLatestSpotify() {
         viewModelScope.launch(Dispatchers.IO) {
-            stateFlow.emit(SpotifyStatusState.Loading)
+            val installedVersion = useCase.getSpotifyVersion()
+            stateFlow.emit(SpotifyStatusState.Loading(installedVersion))
 
             val state = try {
                 val data = useCase.getSpotifyData()
@@ -39,7 +43,7 @@ class UpdaterViewModel @Inject constructor(
             } catch (e: Exception) {
                 if (BuildConfig.DEBUG) e.printStackTrace()
 
-                SpotifyStatusState.Error(e)
+                SpotifyStatusState.Error(e, installedVersion)
             }
 
             stateFlow.emit(state)
@@ -49,20 +53,14 @@ class UpdaterViewModel @Inject constructor(
     fun updateUI() {
         stateFlow.value.also {
             if (it is SpotifyStatusState.Data) {
-               val data = useCase.updateSpotifyData(it.spotify)
+                val data = useCase.updateSpotifyData(it.spotify)
                 stateFlow.tryEmit(SpotifyStatusState.Data(data))
             }
         }
     }
 
-    fun downloadSpotify() {
-        stateFlow.value.also {
-            if (it is SpotifyStatusState.Data) {
-                val data = it.spotify
-                UtilsDownloadSpotify.downloadSpotify(data.latestLink, data.latestVersionNumber)
-            }
-        }
-
+    fun downloadSpotify(data: SpotifyData) {
+        UtilsDownloadSpotify.downloadSpotify(data.latestLink, data.latestVersionNumber)
     }
 
 }

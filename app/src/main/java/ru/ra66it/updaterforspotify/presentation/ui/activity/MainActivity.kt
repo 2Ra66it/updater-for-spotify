@@ -6,146 +6,294 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import ru.ra66it.updaterforspotify.*
+import ru.ra66it.updaterforspotify.R
 import ru.ra66it.updaterforspotify.data.network.NetworkChecker
-import ru.ra66it.updaterforspotify.databinding.ActivityMainBinding
 import ru.ra66it.updaterforspotify.domain.model.SpotifyData
 import ru.ra66it.updaterforspotify.domain.model.SpotifyStatusState
-import ru.ra66it.updaterforspotify.presentation.utils.StringService
 import ru.ra66it.updaterforspotify.presentation.viewmodel.UpdaterViewModel
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
-    private var _binding: ActivityMainBinding? = null
-    private val binding get() = _binding!!
-
     @Inject
     lateinit var viewModel: UpdaterViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-
-        _binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         UpdaterApp.applicationComponent.inject(this)
 
-        with(binding) {
-            swipeLayout.onRefreshListener = { viewModel.getLatestSpotify() }
-            fab.apply {
-                hide()
-                setOnClickListener { downloadSpotify() }
-            }
+        setContent {
+            Screen()
         }
+    }
 
-        lifecycleScope.launchWhenResumed {
-            viewModel.stateFlow.collect {
-                when (it) {
-                    is SpotifyStatusState.Error -> {
-                        showError(it.exception)
-                    }
-                    is SpotifyStatusState.Loading -> {
-                        showLoading()
-                    }
-                    is SpotifyStatusState.Data -> {
-                        val data = it.spotify
-                        when (data.spotifyState) {
-                            spotifyNotInstalled -> showInstallNow(data)
-                            spotifyHaveUpdate -> showHaveUpdate(data)
-                            spotifyIsLatest -> showHaveLatestVersion()
-                        }
-                    }
+    @Composable
+    private fun Screen() {
+        val snackbarHostState = remember { mutableStateOf(SnackbarHostState()) }
+
+        val uiState by viewModel.stateFlow.collectAsState()
+
+        when (uiState) {
+            is SpotifyStatusState.Error -> {
+                val error = uiState as SpotifyStatusState.Error
+                ErrorScreen(snackbarHostState, error.exception, error.installedVersion)
+            }
+            is SpotifyStatusState.Loading -> {
+                LoadingScreen((uiState as SpotifyStatusState.Loading).installedVersion)
+            }
+            is SpotifyStatusState.Data -> {
+                val data = (uiState as SpotifyStatusState.Data).spotify
+                val permissionRequestLauncher = createPermissionLauncher(data, snackbarHostState)
+                when (data.spotifyState) {
+                    spotifyNotInstalled, spotifyHaveUpdate -> NewVersionScreen(
+                        snackbarHostState = snackbarHostState,
+                        permissionRequestLauncher = permissionRequestLauncher,
+                        data = data
+                    )
+                    spotifyIsLatest -> LatestVersionScreen()
                 }
             }
         }
     }
 
-    private fun showHaveLatestVersion() {
-        with(binding) {
-            swipeLayout.setRefreshing(false)
-            cardsContainer.visibility = View.VISIBLE
-            cardLatest.visibility = View.GONE
-            fab.hide()
-            tvInstalledVersion.text = StringService.getById(R.string.up_to_date)
+    @Composable
+    private fun LatestVersionScreen() {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(colorResource(id = R.color.colorPrimaryDark)),
+        ) {
+            InstalledVersionCard(getString(R.string.up_to_date))
         }
     }
 
-    private fun showHaveUpdate(data: SpotifyData) {
-        with(binding) {
-            swipeLayout.setRefreshing(false)
-            cardsContainer.visibility = View.VISIBLE
-            cardLatest.visibility = View.VISIBLE
-            tvInstalledVersion.text = data.installedVersion
-            tvLatestVersion.text = data.latestVersionName
-            fab.setImageResource(R.drawable.ic_autorenew_black_24dp)
-            fab.show()
+    @Composable
+    private fun NewVersionScreen(
+        snackbarHostState: State<SnackbarHostState>,
+        permissionRequestLauncher: ManagedActivityResultLauncher<String, Boolean>,
+        data: SpotifyData
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(colorResource(id = R.color.colorPrimaryDark)),
+        ) {
+            InstalledVersionCard(data.installedVersion)
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(32.dp, 0.dp, 32.dp, 32.dp),
+                shape = RoundedCornerShape(8.dp),
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = getString(R.string.latest_version),
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = data.latestVersionName,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+            ExtendedFloatingActionButton(
+                text = { Text(text = getString(R.string.download)) },
+                icon = {
+                    val iconId = if (data.spotifyState == spotifyHaveUpdate)
+                        R.drawable.ic_autorenew_black_24dp
+                    else
+                        R.drawable.ic_file_download_black_24dp
+
+                    Icon(
+                        painter = painterResource(id = iconId),
+                        ""
+                    )
+                },
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                onClick = {
+                    downloadSpotify(data, permissionRequestLauncher, snackbarHostState)
+
+                },
+                backgroundColor = colorResource(id = R.color.colorAccent)
+            )
+            Snackbar(snackbarHostState)
         }
     }
 
-    private fun showInstallNow(data: SpotifyData) {
-        with(binding) {
-            swipeLayout.setRefreshing(false)
-            cardsContainer.visibility = View.VISIBLE
-            cardLatest.visibility = View.VISIBLE
-            tvInstalledVersion.text = data.installedVersion
-            tvLatestVersion.text = data.latestVersionName
-            fab.setImageResource(R.drawable.ic_file_download_black_24dp)
-            fab.show()
+    @Composable
+    private fun InstalledVersionCard(installedVersion: String) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(32.dp),
+            shape = RoundedCornerShape(8.dp),
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = getString(R.string.installed_version),
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = installedVersion,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+
+            }
         }
     }
 
-    private fun showError(message: Exception) {
-        with(binding) {
-            swipeLayout.setRefreshing(false)
-            cardsContainer.visibility = View.GONE
-            fab.hide()
+    @Composable
+    private fun ErrorScreen(
+        snackbarHostState: MutableState<SnackbarHostState>,
+        error: Exception,
+        installedVersion: String
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(colorResource(id = R.color.colorPrimaryDark)),
+        ) {
+            InstalledVersionCard(installedVersion)
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(32.dp, 0.dp, 32.dp, 32.dp)
+                    .clickable {
+                        viewModel.getLatestSpotify()
+                    },
+                shape = RoundedCornerShape(8.dp),
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .align(Alignment.CenterHorizontally),
+                        painter = painterResource(id = R.drawable.ic_autorenew_black_24dp),
+                        contentDescription = null,
+                    )
+                }
+            }
+            Snackbar(snackbarHostState)
+            lifecycleScope.launch {
+                snackbarHostState.value.showSnackbar(error.localizedMessage ?: "")
+            }
         }
-        showSnackbar(message.localizedMessage ?: "")
+
     }
 
-    private fun showLoading() {
-        binding.swipeLayout.setRefreshing(true)
+    @Composable
+    private fun LoadingScreen(installedVersion: String) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(colorResource(id = R.color.colorPrimaryDark)),
+        ) {
+            InstalledVersionCard(installedVersion)
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(32.dp, 0.dp, 32.dp, 32.dp),
+                shape = RoundedCornerShape(8.dp),
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        color = colorResource(id = R.color.colorPrimaryDark)
+                    )
+                }
+            }
+        }
     }
 
-    private fun showSnackbar(message: String) {
-        Snackbar.make(binding.fab, message, Snackbar.LENGTH_LONG).show()
+    @Composable
+    private fun Snackbar(snackbarHostState: State<SnackbarHostState>) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            SnackbarHost(
+                modifier = Modifier.align(Alignment.BottomCenter),
+                hostState = snackbarHostState.value
+            )
+        }
     }
 
-    private fun downloadSpotify() {
+    @Composable
+    private fun createPermissionLauncher(
+        data: SpotifyData,
+        snackbarHostState: MutableState<SnackbarHostState>
+    ) =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                downloadFile(data, snackbarHostState)
+            } else {
+                lifecycleScope.launch {
+                    snackbarHostState.value.showSnackbar("PERMISSION DENIED")
+                }
+            }
+        }
+
+    private fun downloadSpotify(
+        data: SpotifyData,
+        permissionRequestLauncher: ManagedActivityResultLauncher<String, Boolean>,
+        snackbarHostState: State<SnackbarHostState>
+    ) {
         if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.WRITE_EXTERNAL_STORAGE
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            downloadFile()
+            downloadFile(data, snackbarHostState)
         } else {
-            requestPermission()
+            permissionRequestLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
     }
 
-    private fun requestPermission() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            saveFilePermissionCodeRequest
-        )
-    }
-
-    private fun downloadFile() {
+    private fun downloadFile(
+        spotifyData: SpotifyData,
+        snackbarHostState: State<SnackbarHostState>
+    ) {
         val messageId = if (NetworkChecker.isNetworkAvailable) {
-            viewModel.downloadSpotify()
+            viewModel.downloadSpotify(spotifyData)
             R.string.downloading
         } else {
             R.string.no_internet_connection
         }
-        showSnackbar(getString(messageId))
+
+        lifecycleScope.launch {
+            snackbarHostState.value.showSnackbar(message = getString(messageId))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -163,23 +311,5 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         viewModel.updateUI()
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            saveFilePermissionCodeRequest -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    downloadFile()
-                }
-                return
-            }
-            else -> {
-            }
-        }
     }
 }

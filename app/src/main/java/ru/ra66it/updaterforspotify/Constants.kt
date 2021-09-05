@@ -11,5 +11,4 @@ const val actionDownload = "actionDownload"
 const val spotifyNotInstalled = 0
 const val spotifyHaveUpdate = 1
 const val spotifyIsLatest = 2
-const val saveFilePermissionCodeRequest = 8800
 

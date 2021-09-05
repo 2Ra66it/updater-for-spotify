@@ -1,10 +1,12 @@
 package ru.ra66it.updaterforspotify.domain.usecase
 
 import android.content.pm.PackageManager
+import ru.ra66it.updaterforspotify.R
 import ru.ra66it.updaterforspotify.UpdaterApp
 import ru.ra66it.updaterforspotify.data.repositories.UpdaterRepository
 import ru.ra66it.updaterforspotify.domain.model.SpotifyData
 import ru.ra66it.updaterforspotify.domain.transformer.UpdaterTransformer
+import ru.ra66it.updaterforspotify.presentation.utils.StringService
 import ru.ra66it.updaterforspotify.presentation.utils.VersionsComparator
 import ru.ra66it.updaterforspotify.spotifyPackage
 import javax.inject.Inject
@@ -19,12 +21,12 @@ class UpdaterUseCase @Inject constructor(
 
     suspend fun getSpotifyData(): SpotifyData {
         return updaterRepository.getSpotify().let {
-            updaterTransformer.transform(it, getSpotifyVersion(), versionsComparator)
+            updaterTransformer.transform(it, getSpotifyInstalledVersion(), versionsComparator)
         }
     }
 
     fun haveUpdate(data: SpotifyData): Boolean {
-        val installedVersion = getSpotifyVersion()
+        val installedVersion = getSpotifyInstalledVersion()
         return installedVersion.isEmpty() || versionsComparator.compareVersion(
             installedVersion,
             data.latestVersionNumber
@@ -34,7 +36,7 @@ class UpdaterUseCase @Inject constructor(
     fun updateSpotifyData(
         data: SpotifyData,
     ): SpotifyData {
-        val installedSpotifyVersion = getSpotifyVersion()
+        val installedSpotifyVersion = getSpotifyInstalledVersion()
 
         val state = updaterTransformer.getSpotifyState(
             installedSpotifyVersion = installedSpotifyVersion,
@@ -48,7 +50,13 @@ class UpdaterUseCase @Inject constructor(
         )
     }
 
-    private fun getSpotifyVersion(): String {
+
+    fun getSpotifyVersion(): String {
+        val spotifyInstalledVersion = getSpotifyInstalledVersion()
+        return if (spotifyInstalledVersion.isEmpty()) StringService.getById(R.string.spotify_not_installed) else spotifyInstalledVersion
+    }
+
+    private fun getSpotifyInstalledVersion(): String {
         return try {
             UpdaterApp.instance.packageManager.getPackageInfo(spotifyPackage, 0).versionName
         } catch (e: PackageManager.NameNotFoundException) {
