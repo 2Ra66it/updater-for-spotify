@@ -3,13 +3,13 @@ apply plugin: "kotlin-android"
 apply plugin: "kotlin-kapt"
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "28.0.3"
 
     defaultConfig {
         applicationId "ru.ra66it.updaterforspotify"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
 
         versionCode 21
         versionName "1.38"
@@ -64,7 +64,7 @@ dependencies {
     // Tooling support (Previews, etc.)
     implementation 'androidx.compose.ui:ui-tooling:1.0.2'
     // Integration with ViewModels
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-beta01'
 
     implementation "com.google.android.material:material:1.4.0"
     implementation "androidx.preference:preference-ktx:1.1.1"

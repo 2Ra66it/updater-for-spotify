@@ -25,10 +25,10 @@
 
         <activity
             android:name=".presentation.ui.activity.MainActivity"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -37,7 +37,8 @@
         <activity
             android:name=".presentation.ui.activity.SettingsActivity"
             android:label="@string/action_settings"
-            android:theme="@style/PreferencesTheme">
+            android:theme="@style/PreferencesTheme"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
             </intent-filter>

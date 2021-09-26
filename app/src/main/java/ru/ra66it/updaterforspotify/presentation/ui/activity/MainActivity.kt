@@ -11,19 +11,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
@@ -32,6 +22,10 @@ import ru.ra66it.updaterforspotify.R
 import ru.ra66it.updaterforspotify.data.network.NetworkChecker
 import ru.ra66it.updaterforspotify.domain.model.SpotifyData
 import ru.ra66it.updaterforspotify.domain.model.SpotifyStatusState
+import ru.ra66it.updaterforspotify.presentation.ui.screen.ErrorScreen
+import ru.ra66it.updaterforspotify.presentation.ui.screen.LatestVersionScreen
+import ru.ra66it.updaterforspotify.presentation.ui.screen.LoadingScreen
+import ru.ra66it.updaterforspotify.presentation.ui.screen.NewVersionScreen
 import ru.ra66it.updaterforspotify.presentation.viewmodel.UpdaterViewModel
 import javax.inject.Inject
 
@@ -58,194 +52,48 @@ class MainActivity : AppCompatActivity() {
         when (uiState) {
             is SpotifyStatusState.Error -> {
                 val error = uiState as SpotifyStatusState.Error
-                ErrorScreen(snackbarHostState, error.exception, error.installedVersion)
+                ErrorScreen(
+                    snackbarHostState = snackbarHostState,
+                    errorMessage = error.exception.localizedMessage ?: "",
+                    title = getString(R.string.installed_version),
+                    subTitle = error.installedVersion,
+                    lifecycleOwner = this,
+                    cardClickCallback = {
+                        viewModel.getLatestSpotify()
+                    })
             }
             is SpotifyStatusState.Loading -> {
-                LoadingScreen((uiState as SpotifyStatusState.Loading).installedVersion)
+                val loading = uiState as SpotifyStatusState.Loading
+                LoadingScreen(
+                    title = getString(R.string.installed_version),
+                    subTitle = loading.installedVersion
+                )
             }
             is SpotifyStatusState.Data -> {
                 val data = (uiState as SpotifyStatusState.Data).spotify
                 val permissionRequestLauncher = createPermissionLauncher(data, snackbarHostState)
+                val iconId = if (data.spotifyState == spotifyHaveUpdate)
+                    R.drawable.ic_autorenew_black_24dp else R.drawable.ic_file_download_black_24dp
+
                 when (data.spotifyState) {
                     spotifyNotInstalled, spotifyHaveUpdate -> NewVersionScreen(
                         snackbarHostState = snackbarHostState,
-                        permissionRequestLauncher = permissionRequestLauncher,
-                        data = data
+                        installedTitle = getString(R.string.installed_version),
+                        installedVersion = data.installedVersion,
+                        latestTitle = getString(R.string.latest_version),
+                        latestVersion = data.latestVersionName,
+                        buttonTitle = getString(R.string.download),
+                        buttonIcon = iconId,
+                        clickCallback = {
+                            clickDownload(data, permissionRequestLauncher, snackbarHostState)
+                        }
                     )
-                    spotifyIsLatest -> LatestVersionScreen()
-                }
-            }
-        }
-    }
-
-    @Composable
-    private fun LatestVersionScreen() {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(id = R.color.colorPrimaryDark)),
-        ) {
-            InstalledVersionCard(getString(R.string.up_to_date))
-        }
-    }
-
-    @Composable
-    private fun NewVersionScreen(
-        snackbarHostState: State<SnackbarHostState>,
-        permissionRequestLauncher: ManagedActivityResultLauncher<String, Boolean>,
-        data: SpotifyData
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(id = R.color.colorPrimaryDark)),
-        ) {
-            InstalledVersionCard(data.installedVersion)
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(32.dp, 0.dp, 32.dp, 32.dp),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = getString(R.string.latest_version),
-                        textAlign = TextAlign.Center
-                    )
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = data.latestVersionName,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
+                    spotifyIsLatest -> LatestVersionScreen(
+                        title = getString(R.string.installed_version),
+                        subTitle = getString(R.string.up_to_date)
                     )
                 }
             }
-            ExtendedFloatingActionButton(
-                text = { Text(text = getString(R.string.download)) },
-                icon = {
-                    val iconId = if (data.spotifyState == spotifyHaveUpdate)
-                        R.drawable.ic_autorenew_black_24dp
-                    else
-                        R.drawable.ic_file_download_black_24dp
-
-                    Icon(
-                        painter = painterResource(id = iconId),
-                        ""
-                    )
-                },
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = {
-                    downloadSpotify(data, permissionRequestLauncher, snackbarHostState)
-
-                },
-                backgroundColor = colorResource(id = R.color.colorAccent)
-            )
-            Snackbar(snackbarHostState)
-        }
-    }
-
-    @Composable
-    private fun InstalledVersionCard(installedVersion: String) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(32.dp),
-            shape = RoundedCornerShape(8.dp),
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = getString(R.string.installed_version),
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = installedVersion,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-
-            }
-        }
-    }
-
-    @Composable
-    private fun ErrorScreen(
-        snackbarHostState: MutableState<SnackbarHostState>,
-        error: Exception,
-        installedVersion: String
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(id = R.color.colorPrimaryDark)),
-        ) {
-            InstalledVersionCard(installedVersion)
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(32.dp, 0.dp, 32.dp, 32.dp)
-                    .clickable {
-                        viewModel.getLatestSpotify()
-                    },
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .align(Alignment.CenterHorizontally),
-                        painter = painterResource(id = R.drawable.ic_autorenew_black_24dp),
-                        contentDescription = null,
-                    )
-                }
-            }
-            Snackbar(snackbarHostState)
-            lifecycleScope.launch {
-                snackbarHostState.value.showSnackbar(error.localizedMessage ?: "")
-            }
-        }
-
-    }
-
-    @Composable
-    private fun LoadingScreen(installedVersion: String) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorResource(id = R.color.colorPrimaryDark)),
-        ) {
-            InstalledVersionCard(installedVersion)
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(32.dp, 0.dp, 32.dp, 32.dp),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        color = colorResource(id = R.color.colorPrimaryDark)
-                    )
-                }
-            }
-        }
-    }
-
-    @Composable
-    private fun Snackbar(snackbarHostState: State<SnackbarHostState>) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            SnackbarHost(
-                modifier = Modifier.align(Alignment.BottomCenter),
-                hostState = snackbarHostState.value
-            )
         }
     }
 
@@ -264,7 +112,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-    private fun downloadSpotify(
+    private fun clickDownload(
         data: SpotifyData,
         permissionRequestLauncher: ManagedActivityResultLauncher<String, Boolean>,
         snackbarHostState: State<SnackbarHostState>

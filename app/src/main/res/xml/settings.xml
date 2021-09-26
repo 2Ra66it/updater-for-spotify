@@ -46,7 +46,7 @@
             android:key="verPref"
             android:selectable="true"
             android:summary="0.0"
-            android:title="Application version" />
+            android:title="@string/app_version" />
 
     </PreferenceCategory>
 </PreferenceScreen>

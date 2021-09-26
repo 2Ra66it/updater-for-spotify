@@ -22,6 +22,7 @@
     <!--                Settings                  -->
     <string name="general">General</string>
     <string name="about">About</string>
+    <string name="app_version">Application version</string>
     <string name="github">GitHub</string>
     <string name="donate">Donate on PayPal</string>
     <string name="see_on_github">See project on GitHub</string>
