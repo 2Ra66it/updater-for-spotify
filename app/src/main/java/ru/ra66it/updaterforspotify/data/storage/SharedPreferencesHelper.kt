@@ -15,6 +15,6 @@ class SharedPreferencesHelper @Inject constructor(
         set(isOn) = sharedPreferences.edit().putBoolean(prefNotification, isOn).apply()
 
     var checkIntervalDay: Long
-        get() = sharedPreferences.getLong(prefCheckIntervalDay, 1)
+        get() = sharedPreferences.getLong(prefCheckIntervalDay, 1L)
         set(interval) = sharedPreferences.edit().putLong(prefCheckIntervalDay, interval).apply()
 }

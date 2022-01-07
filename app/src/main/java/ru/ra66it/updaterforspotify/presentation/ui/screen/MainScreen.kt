@@ -142,24 +142,10 @@ fun ErrorScreen(
 }
 
 @Composable
-private fun Snackbar(snackbarHostState: State<SnackbarHostState>) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        SnackbarHost(
-            modifier = Modifier.align(Alignment.BottomCenter),
-            hostState = snackbarHostState.value
-        )
-    }
-}
-
-@Composable
 private fun VersionCard(modifier: Modifier = Modifier, title: String, subTitle: String) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(8.dp),
+        shape = Shape(),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
@@ -182,7 +168,7 @@ private fun VersionCard(modifier: Modifier = Modifier, title: String, subTitle: 
 private fun RetryCard(modifier: Modifier = Modifier) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(8.dp),
+        shape = Shape(),
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -202,7 +188,7 @@ private fun RetryCard(modifier: Modifier = Modifier) {
 private fun LoadingCard(modifier: Modifier = Modifier, color: Color) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(8.dp),
+        shape = Shape(),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             CircularProgressIndicator(
@@ -212,3 +198,20 @@ private fun LoadingCard(modifier: Modifier = Modifier, color: Color) {
         }
     }
 }
+
+@Composable
+private fun Snackbar(snackbarHostState: State<SnackbarHostState>) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        SnackbarHost(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            hostState = snackbarHostState.value
+        )
+    }
+}
+
+@Composable
+private fun Shape() = RoundedCornerShape(8.dp)

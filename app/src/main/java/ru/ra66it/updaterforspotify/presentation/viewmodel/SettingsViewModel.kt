@@ -14,27 +14,19 @@ class SettingsViewModel @Inject constructor(
 
     val versionApp: String get() = BuildConfig.VERSION_NAME
     val isEnableNotification: Boolean get() = sharedPreferencesHelper.isEnableNotification
-    val checkIntervalDay: String get() = sharedPreferencesHelper.checkIntervalDay.toString()
 
     fun toggleEnableNotifications(newValue: Any) {
         if (newValue is Boolean) {
             sharedPreferencesHelper.isEnableNotification = newValue
             if (newValue) {
+                val days = sharedPreferencesHelper.checkIntervalDay
                 workersEnqueueManager.enqueuePeriodicChecking(
-                    sharedPreferencesHelper.checkIntervalDay,
+                    days,
                     ExistingPeriodicWorkPolicy.REPLACE
                 )
             } else {
                 workersEnqueueManager.stopPeriodicChecking()
             }
-        }
-    }
-
-    fun updateInterval(newValue: Any) {
-        if (newValue is String) {
-            val days = newValue.toLong()
-            sharedPreferencesHelper.checkIntervalDay = days
-            workersEnqueueManager.enqueuePeriodicChecking(days, ExistingPeriodicWorkPolicy.REPLACE)
         }
     }
 

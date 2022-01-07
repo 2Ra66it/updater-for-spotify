@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
                 downloadFile(data, snackbarHostState)
             } else {
                 lifecycleScope.launch {
-                    snackbarHostState.value.showSnackbar("PERMISSION DENIED")
+                    snackbarHostState.value.showSnackbar(getString(R.string.permission_denied))
                 }
             }
         }
@@ -132,11 +132,13 @@ class MainActivity : AppCompatActivity() {
         spotifyData: SpotifyData,
         snackbarHostState: State<SnackbarHostState>
     ) {
-        val messageId = if (NetworkChecker.isNetworkAvailable) {
+        val messageId: Int
+
+        if (NetworkChecker.isNetworkAvailable) {
+            messageId = R.string.downloading
             viewModel.downloadSpotify(spotifyData)
-            R.string.downloading
         } else {
-            R.string.no_internet_connection
+            messageId = R.string.no_internet_connection
         }
 
         lifecycleScope.launch {

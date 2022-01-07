@@ -18,6 +18,7 @@
     <string name="downloading_in">in /Download/</string>
     <string name="downloading">Downloading</string>
     <string name="spotify_is_downloading">Spotify is downloading</string>
+    <string name="permission_denied">"Permission denied"</string>
 
     <!--                Settings                  -->
     <string name="general">General</string>
@@ -27,8 +28,6 @@
     <string name="donate">Donate on PayPal</string>
     <string name="see_on_github">See project on GitHub</string>
     <string name="donate_paypal">Donate to the developer for coffee ♥</string>
-    <string name="paypal_link">https://www.paypal.me/2Ra66it</string>
-    <string name="github_link">https://github.com/2Ra66it/updater-for-spotify</string>
     <string name="latest_version_original">Latest Version of Spotify</string>
     <string name="enable_notification">Enable Notifications</string>
     <string name="notification_text_origin">You will receive a notification for every new version of Spotify</string>

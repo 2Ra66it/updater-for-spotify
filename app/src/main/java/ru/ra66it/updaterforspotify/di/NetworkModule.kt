@@ -1,6 +1,5 @@
 package ru.ra66it.updaterforspotify.di
 
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -31,7 +30,6 @@ class NetworkModule {
     fun provideRetrofit(httpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .baseUrl(BuildConfig.SPOTIFY_BASE_URL)
             .client(httpClient)
             .build()

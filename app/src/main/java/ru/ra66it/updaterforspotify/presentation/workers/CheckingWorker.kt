@@ -16,14 +16,14 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.coroutineScope
 import ru.ra66it.updaterforspotify.*
-import ru.ra66it.updaterforspotify.domain.usecase.UpdaterUseCase
 import ru.ra66it.updaterforspotify.domain.model.SpotifyData
+import ru.ra66it.updaterforspotify.domain.usecase.UpdaterUseCase
 import ru.ra66it.updaterforspotify.presentation.ui.activity.MainActivity
 import ru.ra66it.updaterforspotify.presentation.utils.NotificationDownloadService
 import javax.inject.Inject
 
 class CheckingWorker(
-    val context: Context,
+    private val context: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams) {
 
@@ -62,7 +62,12 @@ class CheckingWorker(
             context,
             MainActivity::class.java
         ).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        val pi = PendingIntent.getActivity(context, 0, i, 0)
+        val pi = PendingIntent.getActivity(
+            context,
+            0,
+            i,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+        )
 
         //Notification
         val contentText = context.getString(R.string.new_version) + " " +
@@ -81,21 +86,34 @@ class CheckingWorker(
             .setStyle(NotificationCompat.BigTextStyle())
             .setColor(ContextCompat.getColor(context, R.color.colorAccent))
 
-        if (ContextCompat.checkSelfPermission(context,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             //Download spotify
             val intentDownload = Intent(context, NotificationDownloadService::class.java)
             intentDownload.action = actionDownload
             intentDownload.putExtra(latestLinkKey, spotifyModel.latestLink)
             intentDownload.putExtra(latestVersionKey, spotifyModel.latestVersionNumber)
             intentDownload.putExtra(notificationIdKey, notificationId)
-            val piDownload = PendingIntent.getService(
-                context, 0, intentDownload,
+            val pendingFlag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            } else {
                 PendingIntent.FLAG_UPDATE_CURRENT
+            }
+
+            val piDownload = PendingIntent.getService(
+                context,
+                0,
+                intentDownload,
+                pendingFlag
+
             )
             builder.addAction(
                 R.drawable.ic_file_download_black_24dp,
-                context.getString(R.string.download), piDownload
+                context.getString(R.string.download),
+                piDownload
             )
         }
 

@@ -58,16 +58,15 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:3.4.0"
 
     // Integration with activities
-    implementation 'androidx.activity:activity-compose:1.3.1'
+    implementation 'androidx.activity:activity-compose:1.4.0'
     // Compose Material Design
-    implementation 'androidx.compose.material:material:1.0.2'
+    implementation 'androidx.compose.material:material:1.0.5'
     // Tooling support (Previews, etc.)
-    implementation 'androidx.compose.ui:ui-tooling:1.0.2'
+    implementation 'androidx.compose.ui:ui-tooling:1.0.5'
     // Integration with ViewModels
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-beta01'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0'
 
     implementation "com.google.android.material:material:1.4.0"
-    implementation "androidx.preference:preference-ktx:1.1.1"
     implementation "android.arch.lifecycle:extensions:1.1.1"
 
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.1"
@@ -76,9 +75,8 @@ dependencies {
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1"
-    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
 
-    implementation "androidx.work:work-runtime-ktx:2.6.0"
+    implementation "androidx.work:work-runtime-ktx:2.7.0"
 
     implementation 'com.google.dagger:dagger:2.37'
     kapt 'com.google.dagger:dagger-compiler:2.37'

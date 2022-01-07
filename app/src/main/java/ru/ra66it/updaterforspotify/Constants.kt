@@ -12,3 +12,6 @@ const val spotifyNotInstalled = 0
 const val spotifyHaveUpdate = 1
 const val spotifyIsLatest = 2
 
+
+const val paypal_link = "https://www.paypal.me/2Ra66it"
+const val github_link = "https://github.com/2Ra66it/updater-for-spotify"
